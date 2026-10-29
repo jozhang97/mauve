@@ -1,4 +1,5 @@
 "use strict";
+const maxGenomes = window.mauveBrowser ? 64 : 8;
 const jobState = {
   inputs: [],
   busy: false,
@@ -60,8 +61,8 @@ $("sequence-files").onchange = async () => {
   jobState.busy = true;
   renderInputs();
   try {
-    if (files.length + jobState.inputs.length > 8)
-      throw Error("Choose at most 8 genome files.");
+    if (files.length + jobState.inputs.length > maxGenomes)
+      throw Error(`Choose at most ${maxGenomes} genome files.`);
     for (const file of files) {
       if (file.size > 50 * 1024 * 1024)
         throw Error(`${file.name} exceeds the 50 MiB limit.`);

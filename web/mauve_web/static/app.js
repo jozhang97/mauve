@@ -44,6 +44,7 @@ function notice(message, error = false) {
   $("notice").hidden = !message;
 }
 async function api(path, options) {
+  if (window.mauveBrowser) return window.mauveBrowser.request(path, options);
   const r = await fetch(path, options);
   if (!r.ok) {
     let body;
@@ -308,7 +309,8 @@ function renderBases() {
   const members = sequenceMembers();
   target.replaceChildren();
   target.classList.toggle("isolated-differences", $("differences-only").checked);
-  const differs = i => b.members.some(m => m.bases[i] !== b.members[0].bases[i]);
+  const differences = Array.from({length: b.members[0].bases.length}, (_, i) => b.members.some(m => m.bases[i] !== b.members[0].bases[i]));
+  const differs = i => differences[i];
   const all = Array.from({length: b.members[0].bases.length}, (_, i) => i);
   const indices = all.filter(i => !$("differences-only").checked || differs(i));
   $("member-summary").textContent = `${members.length} of ${b.members.length} genomes visible · ${all.filter(differs).length} differing columns in this ${all.length}-column page${$("differences-only").checked ? " · Matching columns hidden; see alignment-column numbers for spacing" : " · Full sequence context"}`;

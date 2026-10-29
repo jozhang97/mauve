@@ -20,7 +20,7 @@ function updateNCBIControls() {
   $("ncbi-previous").disabled = busy || ncbiState.page === 0;
   $("ncbi-next").disabled = busy || !ncbiState.next;
   const chosen = ncbiState.selected.size,
-    slots = 8 - jobState.inputs.length;
+    slots = maxGenomes - jobState.inputs.length;
   $("ncbi-use").disabled =
     busy || jobState.busy || chosen === 0 || chosen > slots;
   $("ncbi-use").textContent = ncbiState.downloading
@@ -59,10 +59,10 @@ function renderNCBIRows() {
     box.disabled = box.dataset.tooLarge === "true";
     box.onchange = () => {
       if (box.checked) {
-        if (ncbiState.selected.size + jobState.inputs.length >= 8) {
+        if (ncbiState.selected.size + jobState.inputs.length >= maxGenomes) {
           box.checked = false;
           ncbiError(
-            "At most 8 genomes can be added to an alignment. Remove a selected or staged genome first.",
+            `At most ${maxGenomes} genomes can be added to an alignment. Remove a selected or staged genome first.`,
           );
           return;
         }
@@ -186,9 +186,9 @@ $("ncbi-previous").onclick = () => {
 $("ncbi-use").onclick = async () => {
   if (ncbiState.downloading || jobState.busy) return;
   const chosen = [...ncbiState.selected.values()];
-  if (chosen.length + jobState.inputs.length > 8) {
+  if (chosen.length + jobState.inputs.length > maxGenomes) {
     ncbiError(
-      "The selection exceeds 8 genomes. Remove some before downloading.",
+      `The selection exceeds ${maxGenomes} genomes. Remove some before downloading.`,
     );
     return;
   }

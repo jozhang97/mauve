@@ -1,8 +1,152 @@
 # Mauve Explorer
 
-A local web interface for running progressiveMauve and exploring XMFA/Mauve alignments. The original Java application remains at the repository root.
+A web interface for running progressiveMauve and exploring XMFA/Mauve alignments. The standalone browser build runs on GitHub Pages with no backend. The original Java application remains at the repository root, and the Python server remains available as a reference and for native workloads.
 
-## Run
+## Standalone browser app / GitHub Pages
+
+From the repository root:
+
+```sh
+./web/run-browser.sh
+```
+
+Open http://127.0.0.1:8766. Python only serves static files during this local
+preview; all parsing, storage, NCBI downloads, alignment jobs, and viewing run
+in the browser. There are no Python API requests and no CDN runtime dependencies.
+The script builds into a temporary directory and removes it when stopped.
+Set `MAUVE_BROWSER_PORT` to change the preview port.
+
+The standalone app supports the demo, XMFA imports, GenBank annotations and gene
+search, coordinate navigation, identity profiles, FASTA/TSV/SVG exports, NCBI
+assembly search/download, and progressiveMauve jobs with logs, cancellation,
+rerun, and artifact downloads. NCBI requests go directly to NCBI only when you
+use those features. Your uploaded genome data is not sent to a computation
+server. Local files, demo viewing and alignment jobs work without NCBI access.
+This is a static app, not yet an offline-installable PWA: reloading the site
+still needs its assets to be available.
+
+Use a current browser with module workers, WebAssembly SIMD, IndexedDB, and
+Web Locks on HTTPS or localhost. Chrome on Apple Silicon has been exercised.
+WebGPU is optional: the app checks availability and validates its integer
+kernel against CPU results, then falls back to CPU if unavailable or lost.
+Safari/Firefox behavior has not yet been validated end to end.
+
+### Publish
+
+1. Commit and push the changes, including the WebAssembly assets and licenses.
+2. In repository **Settings → Pages**, select **GitHub Actions** as the source.
+3. Run **Deploy browser Mauve to Pages** from the Actions tab.
+
+The manual workflow runs the JavaScript tests (including the real WebAssembly
+engine), builds the static artifact, and deploys it. A separate **Browser and
+reference tests** workflow runs the JavaScript, Python reference, and static
+browser integration tests on pushes and pull requests that change `web/`.
+No backend URL, API key,
+or secret is required. Paths support both `/mauve/` project sites and custom
+domains. Nothing has been published automatically.
+
+To build a release yourself, choose a new output directory:
+
+```sh
+python3 web/build_pages.py --output /tmp/mauve-pages
+python3 -m http.server 8766 --bind 127.0.0.1 --directory /tmp/mauve-pages
+```
+
+### Local storage and job lifetime
+
+The browser has its own library, separate from `web/.data`. IndexedDB stores
+validated alignment metadata, individual block members, annotations, normalized
+job inputs, and artifacts. An alignment becomes visible only after every block
+validates; a failed annotation replacement preserves the previous annotations.
+Data belongs to this browser profile and origin. Clearing site data, private
+browsing, or storage eviction can remove it; export important results.
+
+Keep the tab open while a job runs. Closing it interrupts unfinished jobs;
+returning marks them interrupted and allows a rerun using retained inputs.
+Jobs are serialized across tabs with Web Locks, and cancellation terminates the
+job's dedicated worker. Cancel a running job in the tab that started it. Job
+outputs persist after completion. The current browser workflow retains normalized
+input sequences and their original/normalized checksums, not the original upload
+bytes. Completed logs and parameters are downloadable with the alignment.
+
+### Acceleration and scaling
+
+The architecture follows the useful pattern demonstrated by
+[LocalFold](https://github.com/sokrypton/localfold): local computation in workers,
+with WebGPU for suitable kernels. No LocalFold code or model weights are used.
+
+- The real progressiveMauve C++ engine is compiled with `-O3 -msimd128` and runs
+  in a separate worker. WebAssembly SIMD uses the browser's native CPU support,
+  including Apple Silicon. Alignment currently uses one CPU worker, not the GPU.
+- Identity scans use a packed-byte WebGPU kernel with exact integer reductions.
+  This uses Apple GPUs when exposed by the browser, and also supports other
+  vendors. Small blocks use CPU to avoid GPU overhead. GPU buffers are bounded
+  to 32 MiB per sequence; larger members currently use the CPU fallback.
+- Imports stream text and commit one block at a time. Sequences use one byte per
+  aligned base. Overview metadata is stored separately; opening an alignment
+  does not read all DNA. Reads load members individually with a 64 MiB LRU cache.
+- Sparse ungapped-prefix indexes every 1,024 columns make coordinate jumps a
+  binary search plus a short scan. Profiles are cached, and sequence rendering
+  computes differences once per column instead of once per genome and column.
+- The browser allows 2–64 inputs, with the existing 50 MiB/input, 100 million
+  total input bases, and 256 MiB result/import limits. The WebAssembly heap has
+  a 2 GiB ceiling and scratch files consume memory; these limits do not guarantee
+  every workload fits. Genome-count capacity is experimental beyond the tested
+  examples. Native progressive alignment still has expensive pairwise stages.
+
+Measured on an Apple M4 Max in Chrome, synthetic data:
+
+| Operation | Result |
+| --- | --- |
+| Pairwise scan, 32 million columns | CPU 45 ms; WebGPU 13 ms, including transfer/readback |
+| Import 32 genomes × 1 million aligned columns | 152 ms |
+| First identity profile for that block | 58 ms |
+| Cached profile / 100-column page | 1.1 ms / 0.6 ms |
+| 10,000 indexed coordinate jumps | 5.9 ms |
+| progressiveMauve, 32 genomes × 100,000 bases | 56.4 s; 222 MiB peak Node process RSS |
+
+Viewer timings measure exploration of already aligned synthetic sequences. The
+aligner measurement is a separate near-identical synthetic DNA workload in Node;
+it does not predict performance on divergent full genomes.
+The synthetic twelve-genome alignment test and an inversion/indel comparison
+against the native executable pass. Larger, divergent biological datasets need
+more validation. Current remaining scaling limits include the single-worker
+aligner, in-memory scratch data, block-sized parsing, and SVG/DOM rendering.
+
+Reproduce the measurements against a running preview (a visible browser exposes
+hardware WebGPU on macOS; headless Chrome may use the CPU fallback):
+
+```sh
+web/.venv/bin/python web/benchmarks/browser.py --url http://127.0.0.1:8766 --headful
+node web/benchmarks/aligner.mjs 32 100000
+```
+
+### Browser tests and engine build
+
+```sh
+node --test web/browser-tests/*.test.mjs
+web/.venv/bin/python -m pytest web/browser-tests -q
+MAUVE_HEADFUL=1 web/.venv/bin/python -m pytest web/browser-tests/test_browser.py -k gpu -q
+MAUVE_NATIVE_TESTS=1 web/.venv/bin/python -m pytest web/browser-tests/test_reference.py -q
+```
+
+Install `web/requirements-dev.txt` and `web/requirements-browser.txt` in the web
+virtual environment for the Python/browser checks, plus Playwright Chromium or
+set `MAUVE_CHROME_PATH`. Tests compare browser calculations against the Python
+reference and exercise the real engine, local persistence, downloads, cancellation,
+GPU/CPU parity, and `/mauve/` deployment paths. The native comparison defaults to
+the bundled macOS executable; set `MAUVE_ALIGNER` for another platform.
+
+See [wasm/README.md](wasm/README.md) for pinned upstream sources, licensing,
+compatibility patches, build flags, and rebuild instructions.
+
+## Python server mode
+
+The sections below describe the original Python/native server mode. Its data
+location, eight-input limit, and background-job lifetime differ from the
+standalone browser build described above.
+
+### Run
 
 Requires Python 3.11 or newer. From the repository root:
 

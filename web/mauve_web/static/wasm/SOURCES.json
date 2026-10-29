@@ -1,0 +1,27 @@
+{
+  "compiler": "Emscripten 4.0.15",
+  "sources": {
+    "mauveAligner": {
+      "url": "https://github.com/koadman/mauveAligner",
+      "revision": "3e8293836119a8a6cc883b48f234947cf55387c5"
+    },
+    "libMems": {
+      "url": "https://github.com/koadman/libMems",
+      "revision": "1f067601ae48f898dc3c9b92a3b7bf636d04fc70"
+    },
+    "libGenome": {
+      "url": "https://github.com/koadman/libGenome",
+      "revision": "41b5c8bc02048f41dbd0d1e116b3bca8b4a384db"
+    },
+    "muscle": {
+      "url": "https://github.com/koadman/muscle",
+      "revision": "ec6ab52e7a667e9d2fa70e89b3d2d9adb81f074e"
+    }
+  },
+  "boost": {
+    "url": "https://archives.boost.io/release/1.65.1/source/boost_1_65_1.tar.bz2",
+    "sha256": "9807a5d16566c57fd74fb522764e0b134a8bbe6b6e8967b83afefd30dcd3be81"
+  },
+  "rebuild": "python3 build.py --work /tmp/mauve-wasm-build --output ./rebuilt",
+  "wasm_sha256": "29e18e8931ad68bede2050f8b6e659fd58a8d2256ca2de8a90503bcd392085d4"
+}
