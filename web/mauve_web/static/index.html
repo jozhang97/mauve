@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mauve · Genome explorer</title>
+    <script src="/static/theme.js"></script>
+    <link rel="stylesheet" href="/static/style.css" />
+    <script src="/static/app.js" defer></script>
+    <script src="/static/jobs.js" defer></script>
+    <script src="/static/ncbi.js" defer></script>
+  </head>
+  <body>
+    <aside>
+      <a class="brand" href="/" aria-label="Mauve home"
+        ><span class="mark">≋</span> mauve<span class="tag">EXPLORER</span></a
+      >
+      <div class="workspace"><span class="dot"></span> Research workspace</div>
+      <button id="import" class="primary">＋ Import alignment</button
+      ><input id="file" type="file" accept=".xmfa,.alignment,.txt" hidden />
+      <button id="new-alignment" class="new-alignment">Align sequences</button>
+      <button id="browse-ncbi" class="new-alignment">Find NCBI genomes</button>
+      <div class="section-label">YOUR ALIGNMENTS</div>
+      <nav id="library" aria-label="Saved alignments"></nav>
+      <button id="demo" class="demo">↗ Open yeast demo</button>
+      <div class="section-label">ALIGNMENT JOBS</div>
+      <nav id="job-library" aria-label="Alignment jobs"></nav>
+      <div class="sidebar-footer">
+        A closer look at shared genomes.<br /><span
+          >XMFA · Mauve alignment files</span
+        >
+      </div>
+    </aside>
+    <dialog id="ncbi-dialog" aria-labelledby="ncbi-title">
+      <div class="panel-heading">
+        <div>
+          <div class="eyebrow">NCBI GENOME ASSEMBLIES</div>
+          <h2 id="ncbi-title">Find genomes by taxon</h2>
+        </div>
+        <button id="close-ncbi" aria-label="Close NCBI genome browser">
+          ×
+        </button>
+      </div>
+      <form id="ncbi-search">
+        <label for="ncbi-taxon"
+          >Taxon ID<input
+            id="ncbi-taxon"
+            type="number"
+            min="1"
+            max="2147483647"
+            step="1"
+            required
+            placeholder="e.g. 4932"
+        /></label>
+        <label for="ncbi-source"
+          >Database<select id="ncbi-source">
+            <option value="all">RefSeq + GenBank</option>
+            <option value="refseq">RefSeq</option>
+            <option value="genbank">GenBank</option>
+          </select></label
+        >
+        <label for="ncbi-versions"
+          >Versions<select id="ncbi-versions">
+            <option value="current">Current</option>
+            <option value="all_assemblies">All, including historical</option>
+          </select></label
+        >
+        <label for="ncbi-query"
+          >Filter<input
+            id="ncbi-query"
+            maxlength="200"
+            placeholder="Strain, assembly name…"
+        /></label>
+        <label class="check"
+          ><input id="ncbi-exact" type="checkbox" /> Exact taxon only</label
+        >
+        <button id="ncbi-search-button" class="primary">Find genomes</button>
+      </form>
+      <p class="small feature-status">
+        Includes descendant taxa unless Exact taxon is checked. RefSeq and
+        GenBank may contain paired versions of the same assembly; paired
+        accessions are shown below.
+      </p>
+      <p
+        id="ncbi-status"
+        class="feature-status"
+        role="status"
+        aria-live="polite"
+      >
+        Enter an NCBI taxonomy ID to browse available genome assemblies.
+      </p>
+      <p id="ncbi-error" class="job-error" role="alert" hidden></p>
+      <div class="ncbi-table-wrap">
+        <table id="ncbi-table" hidden>
+          <thead>
+            <tr>
+              <th scope="col">Select</th>
+              <th scope="col">Assembly</th>
+              <th scope="col">Organism / strain</th>
+              <th scope="col">Level / status</th>
+              <th scope="col">Size / contigs</th>
+            </tr>
+          </thead>
+          <tbody id="ncbi-results"></tbody>
+        </table>
+      </div>
+      <div id="ncbi-pagination" hidden>
+        <button id="ncbi-previous">← Previous</button
+        ><span id="ncbi-page"></span><button id="ncbi-next">Next →</button>
+      </div>
+      <div class="ncbi-selection">
+        <div id="ncbi-selected"></div>
+        <p id="ncbi-selection-count" class="small">
+          Select up to 8 assemblies across pages.
+        </p>
+        <button id="ncbi-use" class="primary" disabled>
+          Download selected genomes
+        </button>
+        <p class="small">
+          Downloads are added to the alignment form for review. The current
+          website accepts 2–8 genomes per job, up to 50 MiB per input and 100 million
+          bases total. Larger assemblies remain searchable.
+        </p>
+      </div>
+    </dialog>
+    <dialog id="alignment-dialog" aria-labelledby="alignment-dialog-title">
+      <form id="alignment-form">
+        <div class="panel-heading">
+          <div>
+            <div class="eyebrow">NEW ALIGNMENT</div>
+            <h2 id="alignment-dialog-title">Compare your genomes</h2>
+          </div>
+          <button
+            type="button"
+            id="close-alignment-dialog"
+            aria-label="Close alignment form"
+          >
+            ×
+          </button>
+        </div>
+        <p id="engine-status" class="small feature-status">
+          Checking progressiveMauve…
+        </p>
+        <div class="alignment-fields">
+          <label for="job-name">Alignment name</label
+          ><input
+            id="job-name"
+            required
+            maxlength="200"
+            value="New alignment"
+          />
+          <label for="sequence-files">Genome files</label
+          ><input
+            id="sequence-files"
+            type="file"
+            multiple
+            accept=".fa,.fas,.fasta,.fna,.gb,.gbk,.genbank"
+          />
+          <p class="small">
+            Choose 2–8 FASTA or GenBank files, one genome per file. Each file
+            can be up to 50 MiB, with at most 100 million bases in total.
+          </p>
+          <ul id="staged-inputs"></ul>
+          <label class="check"
+            ><input type="checkbox" id="job-concatenate" /> Concatenate multiple
+            records within each file in file order</label
+          >
+          <details>
+            <summary>Alignment settings</summary>
+            <label class="check"
+              ><input type="checkbox" id="job-collinear" /> Assume collinear
+              genomes (no rearrangements)</label
+            >
+            <label class="check"
+              ><input type="checkbox" id="job-seed-family" /> Use seed
+              families</label
+            >
+            <label for="job-weight">Minimum pairwise LCB score (optional)</label
+            ><input
+              id="job-weight"
+              type="number"
+              min="0"
+              max="1000000000"
+              step="1"
+              placeholder="Aligner default"
+            />
+          </details>
+          <p id="job-form-error" class="job-error" role="alert" hidden></p>
+          <button id="submit-job" class="primary" disabled>
+            Start alignment
+          </button>
+          <p class="small">
+            Inputs, parameters, logs, and results are retained in this
+            workspace. Closing the browser does not stop a job.
+          </p>
+        </div>
+      </form>
+    </dialog>
+    <main>
+      <header>
+        <div>
+          <div class="eyebrow">COMPARATIVE GENOMICS</div>
+          <h1 id="title">Explore the space between genomes.</h1>
+          <p id="subtitle">
+            Open an alignment to trace conserved regions and rearrangements.
+          </p>
+        </div>
+        <div class="header-controls">
+          <span class="version">RESEARCH PREVIEW</span>
+          <label class="theme-control" for="theme"
+            >Theme
+            <select id="theme" aria-label="Color theme">
+              <option value="system">System</option>
+              <option value="light">Light</option>
+              <option value="dark">Dark</option>
+            </select></label
+          >
+        </div>
+      </header>
+      <div id="notice" role="status" aria-live="polite" hidden></div>
+      <section id="job-panel" class="panel" hidden>
+        <div class="panel-heading">
+          <div>
+            <div class="eyebrow">ALIGNMENT JOB</div>
+            <h2 id="job-title"></h2>
+          </div>
+          <button id="close-job">Close</button>
+        </div>
+        <div class="job-summary">
+          <span id="job-status" role="status"></span><span id="job-time"></span
+          ><button id="cancel-job" hidden>Cancel job</button
+          ><button id="retry-import" class="primary" hidden>Import saved result</button><button id="open-result" class="primary" hidden>
+            Open alignment</button
+          ><button id="rerun-job" hidden>Rerun with same inputs</button>
+        </div>
+        <p id="job-error" class="job-error" role="alert" hidden></p>
+        <p class="small feature-status">
+          Jobs run one at a time. The log shows the aligner’s output; it may
+          pause while the aligner buffers output.
+        </p>
+        <div id="job-artifacts" class="export-bar"></div>
+        <details class="job-log" open>
+          <summary>Alignment log <span id="log-tail"></span></summary>
+          <pre id="job-log"></pre>
+        </details>
+      </section>
+      <section id="welcome" class="welcome">
+        <div class="welcome-art" aria-hidden="true">
+          <i></i><i></i><i></i><i></i><i></i>
+        </div>
+        <div class="eyebrow">FROM ALIGNMENT TO INSIGHT</div>
+        <h2>Different genomes.<br />A shared story.</h2>
+        <p>
+          Compare aligned regions, follow their orientation,<br />and inspect
+          the bases behind each block.
+        </p>
+        <button id="welcome-demo" class="primary">
+          Explore the yeast demo →
+        </button>
+        <p class="small">Or import an existing XMFA alignment, up to 256 MiB.</p>
+      </section>
+      <div id="explorer" hidden>
+        <nav class="explorer-nav" aria-label="Alignment sections">
+          <button data-section="overview-panel" class="current" aria-current="location">Overview</button>
+          <button data-section="sequence-panel">Sequence</button>
+          <button data-section="annotations-panel">Genes &amp; features</button>
+          <span id="selection-status">No block selected</span>
+        </nav>
+        <section class="stats">
+          <div><span id="genome-count">—</span> genomes</div>
+          <div><span id="block-count">—</span> alignment blocks</div>
+          <div><span id="shared-count">—</span> shared blocks</div>
+          <div class="coordinate-note">Coordinates: 1-based, inclusive</div>
+        </section>
+        <section class="panel" id="overview-panel">
+          <div class="panel-heading">
+            <div>
+              <div class="eyebrow">ALIGNMENT MAP</div>
+              <h2>Genome overview</h2>
+              <p>
+                Matching colors connect members of the same alignment block.
+              </p>
+            </div>
+            <div class="overview-actions">
+              <button id="jump-sequence" disabled>Inspect sequence ↓</button>
+              <details class="export-menu"><summary>Export</summary><div>
+                <button id="export-svg">Export view as SVG</button>
+                <a id="export-blocks" class="download">Download block table</a>
+              </div></details>
+            </div>
+          </div>
+          <div class="toolbar">
+            <div class="button-group">
+              <button id="pan-left" title="Pan left" aria-label="Pan left">
+                ←</button
+              ><button id="zoom-in" title="Zoom in" aria-label="Zoom in">
+                ＋</button
+              ><button id="zoom-out" title="Zoom out" aria-label="Zoom out">
+                −</button
+              ><button id="pan-right" title="Pan right" aria-label="Pan right">
+                →</button
+              ><button id="reset">Fit all</button>
+            </div>
+            <form id="region-form">
+              <label for="region">Region</label
+              ><input
+                id="region"
+                placeholder="1–2,000"
+                aria-label="Coordinate range, start-end"
+              /><button>Go</button>
+            </form>
+            <span id="range"></span>
+          </div>
+          <div class="reference-bar">
+            <label for="reference-genome">Compare with</label><select id="reference-genome" aria-label="Comparison reference"></select>
+            <button id="focus-reference" disabled title="Focus the selected block at the reference genome’s coordinates">Focus reference region</button>
+            <span class="small">Native genome coordinates</span>
+          </div>
+          <div class="view-settings">
+            <details id="display-settings"><summary>Display &amp; filters</summary>
+              <div class="settings-content">
+                <label class="check"><input type="checkbox" id="links" checked /> Block connections</label>
+                <label class="check"><input type="checkbox" id="show-annotations" checked /> Annotations</label>
+                <label class="check"><input type="checkbox" id="show-identity" checked /> Selected block identity</label>
+                <label class="check"><input type="checkbox" id="isolate-block" /> Selected block only</label>
+                <label>Minimum block columns <input id="min-columns" type="number" min="0" step="1" value="0" /></label>
+                <button id="reset-display">Reset display</button>
+              </div>
+            </details>
+            <details class="track-settings"><summary>Arrange tracks</summary><div id="track-controls"></div></details>
+          </div>
+          <p id="identity-status" class="small feature-status" aria-live="polite">Select a block to compare identity with the reference.</p>
+          <div id="map-feedback" class="map-feedback" hidden role="status">
+            <span id="map-feedback-text"></span>
+            <button id="clear-map-filters">Clear filters</button>
+          </div>
+          <div id="selection-feedback" class="map-feedback" hidden role="status">
+            <span id="selection-feedback-text"></span><button id="reveal-selected">Reveal selected block</button>
+          </div>
+          <div id="tracks"></div>
+          <p id="feature-limit" class="small feature-status" hidden></p>
+          <div class="plot-footer">
+            <span
+              ><b class="legend forward"></b> Forward strand
+              <b class="legend reverse"></b> Reverse strand</span
+            ><span>Click a block to inspect · Double-click to focus</span>
+          </div>
+          <div class="block-browser">
+            <div class="block-browser-heading">
+              <label for="block-search">Browse blocks</label>
+              <input id="block-search" type="search" placeholder="Block ID or genome name…" />
+              <label class="check"><input type="checkbox" id="shared-only" /> Shared only</label>
+              <span id="block-results-count" class="small" aria-live="polite"></span>
+            </div>
+            <div id="block-list"></div>
+          </div>
+        </section>
+        <section class="panel inspector" id="sequence-panel">
+          <div class="panel-heading">
+            <div>
+              <div class="eyebrow">SEQUENCE COMPARISON</div>
+              <h2 id="block-title">Select an alignment block</h2>
+            </div>
+            <div class="pager" hidden>
+              <button id="previous">← Previous</button><span id="columns"></span
+              ><button id="next">Next →</button>
+            </div>
+          </div>
+          <p id="inspection-hint">
+            Select a colored block in the overview or browse the block list to compare its aligned bases.
+          </p>
+          <div id="comparison-summary" class="comparison-summary" aria-live="polite"></div>
+          <div id="member-summary"></div>
+          <div id="inspector-tools" class="view-controls" hidden>
+            <label class="check"><input id="differences-only" type="checkbox" /> Isolate differences in this page</label>
+            <button id="next-difference">Next page with differences</button>
+            <span id="difference-status" class="small" aria-live="polite"></span>
+            <a id="export-fasta" class="download" hidden>Download aligned FASTA</a>
+          </div>
+
+          <div id="sequence-navigation" hidden>
+            <form id="sequence-jump" class="sequence-navigation">
+              <label for="sequence-position">Jump to</label>
+              <select id="sequence-location-kind" aria-label="Position type"><option value="column">Alignment column</option><option value="genomic">Genomic position</option></select>
+              <select id="sequence-genome" aria-label="Genome for genomic position" hidden></select>
+              <input id="sequence-position" type="number" min="1" step="1" value="1" aria-label="Sequence position" required />
+              <button>Go</button>
+              <label>Columns / page <select id="page-size"><option>25</option><option>50</option><option selected>100</option></select></label>
+              <label class="check"><input id="full-sequence-labels" type="checkbox" /> Full genome labels on mobile</label>
+            </form>
+            <p id="sequence-context" class="small feature-status" aria-live="polite"></p>
+            <p id="sequence-scroll-hint" class="small feature-status" hidden>← Scroll sideways for more bases → · Arrow keys move between columns.</p>
+          </div>
+          <div id="bases" class="bases" tabindex="0" role="region" aria-label="Aligned bases; scroll horizontally to see more columns"></div>
+          <div id="column-detail" class="column-detail" hidden aria-live="polite"></div>
+          <p id="base-note" class="small" hidden>
+            Bases follow alignment orientation. Hover a base for its genomic
+            coordinate; reverse-strand coordinates decrease. Highlighted columns differ across block members, including gaps and ambiguity. Click a base to compare its column across genomes; arrow keys move between columns.
+          </p>
+        </section>
+        <section class="panel annotations-panel" id="annotations-panel">
+          <div class="panel-heading">
+            <div>
+              <div class="eyebrow">GENOME ANNOTATIONS</div>
+              <h2>Find a gene or feature</h2>
+            </div>
+          </div>
+          <div class="annotation-controls">
+            <label for="annotation-genome">Genome</label
+            ><select id="annotation-genome"></select>
+            <button id="import-annotations">Import GenBank</button>
+            <input
+              id="annotation-file"
+              type="file"
+              accept=".gb,.gbk,.genbank"
+              hidden
+            />
+            <label class="check"
+              ><input id="concatenate-records" type="checkbox" /> Concatenate
+              records in file order</label
+            >
+          </div>
+          <p id="annotation-status" class="small feature-status">
+            Choose the genome that matches your GenBank sequence. Importing
+            replaces its existing annotations.
+          </p>
+          <form id="feature-search" class="annotation-search">
+            <label for="gene-query">Search</label
+            ><input
+              id="gene-query"
+              placeholder="Gene, locus tag, product…"
+              maxlength="200"
+            /><button>Find features</button>
+          </form>
+          <div id="feature-results" aria-live="polite"></div>
+          <div id="feature-detail" hidden></div>
+        </section>
+
+      </div>
+      <footer>Mauve Explorer <span>Local-first genome comparison</span></footer>
+    </main>
+  </body>
+</html>
