@@ -4,7 +4,7 @@ export const MAX_GENOMES = 64, MAX_BASES = 100000000, MAX_INPUT = 50 * 1024 * 10
 const now = () => new Date().toISOString();
 const hash = async blob => [...new Uint8Array(await crypto.subtle.digest('SHA-256', await blob.arrayBuffer()))].map(x => x.toString(16).padStart(2, '0')).join('');
 export class Jobs {
-  constructor(store, importer) { this.store = store; this.importer = importer; this.running = new Map(); }
+  constructor(store, importer, onComplete = () => {}) { this.onComplete = onComplete; this.store = store; this.importer = importer; this.running = new Map(); }
   async engine() {
     this.engineInfo ||= fetch(new URL('../wasm/SOURCES.json', import.meta.url)).then(r => { if (!r.ok) throw Error('Engine manifest is missing. Rebuild the static site.'); return r.json(); });
     const source = await this.engineInfo;
@@ -96,6 +96,7 @@ export class Jobs {
       worker?.terminate(); await pending;
       job.finished = now(); if (!job.artifacts.includes('log')) job.artifacts.push('log');
       await this.store.batch([['jobs', job.id, job], ['artifacts', [job.id, 'log'], new Blob([log])]]);
+      if (job.status === 'succeeded') this.onComplete();
     }
   }
   async cancel(id) {

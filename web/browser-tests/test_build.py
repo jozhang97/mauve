@@ -23,3 +23,20 @@ def test_pages_artifact_is_static_and_engine_matches_manifest(tmp_path):
     assert (output / 'static/wasm/build.py').is_file()
     manifest = json.loads((output / 'static/wasm/SOURCES.json').read_text())
     assert hashlib.sha256((output / 'static/wasm/progressiveMauve.wasm').read_bytes()).hexdigest() == manifest['wasm_sha256']
+
+
+def test_analytics_configuration_is_explicit_and_validated(tmp_path):
+    import pytest
+    output = tmp_path / 'tracked'
+    builder.build(output, 'jozhang97')
+    assert '"siteCode": "jozhang97"' in (output / 'static/analytics-config.js').read_text()
+    html = (output / 'index.html').read_text()
+    assert html.index('analytics-config.js') < html.index('analytics.js') < html.index('browser/client.js')
+    assert 'Usage analytics count visits and actions.' in html
+    local = tmp_path / 'local'
+    builder.build(local)
+    assert '"siteCode": ""' in (local / 'static/analytics-config.js').read_text()
+    for code in ['https://example.org', 'bad code', '<script>']:
+        with pytest.raises(ValueError):
+            builder.build(tmp_path / 'invalid', code)
+    assert not (tmp_path / 'invalid').exists()

@@ -45,3 +45,19 @@ test('failed log write stops the worker and cannot overwrite the terminal status
   assert.equal(saved.get('jobs/test').error, 'Log storage unavailable');
   assert.ok(terminated);
 });
+
+test('completion notification occurs once, after the successful result is persisted', async t => {
+  mockWorker(t, class {
+    postMessage() { queueMicrotask(() => this.onmessage({data: {type: 'done', files: {xmfa: new Blob(['alignment'])}}})); }
+    terminate() {}
+  });
+  const {jobs, job, saved} = setup();
+  let completed = 0;
+  jobs.importer = async () => ({id: 'saved-result'});
+  jobs.onComplete = () => { assert.equal(saved.get('jobs/test').status, 'succeeded'); completed++; };
+  await jobs.run(job, []);
+  await jobs.get(job.id);
+  await jobs.get(job.id);
+  assert.equal(completed, 1);
+  assert.equal(saved.get('jobs/test').alignment_id, 'saved-result');
+});

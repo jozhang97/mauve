@@ -12,7 +12,8 @@ From the repository root:
 
 Open http://127.0.0.1:8766. Python only serves static files during this local
 preview; all parsing, storage, NCBI downloads, alignment jobs, and viewing run
-in the browser. There are no Python API requests and no CDN runtime dependencies.
+in the browser. There are no Python API requests or CDN dependencies for
+computation. The Pages release optionally loads GoatCounter for usage analytics.
 The script builds into a temporary directory and removes it when stopped.
 Set `MAUVE_BROWSER_PORT` to change the preview port.
 
@@ -22,7 +23,8 @@ assembly search/download, and progressiveMauve jobs with logs, cancellation,
 rerun, and artifact downloads. NCBI requests go directly to NCBI only when you
 use those features. Your uploaded genome data is not sent to a computation
 server. Local files, demo viewing and alignment jobs work without NCBI access.
-This is a static app, not yet an offline-installable PWA: reloading the site
+Optional usage analytics send only fixed visit/action labels to GoatCounter (see
+below). This is a static app, not yet an offline-installable PWA: reloading the site
 still needs its assets to be available.
 
 Use a current browser with module workers, WebAssembly SIMD, IndexedDB, and
@@ -51,6 +53,46 @@ To build a release yourself, choose a new output directory:
 python3 web/build_pages.py --output /tmp/mauve-pages
 python3 -m http.server 8766 --bind 127.0.0.1 --directory /tmp/mauve-pages
 ```
+
+### Usage analytics
+
+The Pages workflow uses the same [GoatCounter dashboard](https://jozhang97.goatcounter.com)
+as Natural Preprint. It sets the public `MAUVE_GOATCOUNTER_CODE` to `jozhang97`;
+no secret or API key is needed. Tracking starts after deploying this change.
+Visits use a fixed `/mauve/` path and `Mauve Explorer` title so they remain separate
+from `/natural-preprint/` and other sites in the shared dashboard.
+
+Usage events are fixed labels prefixed with `mauve-`:
+
+- `demo-opened`, `alignment-imported`, `annotations-imported`: successful operations.
+- `alignment-submitted`: a local job was accepted, including reruns.
+- `alignment-completed`: a running job finished and its imported result was saved.
+  Polling, reopening a completed job, and manually retrying a saved-result import
+  do not count another completion.
+- `ncbi-search-completed`, `ncbi-genome-downloaded`: successful searches (including
+  result pagination) and downloads.
+- `block-fasta-downloaded`, `block-table-downloaded`, `job-artifact-downloaded`,
+  `svg-downloaded`: a download was requested, not confirmation that it was saved.
+
+Analytics payloads exclude sequences, filenames, genome/job/alignment IDs,
+accessions, search queries, errors, URL queries/fragments, and referrers. The
+provider still receives normal network connection information. No analytics
+code runs in the compute workers; fixed completion messages reach the UI, which
+counts them. The [GoatCounter JavaScript API](https://www.goatcounter.com/help/js)
+handles counting, with bounded queuing and failures isolated from app operations.
+
+Tracking requires an explicitly configured static build served over HTTPS and
+is disabled on localhost and for Do Not Track visitors. Default local builds,
+Python server mode, and browser tests send no analytics. Counts are approximate
+because blocked scripts and opted-out visitors are excluded. Set
+`MAUVE_GOATCOUNTER_CODE` to an empty string in `.github/workflows/pages.yml` and
+redeploy to disable tracking. For another host, build with
+`python3 web/build_pages.py --goatcounter-code YOUR_SITE_CODE`.
+
+Tests stub the tracker without contacting GoatCounter:
+`node --test web/browser-tests/analytics.test.mjs`. After deployment, open the
+site, open the yeast demo, export a view, and check the dashboard for `/mauve/`,
+`mauve-demo-opened`, and `mauve-svg-downloaded`.
 
 ### Local storage and job lifetime
 

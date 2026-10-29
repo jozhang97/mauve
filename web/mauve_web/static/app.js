@@ -1272,6 +1272,7 @@ $("export-svg").onclick = () => {
   a.href = url;
   a.download = "mauve-overview.svg";
   a.click();
+  window.mauveAnalytics?.trackUsage("svg-downloaded");
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 };
 

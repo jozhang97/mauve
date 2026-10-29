@@ -19,6 +19,8 @@ jobs:
           node-version: '22'
       - run: node --test web/browser-tests/*.test.mjs
       - run: python web/build_pages.py
+        env:
+          MAUVE_GOATCOUNTER_CODE: jozhang97
       - uses: actions/upload-pages-artifact@v3
         with:
           path: web/dist

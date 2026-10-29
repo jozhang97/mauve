@@ -5,7 +5,7 @@ import {Accelerator} from './gpu.mjs';
 import {Jobs} from './jobs.mjs';
 import {searchNCBI, downloadNCBI} from './ncbi.mjs';
 const store = new Store(), ready = store.open(), cache = new MemberCache(store), accelerator = new Accelerator();
-const jobs = new Jobs(store, importAlignment), decoder = new TextDecoder(), profileCache = new Map();
+const jobs = new Jobs(store, importAlignment, () => self.postMessage({usage: 'alignment-completed'})), decoder = new TextDecoder(), profileCache = new Map();
 const progress = message => self.postMessage({progress: message});
 async function getAlignment(id) { const a = await store.get('alignments', id); if (!a) throw Error('Alignment not found.'); return a; }
 async function getBlock(aid, bid) { await getAlignment(aid); const b = await store.get('blocks', [aid, bid]); if (!b) throw Error('Block not found.'); return b; }
