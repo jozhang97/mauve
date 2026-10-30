@@ -1,0 +1,45 @@
+{
+  "node": "v22.23.3",
+  "measured_at": "2026-10-29T22:01:36.769Z",
+  "description": "Jobs.run, fake worker, in-memory store, 4096-character log messages; includes final Blob and excludes artifact hashing",
+  "cases": [
+    {
+      "bytes": 1048576,
+      "runs_ms": {
+        "baseline": [
+          22.779457999999998,
+          19.977666,
+          20.185999999999993
+        ],
+        "candidate": [
+          6.543541000000005,
+          6.364207999999991,
+          5.841000000000008
+        ]
+      },
+      "speedup": 3.1718007959513614,
+      "artifact_sha256": "61fa42af1c16f0f305fe75efb7ee24eeff72f1d1ac7f91a8e59255ab6749ae71"
+    },
+    {
+      "bytes": 8388608,
+      "runs_ms": {
+        "baseline": [
+          972.702125,
+          980.559833,
+          972.3632090000001
+        ],
+        "candidate": [
+          45.36000000000013,
+          45.07816700000012,
+          44.459334000000126
+        ]
+      },
+      "speedup": 21.57812062322759,
+      "artifact_sha256": "cf77cbf27a0b8bc6ad46d943b2a6818a5cdcf74ae68e1da2a24b239d0d6825cd"
+    }
+  ],
+  "source_sha256": {
+    "baseline": "643236ea1b5ce6508bcaa0c9131471674d4b503efb5c1f9762b3134d3cf196d8",
+    "candidate": "e7236aefcab3b3e7b96348589309b006b725c48c85fca710b9eee2b06b9d71ef"
+  }
+}

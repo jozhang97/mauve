@@ -1,0 +1,79 @@
+{
+  "runs": [
+    {
+      "repeat": 0,
+      "label": "baseline",
+      "render_ms": 254.10000002384186,
+      "selection_ms": 2.0366666674613954,
+      "buttons": 16000,
+      "handlers": 32000,
+      "retained_js_heap_bytes": 3278056
+    },
+    {
+      "repeat": 0,
+      "label": "candidate",
+      "render_ms": 249,
+      "selection_ms": 2.0299999992052715,
+      "buttons": 16000,
+      "handlers": 64,
+      "retained_js_heap_bytes": 1688852
+    },
+    {
+      "repeat": 1,
+      "label": "candidate",
+      "render_ms": 248.79999995231628,
+      "selection_ms": 2.033333333333333,
+      "buttons": 16000,
+      "handlers": 64,
+      "retained_js_heap_bytes": 1692684
+    },
+    {
+      "repeat": 1,
+      "label": "baseline",
+      "render_ms": 254.5,
+      "selection_ms": 2.033333333333333,
+      "buttons": 16000,
+      "handlers": 32000,
+      "retained_js_heap_bytes": 3288064
+    },
+    {
+      "repeat": 2,
+      "label": "baseline",
+      "render_ms": 260.1999999284744,
+      "selection_ms": 2.040000001589457,
+      "buttons": 16000,
+      "handlers": 32000,
+      "retained_js_heap_bytes": 3288064
+    },
+    {
+      "repeat": 2,
+      "label": "candidate",
+      "render_ms": 249.40000009536743,
+      "selection_ms": 2.0266666650772094,
+      "buttons": 16000,
+      "handlers": 64,
+      "retained_js_heap_bytes": 1692860
+    }
+  ],
+  "genomes": 32,
+  "columns": 500,
+  "source_sha256": {
+    "baseline": "e4350936acad8f8a17d7ea074f09e115c602325809154d28bfaffe4f8e3d9b4d",
+    "candidate": "c335f9d486af598c84c2f4dba834c2a71bf3df4eb9f4c574437d573637db5918"
+  },
+  "browser": "156.0.8078.48",
+  "medians_ms": {
+    "render_ms": {
+      "baseline": 254.5,
+      "candidate": 249
+    },
+    "selection_ms": {
+      "baseline": 2.0366666674613954,
+      "candidate": 2.0299999992052715
+    }
+  },
+  "median_retained_js_heap_bytes": {
+    "baseline": 3288064,
+    "candidate": 1692684
+  }
+}

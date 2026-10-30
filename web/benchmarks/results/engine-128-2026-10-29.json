@@ -1,0 +1,90 @@
+{
+  "platform": "macOS-27.0.1-arm64-arm-64bit",
+  "machine": "arm64",
+  "measured_at": "2026-10-29T18:59:11.528150+00:00",
+  "node": "v22.23.3",
+  "baseline": "previous release engine",
+  "candidate": "optimized release engine",
+  "wasm_sha256": {
+    "baseline": "29e18e8931ad68bede2050f8b6e659fd58a8d2256ca2de8a90503bcd392085d4",
+    "candidate": "4ef8f186b5191fbaa671d2b7cf2bec1b7e5384b412dba52da6023b2e99861316"
+  },
+  "cases": [
+    {
+      "kind": "similar",
+      "genomes": 128,
+      "bases": 100000,
+      "median_ms": {
+        "baseline": 2040411.289292,
+        "candidate": 809440.540042
+      },
+      "speedup": 2.520767355173646,
+      "artifacts_identical": true,
+      "runs": {
+        "baseline": [
+          {
+            "kind": "similar",
+            "genomes": 128,
+            "bases": 100000,
+            "seed": 12345,
+            "alignment_ms": 2040411.289292,
+            "peak_process_rss_kib": 757136,
+            "block_count": 1,
+            "artifacts": {
+              "alignment.xmfa": {
+                "bytes": 12970657,
+                "sha256": "8b05399f2db1fea134d381954c0d3f29cdcd33e29eab1605e24a58b6b53c9bbb"
+              },
+              "guide.tree": {
+                "bytes": 4176,
+                "sha256": "3e135196487f21c7d35ce5412e4ea2d0a0553b8e4ce25fe4a1e754a656d8514e"
+              },
+              "alignment.backbone": {
+                "bytes": 4900,
+                "sha256": "36bdd1e106376a5fcd28b3085da20ba24cdcac7cde39048e7f264bcab886d7c8"
+              }
+            }
+          }
+        ],
+        "candidate": [
+          {
+            "kind": "similar",
+            "genomes": 128,
+            "bases": 100000,
+            "seed": 12345,
+            "alignment_ms": 809440.540042,
+            "peak_process_rss_kib": 773440,
+            "block_count": 1,
+            "artifacts": {
+              "alignment.xmfa": {
+                "bytes": 12970657,
+                "sha256": "8b05399f2db1fea134d381954c0d3f29cdcd33e29eab1605e24a58b6b53c9bbb"
+              },
+              "guide.tree": {
+                "bytes": 4176,
+                "sha256": "3e135196487f21c7d35ce5412e4ea2d0a0553b8e4ce25fe4a1e754a656d8514e"
+              },
+              "alignment.backbone": {
+                "bytes": 4900,
+                "sha256": "36bdd1e106376a5fcd28b3085da20ba24cdcac7cde39048e7f264bcab886d7c8"
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "hardware": "Apple M4 Max",
+  "configuration": {
+    "lto": true,
+    "profile_rows": true,
+    "fast_translate": true,
+    "exceptions": "wasm",
+    "profiling": false
+  },
+  "notes": [
+    "Single run per engine; not repeated medians.",
+    "128 synthetic similar genomes of 100000 bases each, not complete biological genomes.",
+    "Peak RSS includes the entire Node process; the website input limit remains 64 genomes."
+  ]
+}

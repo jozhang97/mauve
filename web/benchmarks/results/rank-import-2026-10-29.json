@@ -1,0 +1,65 @@
+{
+  "genomes": 12,
+  "columns_per_genome": 1000000,
+  "line_width": 80,
+  "input_bytes": 12150332,
+  "node": "v22.23.3",
+  "output_sha256": "197c63fde992635f64d82f6c31a00d381e27962f95679c000a615b8c2e09853f",
+  "median_ms": {
+    "baseline": 78.57295800000003,
+    "candidate": 66.98537500000009
+  },
+  "speedup": 1.1729867601696629,
+  "runs": [
+    {
+      "label": "baseline",
+      "repeat": 0,
+      "ms": 80.99254200000001
+    },
+    {
+      "label": "candidate",
+      "repeat": 0,
+      "ms": 68.84745899999996
+    },
+    {
+      "label": "candidate",
+      "repeat": 1,
+      "ms": 64.23712499999999
+    },
+    {
+      "label": "baseline",
+      "repeat": 1,
+      "ms": 78.57295800000003
+    },
+    {
+      "label": "baseline",
+      "repeat": 2,
+      "ms": 78.49566600000003
+    },
+    {
+      "label": "candidate",
+      "repeat": 2,
+      "ms": 66.195833
+    },
+    {
+      "label": "candidate",
+      "repeat": 3,
+      "ms": 66.98537500000009
+    },
+    {
+      "label": "baseline",
+      "repeat": 3,
+      "ms": 76.89274999999998
+    },
+    {
+      "label": "baseline",
+      "repeat": 4,
+      "ms": 78.87366699999995
+    },
+    {
+      "label": "candidate",
+      "repeat": 4,
+      "ms": 67.023458
+    }
+  ]
+}

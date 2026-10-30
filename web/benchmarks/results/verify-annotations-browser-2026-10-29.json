@@ -1,0 +1,168 @@
+{
+  "runs": [
+    {
+      "label": "baseline",
+      "repeat": 0,
+      "kind": "forward",
+      "ms": 10.020000004768372,
+      "verified_bases": 1000000,
+      "alignment_columns": 1000000
+    },
+    {
+      "label": "baseline",
+      "repeat": 0,
+      "kind": "reverse",
+      "ms": 20.8,
+      "verified_bases": 1000000,
+      "alignment_columns": 1000000
+    },
+    {
+      "label": "baseline",
+      "repeat": 0,
+      "kind": "reverse-mixed-gaps",
+      "ms": 22.959999990463256,
+      "verified_bases": 266668,
+      "alignment_columns": 1032258
+    },
+    {
+      "label": "candidate",
+      "repeat": 0,
+      "kind": "forward",
+      "ms": 10.17999999523163,
+      "verified_bases": 1000000,
+      "alignment_columns": 1000000
+    },
+    {
+      "label": "candidate",
+      "repeat": 0,
+      "kind": "reverse",
+      "ms": 5.6,
+      "verified_bases": 1000000,
+      "alignment_columns": 1000000
+    },
+    {
+      "label": "candidate",
+      "repeat": 0,
+      "kind": "reverse-mixed-gaps",
+      "ms": 5.780000019073486,
+      "verified_bases": 266668,
+      "alignment_columns": 1032258
+    },
+    {
+      "label": "candidate",
+      "repeat": 1,
+      "kind": "forward",
+      "ms": 5.579999995231629,
+      "verified_bases": 1000000,
+      "alignment_columns": 1000000
+    },
+    {
+      "label": "candidate",
+      "repeat": 1,
+      "kind": "reverse",
+      "ms": 5.620000004768372,
+      "verified_bases": 1000000,
+      "alignment_columns": 1000000
+    },
+    {
+      "label": "candidate",
+      "repeat": 1,
+      "kind": "reverse-mixed-gaps",
+      "ms": 5.820000004768372,
+      "verified_bases": 266668,
+      "alignment_columns": 1032258
+    },
+    {
+      "label": "baseline",
+      "repeat": 1,
+      "kind": "forward",
+      "ms": 10.420000004768372,
+      "verified_bases": 1000000,
+      "alignment_columns": 1000000
+    },
+    {
+      "label": "baseline",
+      "repeat": 1,
+      "kind": "reverse",
+      "ms": 20.52000000476837,
+      "verified_bases": 1000000,
+      "alignment_columns": 1000000
+    },
+    {
+      "label": "baseline",
+      "repeat": 1,
+      "kind": "reverse-mixed-gaps",
+      "ms": 22.720000004768373,
+      "verified_bases": 266668,
+      "alignment_columns": 1032258
+    },
+    {
+      "label": "baseline",
+      "repeat": 2,
+      "kind": "forward",
+      "ms": 10.460000014305114,
+      "verified_bases": 1000000,
+      "alignment_columns": 1000000
+    },
+    {
+      "label": "baseline",
+      "repeat": 2,
+      "kind": "reverse",
+      "ms": 20.5,
+      "verified_bases": 1000000,
+      "alignment_columns": 1000000
+    },
+    {
+      "label": "baseline",
+      "repeat": 2,
+      "kind": "reverse-mixed-gaps",
+      "ms": 22.540000009536744,
+      "verified_bases": 266668,
+      "alignment_columns": 1032258
+    },
+    {
+      "label": "candidate",
+      "repeat": 2,
+      "kind": "forward",
+      "ms": 10.020000004768372,
+      "verified_bases": 1000000,
+      "alignment_columns": 1000000
+    },
+    {
+      "label": "candidate",
+      "repeat": 2,
+      "kind": "reverse",
+      "ms": 5.620000004768372,
+      "verified_bases": 1000000,
+      "alignment_columns": 1000000
+    },
+    {
+      "label": "candidate",
+      "repeat": 2,
+      "kind": "reverse-mixed-gaps",
+      "ms": 5.779999995231629,
+      "verified_bases": 266668,
+      "alignment_columns": 1032258
+    }
+  ],
+  "genome_bases": 1000000,
+  "source_sha256": {
+    "baseline": "bb68cd36c9fe39b3a9c38df7d9f400ccea775fe57244f592b164242bc2789a81",
+    "candidate": "42fbaedcd2ad437e82e0084b6d69c88064388240d4e52574ff7732174d35ac86"
+  },
+  "browser": "156.0.8078.48",
+  "medians_ms": {
+    "forward": {
+      "baseline": 10.420000004768372,
+      "candidate": 10.020000004768372
+    },
+    "reverse": {
+      "baseline": 20.52000000476837,
+      "candidate": 5.620000004768372
+    },
+    "reverse-mixed-gaps": {
+      "baseline": 22.720000004768373,
+      "candidate": 5.780000019073486
+    }
+  }
+}

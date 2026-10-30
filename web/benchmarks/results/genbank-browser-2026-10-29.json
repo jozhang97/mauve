@@ -1,0 +1,136 @@
+{
+  "runs": [
+    {
+      "label": "baseline",
+      "repeat": 0,
+      "width": 60,
+      "ms": 62.299999952316284,
+      "input_bytes": 7143425,
+      "sequence_sha256": "8c063c52ce95e53da649e27eef4e81094926b39da85cd5a96f6cb088c5535462",
+      "metadata_sha256": "a16d572f3b49493a67a325d16c8738da1a6a59b50070bd4706630530cc9bb3f1"
+    },
+    {
+      "label": "baseline",
+      "repeat": 0,
+      "width": 0,
+      "ms": 40,
+      "input_bytes": 6226762,
+      "sequence_sha256": "8c063c52ce95e53da649e27eef4e81094926b39da85cd5a96f6cb088c5535462",
+      "metadata_sha256": "a16d572f3b49493a67a325d16c8738da1a6a59b50070bd4706630530cc9bb3f1"
+    },
+    {
+      "label": "candidate",
+      "repeat": 0,
+      "width": 60,
+      "ms": 46.39999997615814,
+      "input_bytes": 7143425,
+      "sequence_sha256": "8c063c52ce95e53da649e27eef4e81094926b39da85cd5a96f6cb088c5535462",
+      "metadata_sha256": "a16d572f3b49493a67a325d16c8738da1a6a59b50070bd4706630530cc9bb3f1"
+    },
+    {
+      "label": "candidate",
+      "repeat": 0,
+      "width": 0,
+      "ms": 34.60000002384186,
+      "input_bytes": 6226762,
+      "sequence_sha256": "8c063c52ce95e53da649e27eef4e81094926b39da85cd5a96f6cb088c5535462",
+      "metadata_sha256": "a16d572f3b49493a67a325d16c8738da1a6a59b50070bd4706630530cc9bb3f1"
+    },
+    {
+      "label": "candidate",
+      "repeat": 1,
+      "width": 60,
+      "ms": 51.300000071525574,
+      "input_bytes": 7143425,
+      "sequence_sha256": "8c063c52ce95e53da649e27eef4e81094926b39da85cd5a96f6cb088c5535462",
+      "metadata_sha256": "a16d572f3b49493a67a325d16c8738da1a6a59b50070bd4706630530cc9bb3f1"
+    },
+    {
+      "label": "candidate",
+      "repeat": 1,
+      "width": 0,
+      "ms": 46.60000002384186,
+      "input_bytes": 6226762,
+      "sequence_sha256": "8c063c52ce95e53da649e27eef4e81094926b39da85cd5a96f6cb088c5535462",
+      "metadata_sha256": "a16d572f3b49493a67a325d16c8738da1a6a59b50070bd4706630530cc9bb3f1"
+    },
+    {
+      "label": "baseline",
+      "repeat": 1,
+      "width": 60,
+      "ms": 65.09999990463257,
+      "input_bytes": 7143425,
+      "sequence_sha256": "8c063c52ce95e53da649e27eef4e81094926b39da85cd5a96f6cb088c5535462",
+      "metadata_sha256": "a16d572f3b49493a67a325d16c8738da1a6a59b50070bd4706630530cc9bb3f1"
+    },
+    {
+      "label": "baseline",
+      "repeat": 1,
+      "width": 0,
+      "ms": 37.200000047683716,
+      "input_bytes": 6226762,
+      "sequence_sha256": "8c063c52ce95e53da649e27eef4e81094926b39da85cd5a96f6cb088c5535462",
+      "metadata_sha256": "a16d572f3b49493a67a325d16c8738da1a6a59b50070bd4706630530cc9bb3f1"
+    },
+    {
+      "label": "baseline",
+      "repeat": 2,
+      "width": 60,
+      "ms": 63.5,
+      "input_bytes": 7143425,
+      "sequence_sha256": "8c063c52ce95e53da649e27eef4e81094926b39da85cd5a96f6cb088c5535462",
+      "metadata_sha256": "a16d572f3b49493a67a325d16c8738da1a6a59b50070bd4706630530cc9bb3f1"
+    },
+    {
+      "label": "baseline",
+      "repeat": 2,
+      "width": 0,
+      "ms": 38.89999997615814,
+      "input_bytes": 6226762,
+      "sequence_sha256": "8c063c52ce95e53da649e27eef4e81094926b39da85cd5a96f6cb088c5535462",
+      "metadata_sha256": "a16d572f3b49493a67a325d16c8738da1a6a59b50070bd4706630530cc9bb3f1"
+    },
+    {
+      "label": "candidate",
+      "repeat": 2,
+      "width": 60,
+      "ms": 47.199999928474426,
+      "input_bytes": 7143425,
+      "sequence_sha256": "8c063c52ce95e53da649e27eef4e81094926b39da85cd5a96f6cb088c5535462",
+      "metadata_sha256": "a16d572f3b49493a67a325d16c8738da1a6a59b50070bd4706630530cc9bb3f1"
+    },
+    {
+      "label": "candidate",
+      "repeat": 2,
+      "width": 0,
+      "ms": 37.700000047683716,
+      "input_bytes": 6226762,
+      "sequence_sha256": "8c063c52ce95e53da649e27eef4e81094926b39da85cd5a96f6cb088c5535462",
+      "metadata_sha256": "a16d572f3b49493a67a325d16c8738da1a6a59b50070bd4706630530cc9bb3f1"
+    }
+  ],
+  "bases": 5000000,
+  "features": 10000,
+  "source_sha256": {
+    "baseline": {
+      "core.mjs": "fc3fab75b30c1ad8e11aaae4d8be8a282f64eb10b213fd894bad7e4ceb27266c",
+      "genbank.mjs": "5905ef43bfa9775d9a9399f8562c2302c1e8caabcb731d1f163ac58758fbd041"
+    },
+    "candidate": {
+      "core.mjs": "e64371988940043eaafa65b95cf7f268ba67d3ffa824a4c3204bacd61865b208",
+      "genbank.mjs": "bb68cd36c9fe39b3a9c38df7d9f400ccea775fe57244f592b164242bc2789a81"
+    }
+  },
+  "browser": "156.0.8078.48",
+  "medians_ms": {
+    "60": {
+      "baseline": 63.5,
+      "candidate": 47.199999928474426
+    },
+    "0": {
+      "baseline": 38.89999997615814,
+      "candidate": 37.700000047683716
+    }
+  },
+  "outputs_identical": true
+}

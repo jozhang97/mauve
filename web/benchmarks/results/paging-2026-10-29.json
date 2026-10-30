@@ -1,0 +1,157 @@
+{
+  "genomes": 128,
+  "columns": 750000,
+  "runs": [
+    {
+      "label": "baseline",
+      "repeat": 0,
+      "cold_ms": 35.90000009536743,
+      "warm_ms": [
+        34.5,
+        32.10000002384186,
+        32.60000002384186
+      ]
+    },
+    {
+      "label": "candidate",
+      "repeat": 0,
+      "cold_ms": 35.699999928474426,
+      "warm_ms": [
+        11.799999952316284,
+        9.800000071525574,
+        10
+      ]
+    },
+    {
+      "label": "candidate",
+      "repeat": 1,
+      "cold_ms": 36.10000002384186,
+      "warm_ms": [
+        12.400000095367432,
+        10.300000071525574,
+        10.600000023841858
+      ]
+    },
+    {
+      "label": "baseline",
+      "repeat": 1,
+      "cold_ms": 35.89999997615814,
+      "warm_ms": [
+        34.09999990463257,
+        32.800000071525574,
+        32.5
+      ]
+    },
+    {
+      "label": "baseline",
+      "repeat": 2,
+      "cold_ms": 35.199999928474426,
+      "warm_ms": [
+        36,
+        32.299999952316284,
+        33.10000002384186
+      ]
+    },
+    {
+      "label": "candidate",
+      "repeat": 2,
+      "cold_ms": 35.89999997615814,
+      "warm_ms": [
+        12.899999976158142,
+        10,
+        10.299999952316284
+      ]
+    }
+  ],
+  "browser": "156.0.8078.48",
+  "median_warm_ms": {
+    "baseline": 32.800000071525574,
+    "candidate": 10.300000071525574
+  },
+  "measured_at": "2026-10-29T21:02:39.912367+00:00",
+  "hardware": "Apple M4 Max",
+  "cache_limit_bytes": 67108864,
+  "speedup": 3.18446600424804,
+  "source_sha256": {
+    "baseline_store": "3a0224c8224744c05e94d2307672b166f097b2dedab09c06af820156890208e5",
+    "baseline_worker": "d5cd7f8530434c8e589aaa2fd8bce1b00027c9b1f064ce050025d7309c5516c8",
+    "candidate_store": "e5347b7e98b32c4bcb9203612898bf68873a17ffde00f9f24d0d534764bb3bf5",
+    "candidate_worker": "683f3f6a7e7a859bc32d06d3c836ec283c7bf1fab8bbf6aae7040f998ccad8da"
+  },
+  "notes": [
+    "Three fresh browser contexts per version, alternating order; each measures one cold and three warm pages.",
+    "All page bases and positions checked, with both strands.",
+    "Cache byte limit unchanged; process memory not measured."
+  ],
+  "fits_cache_check": {
+    "genomes": 32,
+    "columns": 5000,
+    "runs": [
+      {
+        "label": "baseline",
+        "repeat": 0,
+        "cold_ms": 2.799999952316284,
+        "warm_ms": [
+          0.3999999761581421,
+          0.40000009536743164,
+          0.2999999523162842
+        ]
+      },
+      {
+        "label": "candidate",
+        "repeat": 0,
+        "cold_ms": 2.799999952316284,
+        "warm_ms": [
+          0.3999999761581421,
+          0.2999999523162842,
+          0.30000007152557373
+        ]
+      },
+      {
+        "label": "candidate",
+        "repeat": 1,
+        "cold_ms": 2.9000000953674316,
+        "warm_ms": [
+          0.3999999761581421,
+          0.40000009536743164,
+          0.5
+        ]
+      },
+      {
+        "label": "baseline",
+        "repeat": 1,
+        "cold_ms": 2.700000047683716,
+        "warm_ms": [
+          0.2999999523162842,
+          0.2999999523162842,
+          0.3999999761581421
+        ]
+      },
+      {
+        "label": "baseline",
+        "repeat": 2,
+        "cold_ms": 2.6999999284744263,
+        "warm_ms": [
+          0.5,
+          0.3999999761581421,
+          0.30000007152557373
+        ]
+      },
+      {
+        "label": "candidate",
+        "repeat": 2,
+        "cold_ms": 3.1999999284744263,
+        "warm_ms": [
+          0.6000000238418579,
+          0.3999999761581421,
+          0.2999999523162842
+        ]
+      }
+    ],
+    "browser": "156.0.8078.48",
+    "median_warm_ms": {
+      "baseline": 0.3999999761581421,
+      "candidate": 0.3999999761581421
+    }
+  }
+}

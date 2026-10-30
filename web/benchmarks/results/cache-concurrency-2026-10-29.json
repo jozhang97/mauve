@@ -1,0 +1,82 @@
+{
+  "genomes": 128,
+  "columns": 750000,
+  "concurrent_pages": 4,
+  "runs": [
+    {
+      "label": "baseline",
+      "repeat": 0,
+      "cold_ms": 53.5,
+      "warm_ms": [
+        3.3000000715255737,
+        2.799999952316284,
+        2.799999952316284
+      ]
+    },
+    {
+      "label": "candidate",
+      "repeat": 0,
+      "cold_ms": 54.799999952316284,
+      "warm_ms": [
+        3.100000023841858,
+        2.9000000953674316,
+        2.600000023841858
+      ]
+    },
+    {
+      "label": "candidate",
+      "repeat": 1,
+      "cold_ms": 54.299999952316284,
+      "warm_ms": [
+        3.100000023841858,
+        2.899999976158142,
+        2.8000000715255737
+      ]
+    },
+    {
+      "label": "baseline",
+      "repeat": 1,
+      "cold_ms": 53.200000047683716,
+      "warm_ms": [
+        3,
+        2.6999999284744263,
+        2.6999999284744263
+      ]
+    },
+    {
+      "label": "baseline",
+      "repeat": 2,
+      "cold_ms": 53.39999997615814,
+      "warm_ms": [
+        3.100000023841858,
+        2.6999999284744263,
+        2.700000047683716
+      ]
+    },
+    {
+      "label": "candidate",
+      "repeat": 2,
+      "cold_ms": 54.300000071525574,
+      "warm_ms": [
+        3.0999999046325684,
+        2.899999976158142,
+        4
+      ]
+    }
+  ],
+  "source_sha256": {
+    "baseline_store": "d067b52f3acd3fada8d2094977f36800af538f194086b26811dc9f6d598dcf52",
+    "baseline_worker": "fdf71d17d21d8891d05050da6858d7b14f3900e9253dbe2f9e4bc3bff3da701c",
+    "candidate_store": "02e5b7c3f5d3c0d22361b66bf236580fd3192a2b72e0adba071d952ef39a9667",
+    "candidate_worker": "fdf71d17d21d8891d05050da6858d7b14f3900e9253dbe2f9e4bc3bff3da701c"
+  },
+  "timing": "One cold and three warm bursts per context; each burst waits for all concurrent pages.",
+  "browser": "156.0.8078.76",
+  "median_warm_ms": {
+    "baseline": 2.799999952316284,
+    "candidate": 2.9000000953674316
+  },
+  "notes": [
+    "Current API worker serializes requests; concurrent caller bursts do not create overlapping member loads. No measured speedup. Direct cache unit tests exercise shared loads and window accounting."
+  ]
+}

@@ -24,6 +24,18 @@ function setup(failLog = false) {
   return {jobs, job, saved};
 }
 
+test('native exception builds report an actionable error in unsupported runtimes', async t => {
+  const original = globalThis.WebAssembly;
+  t.after(() => { globalThis.WebAssembly = original; });
+  const {jobs} = setup();
+  jobs.engineInfo = Promise.resolve({configuration: {exceptions: 'wasm'}});
+  assert.equal((await jobs.engine()).available, true);
+  globalThis.WebAssembly = {};
+  const info = await jobs.engine();
+  assert.equal(info.available, false);
+  assert.match(info.reason, /Update your browser/);
+});
+
 test('worker startup failure persists a terminal job and releases resources', async t => {
   mockWorker(t, function () { throw Error('Worker startup failed'); });
   const {jobs, job, saved} = setup();
@@ -47,17 +59,46 @@ test('failed log write stops the worker and cannot overwrite the terminal status
 });
 
 test('completion notification occurs once, after the successful result is persisted', async t => {
+  let terminated = false;
   mockWorker(t, class {
     postMessage() { queueMicrotask(() => this.onmessage({data: {type: 'done', files: {xmfa: new Blob(['alignment'])}}})); }
-    terminate() {}
+    terminate() { terminated = true; }
   });
   const {jobs, job, saved} = setup();
   let completed = 0;
-  jobs.importer = async () => ({id: 'saved-result'});
+  jobs.importer = async blob => {
+    assert.ok(terminated, 'release engine memory before importing results');
+    assert.equal(jobs.running.get(job.id).worker, null);
+    assert.equal(await blob.text(), 'alignment');
+    return {id: 'saved-result'};
+  };
   jobs.onComplete = () => { assert.equal(saved.get('jobs/test').status, 'succeeded'); completed++; };
   await jobs.run(job, []);
   await jobs.get(job.id);
   await jobs.get(job.id);
   assert.equal(completed, 1);
   assert.equal(saved.get('jobs/test').alignment_id, 'saved-result');
+});
+
+for (const exceed of [false, true]) test(`chunked logs preserve full artifact and bounded tail (${exceed ? 'limit' : 'success'})`, async t => {
+  const chunks = exceed ? ['x'.repeat(25 * 1024 * 1024), 'overflow'] :
+    ['start\n', ...Array.from({length: 48}, (_, i) => `${i}:` + 'ACGT'.repeat(1024) + '\n'), '\ud83e', '\uddec\n'];
+  mockWorker(t, class {
+    postMessage() {
+      queueMicrotask(() => {
+        for (const text of chunks) this.onmessage({data: {type: 'log', text}});
+        this.onmessage({data: {type: 'done', files: {xmfa: new Blob(['alignment'])}}});
+      });
+    }
+    terminate() {}
+  });
+  const {jobs, job, saved} = setup();
+  jobs.importer = async () => ({id: 'result'});
+  await jobs.run(job, []);
+  const full = chunks.join('');
+  assert.equal(await saved.get('artifacts/test,log').text(), full);
+  assert.equal(job.log, (exceed ? chunks[0] : full).slice(-32768));
+  assert.equal(job.log_truncated, true);
+  assert.equal(job.status, exceed ? 'failed' : 'succeeded');
+  if (exceed) assert.match(job.error, /25 MiB log limit/);
 });

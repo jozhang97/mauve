@@ -1,0 +1,181 @@
+{
+  "operation": "profile",
+  "genomes": 128,
+  "columns": 750000,
+  "runs": [
+    {
+      "label": "baseline",
+      "repeat": 0,
+      "measurements": [
+        {
+          "step": 0,
+          "ms": 254.5,
+          "sha256": "17626d46cc1befb2866bc14dcbcae016e83ae3e3254a4f344bfcca520b106801"
+        },
+        {
+          "step": 1,
+          "ms": 241.20000004768372,
+          "sha256": "b6f73d0c6cc80d44a9d1aba282bf00695d285414e4f176feafe98ea698e8de0e"
+        },
+        {
+          "step": 2,
+          "ms": 233.10000002384186,
+          "sha256": "db87f003612cb3053aaceea96c6d070b9f4041028282a4fd0d7d2d72378c7012"
+        },
+        {
+          "step": 3,
+          "ms": 234.70000004768372,
+          "sha256": "8c9af1724ebc9ce2fb048630246d90ce05ca59d2a4f9a48f96cc71a54eae57be"
+        }
+      ]
+    },
+    {
+      "label": "candidate",
+      "repeat": 0,
+      "measurements": [
+        {
+          "step": 0,
+          "ms": 239.79999995231628,
+          "sha256": "17626d46cc1befb2866bc14dcbcae016e83ae3e3254a4f344bfcca520b106801"
+        },
+        {
+          "step": 1,
+          "ms": 201.29999995231628,
+          "sha256": "b6f73d0c6cc80d44a9d1aba282bf00695d285414e4f176feafe98ea698e8de0e"
+        },
+        {
+          "step": 2,
+          "ms": 198.79999995231628,
+          "sha256": "db87f003612cb3053aaceea96c6d070b9f4041028282a4fd0d7d2d72378c7012"
+        },
+        {
+          "step": 3,
+          "ms": 212.09999990463257,
+          "sha256": "8c9af1724ebc9ce2fb048630246d90ce05ca59d2a4f9a48f96cc71a54eae57be"
+        }
+      ]
+    },
+    {
+      "label": "candidate",
+      "repeat": 1,
+      "measurements": [
+        {
+          "step": 0,
+          "ms": 240.89999997615814,
+          "sha256": "17626d46cc1befb2866bc14dcbcae016e83ae3e3254a4f344bfcca520b106801"
+        },
+        {
+          "step": 1,
+          "ms": 205,
+          "sha256": "b6f73d0c6cc80d44a9d1aba282bf00695d285414e4f176feafe98ea698e8de0e"
+        },
+        {
+          "step": 2,
+          "ms": 190.59999990463257,
+          "sha256": "db87f003612cb3053aaceea96c6d070b9f4041028282a4fd0d7d2d72378c7012"
+        },
+        {
+          "step": 3,
+          "ms": 197.19999992847443,
+          "sha256": "8c9af1724ebc9ce2fb048630246d90ce05ca59d2a4f9a48f96cc71a54eae57be"
+        }
+      ]
+    },
+    {
+      "label": "baseline",
+      "repeat": 1,
+      "measurements": [
+        {
+          "step": 0,
+          "ms": 248.60000002384186,
+          "sha256": "17626d46cc1befb2866bc14dcbcae016e83ae3e3254a4f344bfcca520b106801"
+        },
+        {
+          "step": 1,
+          "ms": 233.59999990463257,
+          "sha256": "b6f73d0c6cc80d44a9d1aba282bf00695d285414e4f176feafe98ea698e8de0e"
+        },
+        {
+          "step": 2,
+          "ms": 230.5,
+          "sha256": "db87f003612cb3053aaceea96c6d070b9f4041028282a4fd0d7d2d72378c7012"
+        },
+        {
+          "step": 3,
+          "ms": 232.79999995231628,
+          "sha256": "8c9af1724ebc9ce2fb048630246d90ce05ca59d2a4f9a48f96cc71a54eae57be"
+        }
+      ]
+    },
+    {
+      "label": "baseline",
+      "repeat": 2,
+      "measurements": [
+        {
+          "step": 0,
+          "ms": 239,
+          "sha256": "17626d46cc1befb2866bc14dcbcae016e83ae3e3254a4f344bfcca520b106801"
+        },
+        {
+          "step": 1,
+          "ms": 234.5,
+          "sha256": "b6f73d0c6cc80d44a9d1aba282bf00695d285414e4f176feafe98ea698e8de0e"
+        },
+        {
+          "step": 2,
+          "ms": 228.39999997615814,
+          "sha256": "db87f003612cb3053aaceea96c6d070b9f4041028282a4fd0d7d2d72378c7012"
+        },
+        {
+          "step": 3,
+          "ms": 232.60000002384186,
+          "sha256": "8c9af1724ebc9ce2fb048630246d90ce05ca59d2a4f9a48f96cc71a54eae57be"
+        }
+      ]
+    },
+    {
+      "label": "candidate",
+      "repeat": 2,
+      "measurements": [
+        {
+          "step": 0,
+          "ms": 244,
+          "sha256": "17626d46cc1befb2866bc14dcbcae016e83ae3e3254a4f344bfcca520b106801"
+        },
+        {
+          "step": 1,
+          "ms": 205.10000002384186,
+          "sha256": "b6f73d0c6cc80d44a9d1aba282bf00695d285414e4f176feafe98ea698e8de0e"
+        },
+        {
+          "step": 2,
+          "ms": 214.89999997615814,
+          "sha256": "db87f003612cb3053aaceea96c6d070b9f4041028282a4fd0d7d2d72378c7012"
+        },
+        {
+          "step": 3,
+          "ms": 200.70000004768372,
+          "sha256": "8c9af1724ebc9ce2fb048630246d90ce05ca59d2a4f9a48f96cc71a54eae57be"
+        }
+      ]
+    }
+  ],
+  "source_sha256": {
+    "store": "02e5b7c3f5d3c0d22361b66bf236580fd3192a2b72e0adba071d952ef39a9667",
+    "baseline": "fdf71d17d21d8891d05050da6858d7b14f3900e9253dbe2f9e4bc3bff3da701c",
+    "candidate": "4ef94d4640b8de1092c47b0d27fafd5d8ff766496e2013ee031b36ec4af44290"
+  },
+  "browser": "156.0.8078.76",
+  "median_cold_ms": {
+    "baseline": 248.60000002384186,
+    "candidate": 240.89999997615814
+  },
+  "median_warm_ms": {
+    "baseline": 233.10000002384186,
+    "candidate": 201.29999995231628
+  },
+  "outputs_identical": true,
+  "notes": [
+    "Experimental worker only; NOT installed in production. Profile scan reuse reduced warm median from 233.1 to 201.3 ms with exact output hashes. Difference and FASTA branches remain unvalidated; do not promote this entire prototype yet."
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "runs": [
+    {
+      "repeat": 0,
+      "label": "baseline",
+      "render_ms": 262.6999999284744,
+      "selection_ms": 7.813333332538605,
+      "buttons": 16000
+    },
+    {
+      "repeat": 0,
+      "label": "candidate",
+      "render_ms": 254.70000004768372,
+      "selection_ms": 2.0399999976158143,
+      "buttons": 16000
+    },
+    {
+      "repeat": 1,
+      "label": "candidate",
+      "render_ms": 252.60000002384186,
+      "selection_ms": 2.0266666690508526,
+      "buttons": 16000
+    },
+    {
+      "repeat": 1,
+      "label": "baseline",
+      "render_ms": 263.2000000476837,
+      "selection_ms": 7.7799999992052715,
+      "buttons": 16000
+    },
+    {
+      "repeat": 2,
+      "label": "baseline",
+      "render_ms": 262.1999999284744,
+      "selection_ms": 7.690000001589457,
+      "buttons": 16000
+    },
+    {
+      "repeat": 2,
+      "label": "candidate",
+      "render_ms": 256.09999990463257,
+      "selection_ms": 2.0166666666666666,
+      "buttons": 16000
+    }
+  ],
+  "genomes": 32,
+  "columns": 500,
+  "source_sha256": {
+    "baseline": "3dfddfb7286b363af5004a49e3e36894b94834bd6b6ed47df776c5360537de88",
+    "candidate": "e4350936acad8f8a17d7ea074f09e115c602325809154d28bfaffe4f8e3d9b4d"
+  },
+  "browser": "156.0.8078.48",
+  "medians_ms": {
+    "render_ms": {
+      "baseline": 262.6999999284744,
+      "candidate": 254.70000004768372
+    },
+    "selection_ms": {
+      "baseline": 7.7799999992052715,
+      "candidate": 2.0266666690508526
+    }
+  }
+}

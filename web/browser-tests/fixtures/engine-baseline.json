@@ -1,0 +1,105 @@
+{
+  "baseline_wasm_sha256": "29e18e8931ad68bede2050f8b6e659fd58a8d2256ca2de8a90503bcd392085d4",
+  "cases": [
+    {
+      "kind": "similar",
+      "genomes": 3,
+      "bases": 5000,
+      "seed": 12345,
+      "artifacts": {
+        "alignment.xmfa": {
+          "bytes": 15475,
+          "sha256": "82d8a11dea2bef683cb88ceafd34c1a7d7ab023b36c11482ebddbe61ed7092e3"
+        },
+        "guide.tree": {
+          "bytes": 48,
+          "sha256": "0a13af162b6c7bd75d5054b95818fafbf1dbe269044a272bb8f42b7282391757"
+        },
+        "alignment.backbone": {
+          "bytes": 102,
+          "sha256": "6c7cbee2eff280e0e93bebab008b3bfbfcee3454bcca4012f54e665ec7473cda"
+        }
+      }
+    },
+    {
+      "kind": "divergent",
+      "genomes": 3,
+      "bases": 5000,
+      "seed": 12345,
+      "artifacts": {
+        "alignment.xmfa": {
+          "bytes": 15475,
+          "sha256": "a216da4018851ebc94265c3170d2707f456f375379a5d662430a21e3e4900148"
+        },
+        "guide.tree": {
+          "bytes": 55,
+          "sha256": "2bf628d1e19c4fe0cfce900506815ac9516d99e29f4f9c8bf3bbcb4b8ec1e048"
+        },
+        "alignment.backbone": {
+          "bytes": 102,
+          "sha256": "6c7cbee2eff280e0e93bebab008b3bfbfcee3454bcca4012f54e665ec7473cda"
+        }
+      }
+    },
+    {
+      "kind": "rearranged",
+      "genomes": 3,
+      "bases": 5000,
+      "seed": 12345,
+      "artifacts": {
+        "alignment.xmfa": {
+          "bytes": 15665,
+          "sha256": "061522a9e65c76d0c9569a8513ad62cef2dbc62b481e6713799ab13eb028f7ac"
+        },
+        "guide.tree": {
+          "bytes": 64,
+          "sha256": "68e5c1950e8270e02a30e883005481b76faeceaaf78cb0a417e55d90c18d13c6"
+        },
+        "alignment.backbone": {
+          "bytes": 164,
+          "sha256": "28a1564e5b80bf0fef761bd363e17c404d30fa5382554b06b71b847ba9c5195c"
+        }
+      }
+    },
+    {
+      "kind": "repeats",
+      "genomes": 3,
+      "bases": 5000,
+      "seed": 12345,
+      "artifacts": {
+        "alignment.xmfa": {
+          "bytes": 15475,
+          "sha256": "653d50c1722b28d275bef7a96167a626b1f29ef1a79622817f2dfb40db4ec19d"
+        },
+        "guide.tree": {
+          "bytes": 53,
+          "sha256": "75f8c8c658d127656cfe3207edd3e889a86e157f3b3b0126ddedee56c359baf1"
+        },
+        "alignment.backbone": {
+          "bytes": 102,
+          "sha256": "6c7cbee2eff280e0e93bebab008b3bfbfcee3454bcca4012f54e665ec7473cda"
+        }
+      }
+    },
+    {
+      "kind": "ambiguous",
+      "genomes": 3,
+      "bases": 5000,
+      "seed": 12345,
+      "artifacts": {
+        "alignment.xmfa": {
+          "bytes": 15475,
+          "sha256": "f4ccf2eda228631b48ffcbe237e071c889a1c96799d4a2d9421871182bdbd6af"
+        },
+        "guide.tree": {
+          "bytes": 46,
+          "sha256": "eaf712acff043bfea85dfd93539d4440dd1854484f25dc46c5f0f3fb5557938f"
+        },
+        "alignment.backbone": {
+          "bytes": 102,
+          "sha256": "6c7cbee2eff280e0e93bebab008b3bfbfcee3454bcca4012f54e665ec7473cda"
+        }
+      }
+    }
+  ]
+}

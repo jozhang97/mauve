@@ -1,0 +1,96 @@
+{
+  "genomes": 32,
+  "blocks": 1000,
+  "runs": [
+    {
+      "engine": "baseline",
+      "repeat": 0,
+      "full": {
+        "ms": 773.2999999523163,
+        "paths": 31000,
+        "nodes": 105296,
+        "handlers": 3,
+        "svg_sha256": "2ba929a043f6dc74e68f30da2470cabfaef96209e3305aa23b351b8daae4d7c0",
+        "retained_js_heap_bytes": 3865016
+      }
+    },
+    {
+      "engine": "candidate",
+      "repeat": 0,
+      "full": {
+        "ms": 786.3999999761581,
+        "paths": 31000,
+        "nodes": 105296,
+        "handlers": 3,
+        "svg_sha256": "2ba929a043f6dc74e68f30da2470cabfaef96209e3305aa23b351b8daae4d7c0",
+        "retained_js_heap_bytes": 3865512
+      }
+    },
+    {
+      "engine": "candidate",
+      "repeat": 1,
+      "full": {
+        "ms": 776.5,
+        "paths": 31000,
+        "nodes": 105296,
+        "handlers": 3,
+        "svg_sha256": "2ba929a043f6dc74e68f30da2470cabfaef96209e3305aa23b351b8daae4d7c0",
+        "retained_js_heap_bytes": 3865576
+      }
+    },
+    {
+      "engine": "baseline",
+      "repeat": 1,
+      "full": {
+        "ms": 778.6000000238419,
+        "paths": 31000,
+        "nodes": 105296,
+        "handlers": 3,
+        "svg_sha256": "2ba929a043f6dc74e68f30da2470cabfaef96209e3305aa23b351b8daae4d7c0",
+        "retained_js_heap_bytes": 3865052
+      }
+    },
+    {
+      "engine": "baseline",
+      "repeat": 2,
+      "full": {
+        "ms": 778.3999999761581,
+        "paths": 31000,
+        "nodes": 105296,
+        "handlers": 3,
+        "svg_sha256": "2ba929a043f6dc74e68f30da2470cabfaef96209e3305aa23b351b8daae4d7c0",
+        "retained_js_heap_bytes": 3865132
+      }
+    },
+    {
+      "engine": "candidate",
+      "repeat": 2,
+      "full": {
+        "ms": 774.8999999761581,
+        "paths": 31000,
+        "nodes": 105296,
+        "handlers": 3,
+        "svg_sha256": "2ba929a043f6dc74e68f30da2470cabfaef96209e3305aa23b351b8daae4d7c0",
+        "retained_js_heap_bytes": 3864040
+      }
+    }
+  ],
+  "source_sha256": {
+    "baseline": "043f76f868907ea61174a31c368f079c457cfed5f13afeee7b4ff1d92e36801b",
+    "candidate": "37193c90ca6b0740e4dff37cd7795ede9dfae7833e0f66dff93604a4efa6f2c1"
+  },
+  "browser": "156.0.8078.48",
+  "medians_ms": {
+    "full": {
+      "baseline": 778.3999999761581,
+      "candidate": 776.5
+    }
+  },
+  "median_retained_js_heap_bytes": {
+    "full": {
+      "baseline": 3865052,
+      "candidate": 3865512
+    }
+  },
+  "svg_identical": true
+}

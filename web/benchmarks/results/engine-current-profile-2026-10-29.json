@@ -1,0 +1,160 @@
+{
+  "workload": "similar 12 x 100000",
+  "profiling_only": true,
+  "samples": 3863,
+  "exclusive": [
+    {
+      "function": "muscle::GlobalAlign(muscle::ProfPos const*, unsigned int, muscle::ProfPos const*, unsigned int, muscle::PWPath&)",
+      "samples": 1396,
+      "percent": 36.13771680041419
+    },
+    {
+      "function": "mems::ProgressiveAligner::align(std::__2::vector<genome::gnSequence*, std::__2::allocator<genome::gnSequence*>>&, mems::GenericIntervalList<mems::GenericInterval<mems::AbstractGappedAlignment<mems::SparseAbstractMatch<std::__2::allocator<unsigned long long>, std::__2::allocator<unsigned int>>>>>&)",
+      "samples": 295,
+      "percent": 7.636551902666321
+    },
+    {
+      "function": "muscle::ProfileFromMSA(muscle::MSA const&)",
+      "samples": 253,
+      "percent": 6.549314004659591
+    },
+    {
+      "function": "mems::HomologyHmmDetector::operator()(std::__2::vector<mems::CompactGappedAlignment<mems::AbstractGappedAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>>*, std::__2::allocator<mems::CompactGappedAlignment<mems::AbstractGappedAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>>*>> const&, std::__2::vector<genome::gnSequence*, std::__2::allocator<genome::gnSequence*>>&, boost::multi_array<std::__2::vector<mems::HssCols, std::__2::allocator<mems::HssCols>>, 3ul, std::__2::allocator<std::__2::vector<mems::HssCols, std::__2::allocator<mems::HssCols>>>>&) const",
+      "samples": 137,
+      "percent": 3.546466476831478
+    },
+    {
+      "function": "mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>::LeftEnd(unsigned int) const",
+      "samples": 102,
+      "percent": 2.6404348951592027
+    },
+    {
+      "function": "BFloatMethods::pmuldouble(BFloat, double)",
+      "samples": 100,
+      "percent": 2.588661661920787
+    },
+    {
+      "function": "muscle::MSA::SetChar(unsigned int, unsigned int, char)",
+      "samples": 98,
+      "percent": 2.536888428682371
+    },
+    {
+      "function": "mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>::Start(unsigned int) const",
+      "samples": 93,
+      "percent": 2.4074553455863317
+    },
+    {
+      "function": "mems::GappedAlignment::GetAlignment(std::__2::vector<boost::dynamic_bitset<unsigned long, std::__2::allocator<unsigned long>>, std::__2::allocator<boost::dynamic_bitset<unsigned long, std::__2::allocator<unsigned long>>>>&) const",
+      "samples": 85,
+      "percent": 2.200362412632669
+    },
+    {
+      "function": "void std::__2::__introsort<std::__2::_ClassicAlgPolicy, bool (*&)(mems::bmer const&, mems::bmer const&), mems::bmer*, false>(mems::bmer*, mems::bmer*, bool (*&)(mems::bmer const&, mems::bmer const&), std::__2::iterator_traits<mems::bmer*>::difference_type, bool)",
+      "samples": 78,
+      "percent": 2.019156096298214
+    },
+    {
+      "function": "mems::ProgressiveAligner::refineAlignment(mems::GappedAlignment&, unsigned long, bool, mems::AlnProgressTracker&)",
+      "samples": 67,
+      "percent": 1.7344033134869272
+    },
+    {
+      "function": "muscle::MUSCLE(muscle::SeqVect&, muscle::MSA&)",
+      "samples": 67,
+      "percent": 1.7344033134869272
+    },
+    {
+      "function": "mems::GetAlignment(mems::AbstractMatch const&, std::__2::vector<genome::gnSequence*, std::__2::allocator<genome::gnSequence*>> const&, std::__2::vector<std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>>, std::__2::allocator<std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>>>>&)",
+      "samples": 63,
+      "percent": 1.6308568470100957
+    },
+    {
+      "function": "mems::MheCompare::operator()(mems::MatchHashEntry const*, mems::MatchHashEntry const*) const",
+      "samples": 62,
+      "percent": 1.604970230390888
+    },
+    {
+      "function": "mems::ProgressiveAligner::alignProfileToProfile(unsigned long, unsigned long, unsigned long)",
+      "samples": 60,
+      "percent": 1.5531969971524722
+    },
+    {
+      "function": "mems::SortedMerList::RevCompMer(unsigned long long, int) const",
+      "samples": 51,
+      "percent": 1.3202174475796014
+    },
+    {
+      "function": "mems::ProgressiveAligner::CreatePairwiseBPDistance(boost::multi_array<double, 2ul, std::__2::allocator<double>>&)",
+      "samples": 45,
+      "percent": 1.164897747864354
+    },
+    {
+      "function": "mems::CompactGappedAlignment<mems::AbstractGappedAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>>::copyRange(mems::CompactGappedAlignment<mems::AbstractGappedAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>>&, unsigned long long, unsigned long long)",
+      "samples": 44,
+      "percent": 1.1390111312451463
+    },
+    {
+      "function": "muscle::MSA::GetPctIdentityPair(unsigned int, unsigned int) const",
+      "samples": 39,
+      "percent": 1.009578048149107
+    },
+    {
+      "function": "mems::SortedMerList::GetSeedMer(unsigned long long) const",
+      "samples": 38,
+      "percent": 0.983691431529899
+    },
+    {
+      "function": "mems::MemHash::AddHashEntry(mems::MatchHashEntry&)",
+      "samples": 35,
+      "percent": 0.9060315816722755
+    },
+    {
+      "function": "emscripten_builtin_free",
+      "samples": 35,
+      "percent": 0.9060315816722755
+    },
+    {
+      "function": "mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>::FirstStart() const",
+      "samples": 31,
+      "percent": 0.802485115195444
+    },
+    {
+      "function": "muscle::AlignTwoMSAsGivenPath(muscle::PWPath const&, muscle::MSA const&, muscle::MSA const&, muscle::MSA&)",
+      "samples": 25,
+      "percent": 0.6471654154801968
+    },
+    {
+      "function": "mems::computeMatchScores(std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>> const&, std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>> const&, mems::PairwiseScoringScheme const&, std::__2::vector<int, std::__2::allocator<int>>&)",
+      "samples": 24,
+      "percent": 0.6212787988609889
+    },
+    {
+      "function": "mems::MatchHashEntry::Contains(mems::MatchHashEntry const&) const",
+      "samples": 23,
+      "percent": 0.595392182241781
+    },
+    {
+      "function": "mems::GenericInterval<mems::AbstractGappedAlignment<mems::SparseAbstractMatch<std::__2::allocator<unsigned long long>, std::__2::allocator<unsigned int>>>>::GetAlignment(std::__2::vector<boost::dynamic_bitset<unsigned long, std::__2::allocator<unsigned long>>, std::__2::allocator<boost::dynamic_bitset<unsigned long, std::__2::allocator<unsigned long>>>>&) const",
+      "samples": 22,
+      "percent": 0.5695055656225732
+    },
+    {
+      "function": "",
+      "samples": 21,
+      "percent": 0.5436189490033653
+    },
+    {
+      "function": "emscripten_builtin_malloc",
+      "samples": 21,
+      "percent": 0.5436189490033653
+    },
+    {
+      "function": "compileForInternalLoader",
+      "samples": 19,
+      "percent": 0.4918457157649495
+    }
+  ],
+  "production_wasm_sha256": "454b77f3fa1a869657e4f348de6ad277c458e4ac77dee69008bb60f933943f8b",
+  "profiling_wasm_sha256": "66a020b50107fab385b70c3b4083062570be3cbe3f4121f8e8986f5b2127ebe2",
+  "note": "Same V5 objects relinked with --profiling-funcs; sample percentages identify hotspots, not benchmark speedups."
+}

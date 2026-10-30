@@ -1,0 +1,116 @@
+{
+  "genomes": 2,
+  "columns": 5000000,
+  "runs": [
+    {
+      "label": "baseline",
+      "repeat": 0,
+      "width": 0,
+      "ms": 39.700000047683716
+    },
+    {
+      "label": "baseline",
+      "repeat": 0,
+      "width": 80,
+      "ms": 47.699999928474426
+    },
+    {
+      "label": "candidate",
+      "repeat": 0,
+      "width": 0,
+      "ms": 31.90000009536743
+    },
+    {
+      "label": "candidate",
+      "repeat": 0,
+      "width": 80,
+      "ms": 41.800000071525574
+    },
+    {
+      "label": "candidate",
+      "repeat": 1,
+      "width": 0,
+      "ms": 31.300000071525574
+    },
+    {
+      "label": "candidate",
+      "repeat": 1,
+      "width": 80,
+      "ms": 41.90000009536743
+    },
+    {
+      "label": "baseline",
+      "repeat": 1,
+      "width": 0,
+      "ms": 35.10000002384186
+    },
+    {
+      "label": "baseline",
+      "repeat": 1,
+      "width": 80,
+      "ms": 47.60000002384186
+    },
+    {
+      "label": "baseline",
+      "repeat": 2,
+      "width": 0,
+      "ms": 40
+    },
+    {
+      "label": "baseline",
+      "repeat": 2,
+      "width": 80,
+      "ms": 45.39999997615814
+    },
+    {
+      "label": "candidate",
+      "repeat": 2,
+      "width": 0,
+      "ms": 33.5
+    },
+    {
+      "label": "candidate",
+      "repeat": 2,
+      "width": 80,
+      "ms": 44
+    }
+  ],
+  "browser": "156.0.8078.48",
+  "output": {
+    "metadata": {
+      "genomes": [
+        {
+          "id": 1,
+          "name": "genome-1.fa",
+          "extent": 3571430
+        },
+        {
+          "id": 2,
+          "name": "genome-2.fa",
+          "extent": 3571430
+        }
+      ],
+      "block_count": 1
+    },
+    "hashes": [
+      {
+        "sequence": "dac05677e50538d0e808a978fd99f3abac171dacfd580ce47708a745b0058b0b",
+        "prefix": "4cab61f628f2e58857a9192e8a421367a7ad3c4277053b0f87c13ee3a4e65041"
+      },
+      {
+        "sequence": "dac05677e50538d0e808a978fd99f3abac171dacfd580ce47708a745b0058b0b",
+        "prefix": "4cab61f628f2e58857a9192e8a421367a7ad3c4277053b0f87c13ee3a4e65041"
+      }
+    ]
+  },
+  "median_ms": {
+    "0": {
+      "baseline": 39.700000047683716,
+      "candidate": 31.90000009536743
+    },
+    "80": {
+      "baseline": 47.60000002384186,
+      "candidate": 41.90000009536743
+    }
+  }
+}

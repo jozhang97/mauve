@@ -1,0 +1,70 @@
+{
+  "genomes": 12,
+  "columns_per_genome": 1000000,
+  "input_bytes": 12150332,
+  "node": "v22.23.3",
+  "output_sha256": "197c63fde992635f64d82f6c31a00d381e27962f95679c000a615b8c2e09853f",
+  "median_ms": {
+    "baseline": 84.52404100000001,
+    "candidate": 64.49199999999996
+  },
+  "speedup": 1.3106128046889547,
+  "runs": [
+    {
+      "label": "baseline",
+      "repeat": 0,
+      "ms": 85.27829100000002
+    },
+    {
+      "label": "candidate",
+      "repeat": 0,
+      "ms": 65.90554200000003
+    },
+    {
+      "label": "candidate",
+      "repeat": 1,
+      "ms": 64.00879199999997
+    },
+    {
+      "label": "baseline",
+      "repeat": 1,
+      "ms": 82.60754200000002
+    },
+    {
+      "label": "baseline",
+      "repeat": 2,
+      "ms": 82.55195800000001
+    },
+    {
+      "label": "candidate",
+      "repeat": 2,
+      "ms": 63.84066699999994
+    },
+    {
+      "label": "candidate",
+      "repeat": 3,
+      "ms": 64.49199999999996
+    },
+    {
+      "label": "baseline",
+      "repeat": 3,
+      "ms": 84.52404100000001
+    },
+    {
+      "label": "baseline",
+      "repeat": 4,
+      "ms": 84.65870900000004
+    },
+    {
+      "label": "candidate",
+      "repeat": 4,
+      "ms": 64.70233299999995
+    }
+  ],
+  "measured_at": "2026-10-29T19:49:14.523694+00:00",
+  "hardware": "Apple M4 Max",
+  "source_sha256": {
+    "baseline": "b904110ff790ed4dd1c5072167cfb566af5807653cd154a82d3d8cc57ad5fe5e",
+    "candidate": "467d8a08d4a5d770195b4f48b692d4f61bd0640370b1579df85c421cca67774d"
+  }
+}

@@ -1,0 +1,834 @@
+{
+  "platform": "macOS-27.0.1-arm64-arm-64bit",
+  "machine": "arm64",
+  "measured_at": "2026-10-29T19:50:19.134723+00:00",
+  "node": "v22.23.3",
+  "baseline": "first optimized engine (128-genome benchmark version)",
+  "candidate": "packed profile scoring and hoisted homology state",
+  "wasm_sha256": {
+    "baseline": "4ef8f186b5191fbaa671d2b7cf2bec1b7e5384b412dba52da6023b2e99861316",
+    "candidate": "636a77215bda45cbf204f51cbde1abac034e1feb29a13a72c714f44003e99fa2"
+  },
+  "cases": [
+    {
+      "kind": "similar",
+      "genomes": 12,
+      "bases": 100000,
+      "median_ms": {
+        "baseline": 4562.049167,
+        "candidate": 4133.518542
+      },
+      "speedup": 1.1036721187157554,
+      "artifacts_identical": true,
+      "runs": {
+        "baseline": [
+          {
+            "kind": "similar",
+            "genomes": 12,
+            "bases": 100000,
+            "seed": 12345,
+            "alignment_ms": 4516.711792,
+            "peak_process_rss_kib": 189040,
+            "wasm_heap_capacity_bytes": 34930688,
+            "block_count": 1,
+            "artifacts": {
+              "alignment.xmfa": {
+                "bytes": 1216000,
+                "sha256": "8bd3308f8afec6c21d348dc401587ae3c0fd78085e431722df9976d25e3bf13e"
+              },
+              "guide.tree": {
+                "bytes": 351,
+                "sha256": "38e25041f240074965859e7768c47b8c99e98a350f584303bb2864d0f594a34e"
+              },
+              "alignment.backbone": {
+                "bytes": 436,
+                "sha256": "613813ee1e849778253c39de2ba77105e58454036f38bd3330e74879d549b8a1"
+              }
+            }
+          },
+          {
+            "kind": "similar",
+            "genomes": 12,
+            "bases": 100000,
+            "seed": 12345,
+            "alignment_ms": 4567.10675,
+            "peak_process_rss_kib": 191680,
+            "wasm_heap_capacity_bytes": 34930688,
+            "block_count": 1,
+            "artifacts": {
+              "alignment.xmfa": {
+                "bytes": 1216000,
+                "sha256": "8bd3308f8afec6c21d348dc401587ae3c0fd78085e431722df9976d25e3bf13e"
+              },
+              "guide.tree": {
+                "bytes": 351,
+                "sha256": "38e25041f240074965859e7768c47b8c99e98a350f584303bb2864d0f594a34e"
+              },
+              "alignment.backbone": {
+                "bytes": 436,
+                "sha256": "613813ee1e849778253c39de2ba77105e58454036f38bd3330e74879d549b8a1"
+              }
+            }
+          },
+          {
+            "kind": "similar",
+            "genomes": 12,
+            "bases": 100000,
+            "seed": 12345,
+            "alignment_ms": 4562.049167,
+            "peak_process_rss_kib": 190992,
+            "wasm_heap_capacity_bytes": 34930688,
+            "block_count": 1,
+            "artifacts": {
+              "alignment.xmfa": {
+                "bytes": 1216000,
+                "sha256": "8bd3308f8afec6c21d348dc401587ae3c0fd78085e431722df9976d25e3bf13e"
+              },
+              "guide.tree": {
+                "bytes": 351,
+                "sha256": "38e25041f240074965859e7768c47b8c99e98a350f584303bb2864d0f594a34e"
+              },
+              "alignment.backbone": {
+                "bytes": 436,
+                "sha256": "613813ee1e849778253c39de2ba77105e58454036f38bd3330e74879d549b8a1"
+              }
+            }
+          }
+        ],
+        "candidate": [
+          {
+            "kind": "similar",
+            "genomes": 12,
+            "bases": 100000,
+            "seed": 12345,
+            "alignment_ms": 4143.0569160000005,
+            "peak_process_rss_kib": 190640,
+            "wasm_heap_capacity_bytes": 34930688,
+            "block_count": 1,
+            "artifacts": {
+              "alignment.xmfa": {
+                "bytes": 1216000,
+                "sha256": "8bd3308f8afec6c21d348dc401587ae3c0fd78085e431722df9976d25e3bf13e"
+              },
+              "guide.tree": {
+                "bytes": 351,
+                "sha256": "38e25041f240074965859e7768c47b8c99e98a350f584303bb2864d0f594a34e"
+              },
+              "alignment.backbone": {
+                "bytes": 436,
+                "sha256": "613813ee1e849778253c39de2ba77105e58454036f38bd3330e74879d549b8a1"
+              }
+            }
+          },
+          {
+            "kind": "similar",
+            "genomes": 12,
+            "bases": 100000,
+            "seed": 12345,
+            "alignment_ms": 4132.648709,
+            "peak_process_rss_kib": 191264,
+            "wasm_heap_capacity_bytes": 34930688,
+            "block_count": 1,
+            "artifacts": {
+              "alignment.xmfa": {
+                "bytes": 1216000,
+                "sha256": "8bd3308f8afec6c21d348dc401587ae3c0fd78085e431722df9976d25e3bf13e"
+              },
+              "guide.tree": {
+                "bytes": 351,
+                "sha256": "38e25041f240074965859e7768c47b8c99e98a350f584303bb2864d0f594a34e"
+              },
+              "alignment.backbone": {
+                "bytes": 436,
+                "sha256": "613813ee1e849778253c39de2ba77105e58454036f38bd3330e74879d549b8a1"
+              }
+            }
+          },
+          {
+            "kind": "similar",
+            "genomes": 12,
+            "bases": 100000,
+            "seed": 12345,
+            "alignment_ms": 4133.518542,
+            "peak_process_rss_kib": 191328,
+            "wasm_heap_capacity_bytes": 34930688,
+            "block_count": 1,
+            "artifacts": {
+              "alignment.xmfa": {
+                "bytes": 1216000,
+                "sha256": "8bd3308f8afec6c21d348dc401587ae3c0fd78085e431722df9976d25e3bf13e"
+              },
+              "guide.tree": {
+                "bytes": 351,
+                "sha256": "38e25041f240074965859e7768c47b8c99e98a350f584303bb2864d0f594a34e"
+              },
+              "alignment.backbone": {
+                "bytes": 436,
+                "sha256": "613813ee1e849778253c39de2ba77105e58454036f38bd3330e74879d549b8a1"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "kind": "divergent",
+      "genomes": 4,
+      "bases": 20000,
+      "median_ms": {
+        "baseline": 1038.310042,
+        "candidate": 970.488625
+      },
+      "speedup": 1.069883783542543,
+      "artifacts_identical": true,
+      "runs": {
+        "baseline": [
+          {
+            "kind": "divergent",
+            "genomes": 4,
+            "bases": 20000,
+            "seed": 12345,
+            "alignment_ms": 1039.8762499999998,
+            "peak_process_rss_kib": 182464,
+            "wasm_heap_capacity_bytes": 50331648,
+            "block_count": 24,
+            "artifacts": {
+              "alignment.xmfa": {
+                "bytes": 106179,
+                "sha256": "113d959d208de41bf930025513ea1cc565799f90c9d80cfcc757a848bc3f2e85"
+              },
+              "guide.tree": {
+                "bytes": 95,
+                "sha256": "2dafadfcb2b297d93f70b59af34b7d95ec3e86b4b6a1a5472f367bc8d7730e4f"
+              },
+              "alignment.backbone": {
+                "bytes": 1918,
+                "sha256": "fef68fec30354303872a067f8f174f7eebb54bd85962bd3f0f1fd920c0a3ae97"
+              }
+            }
+          },
+          {
+            "kind": "divergent",
+            "genomes": 4,
+            "bases": 20000,
+            "seed": 12345,
+            "alignment_ms": 1033.9134999999999,
+            "peak_process_rss_kib": 181088,
+            "wasm_heap_capacity_bytes": 50331648,
+            "block_count": 24,
+            "artifacts": {
+              "alignment.xmfa": {
+                "bytes": 106179,
+                "sha256": "113d959d208de41bf930025513ea1cc565799f90c9d80cfcc757a848bc3f2e85"
+              },
+              "guide.tree": {
+                "bytes": 95,
+                "sha256": "2dafadfcb2b297d93f70b59af34b7d95ec3e86b4b6a1a5472f367bc8d7730e4f"
+              },
+              "alignment.backbone": {
+                "bytes": 1918,
+                "sha256": "fef68fec30354303872a067f8f174f7eebb54bd85962bd3f0f1fd920c0a3ae97"
+              }
+            }
+          },
+          {
+            "kind": "divergent",
+            "genomes": 4,
+            "bases": 20000,
+            "seed": 12345,
+            "alignment_ms": 1038.310042,
+            "peak_process_rss_kib": 182448,
+            "wasm_heap_capacity_bytes": 50331648,
+            "block_count": 24,
+            "artifacts": {
+              "alignment.xmfa": {
+                "bytes": 106179,
+                "sha256": "113d959d208de41bf930025513ea1cc565799f90c9d80cfcc757a848bc3f2e85"
+              },
+              "guide.tree": {
+                "bytes": 95,
+                "sha256": "2dafadfcb2b297d93f70b59af34b7d95ec3e86b4b6a1a5472f367bc8d7730e4f"
+              },
+              "alignment.backbone": {
+                "bytes": 1918,
+                "sha256": "fef68fec30354303872a067f8f174f7eebb54bd85962bd3f0f1fd920c0a3ae97"
+              }
+            }
+          }
+        ],
+        "candidate": [
+          {
+            "kind": "divergent",
+            "genomes": 4,
+            "bases": 20000,
+            "seed": 12345,
+            "alignment_ms": 970.488625,
+            "peak_process_rss_kib": 183488,
+            "wasm_heap_capacity_bytes": 50331648,
+            "block_count": 24,
+            "artifacts": {
+              "alignment.xmfa": {
+                "bytes": 106179,
+                "sha256": "113d959d208de41bf930025513ea1cc565799f90c9d80cfcc757a848bc3f2e85"
+              },
+              "guide.tree": {
+                "bytes": 95,
+                "sha256": "2dafadfcb2b297d93f70b59af34b7d95ec3e86b4b6a1a5472f367bc8d7730e4f"
+              },
+              "alignment.backbone": {
+                "bytes": 1918,
+                "sha256": "fef68fec30354303872a067f8f174f7eebb54bd85962bd3f0f1fd920c0a3ae97"
+              }
+            }
+          },
+          {
+            "kind": "divergent",
+            "genomes": 4,
+            "bases": 20000,
+            "seed": 12345,
+            "alignment_ms": 975.70675,
+            "peak_process_rss_kib": 187664,
+            "wasm_heap_capacity_bytes": 50331648,
+            "block_count": 24,
+            "artifacts": {
+              "alignment.xmfa": {
+                "bytes": 106179,
+                "sha256": "113d959d208de41bf930025513ea1cc565799f90c9d80cfcc757a848bc3f2e85"
+              },
+              "guide.tree": {
+                "bytes": 95,
+                "sha256": "2dafadfcb2b297d93f70b59af34b7d95ec3e86b4b6a1a5472f367bc8d7730e4f"
+              },
+              "alignment.backbone": {
+                "bytes": 1918,
+                "sha256": "fef68fec30354303872a067f8f174f7eebb54bd85962bd3f0f1fd920c0a3ae97"
+              }
+            }
+          },
+          {
+            "kind": "divergent",
+            "genomes": 4,
+            "bases": 20000,
+            "seed": 12345,
+            "alignment_ms": 967.4985829999999,
+            "peak_process_rss_kib": 188112,
+            "wasm_heap_capacity_bytes": 50331648,
+            "block_count": 24,
+            "artifacts": {
+              "alignment.xmfa": {
+                "bytes": 106179,
+                "sha256": "113d959d208de41bf930025513ea1cc565799f90c9d80cfcc757a848bc3f2e85"
+              },
+              "guide.tree": {
+                "bytes": 95,
+                "sha256": "2dafadfcb2b297d93f70b59af34b7d95ec3e86b4b6a1a5472f367bc8d7730e4f"
+              },
+              "alignment.backbone": {
+                "bytes": 1918,
+                "sha256": "fef68fec30354303872a067f8f174f7eebb54bd85962bd3f0f1fd920c0a3ae97"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "kind": "rearranged",
+      "genomes": 4,
+      "bases": 50000,
+      "median_ms": {
+        "baseline": 565.5098750000001,
+        "candidate": 539.994709
+      },
+      "speedup": 1.0472507703774558,
+      "artifacts_identical": true,
+      "runs": {
+        "baseline": [
+          {
+            "kind": "rearranged",
+            "genomes": 4,
+            "bases": 50000,
+            "seed": 12345,
+            "alignment_ms": 561.949292,
+            "peak_process_rss_kib": 156240,
+            "wasm_heap_capacity_bytes": 16777216,
+            "block_count": 3,
+            "artifacts": {
+              "alignment.xmfa": {
+                "bytes": 203141,
+                "sha256": "c1b8f5dd55c5bd574714dce4a52978cc8e9ab35c18084028b46ec3f0c5d84e58"
+              },
+              "guide.tree": {
+                "bytes": 102,
+                "sha256": "7e413874f28a44fa1a7ef2ce7b7f877b3d7c23d9d172cbe3ad1e0f928060b294"
+              },
+              "alignment.backbone": {
+                "bytes": 308,
+                "sha256": "8c78d98629a1793eeb8256f3b41c67deaf69fbefd4c583cd05718db5b56b5743"
+              }
+            }
+          },
+          {
+            "kind": "rearranged",
+            "genomes": 4,
+            "bases": 50000,
+            "seed": 12345,
+            "alignment_ms": 565.96325,
+            "peak_process_rss_kib": 156320,
+            "wasm_heap_capacity_bytes": 16777216,
+            "block_count": 3,
+            "artifacts": {
+              "alignment.xmfa": {
+                "bytes": 203141,
+                "sha256": "c1b8f5dd55c5bd574714dce4a52978cc8e9ab35c18084028b46ec3f0c5d84e58"
+              },
+              "guide.tree": {
+                "bytes": 102,
+                "sha256": "7e413874f28a44fa1a7ef2ce7b7f877b3d7c23d9d172cbe3ad1e0f928060b294"
+              },
+              "alignment.backbone": {
+                "bytes": 308,
+                "sha256": "8c78d98629a1793eeb8256f3b41c67deaf69fbefd4c583cd05718db5b56b5743"
+              }
+            }
+          },
+          {
+            "kind": "rearranged",
+            "genomes": 4,
+            "bases": 50000,
+            "seed": 12345,
+            "alignment_ms": 565.5098750000001,
+            "peak_process_rss_kib": 157184,
+            "wasm_heap_capacity_bytes": 16777216,
+            "block_count": 3,
+            "artifacts": {
+              "alignment.xmfa": {
+                "bytes": 203141,
+                "sha256": "c1b8f5dd55c5bd574714dce4a52978cc8e9ab35c18084028b46ec3f0c5d84e58"
+              },
+              "guide.tree": {
+                "bytes": 102,
+                "sha256": "7e413874f28a44fa1a7ef2ce7b7f877b3d7c23d9d172cbe3ad1e0f928060b294"
+              },
+              "alignment.backbone": {
+                "bytes": 308,
+                "sha256": "8c78d98629a1793eeb8256f3b41c67deaf69fbefd4c583cd05718db5b56b5743"
+              }
+            }
+          }
+        ],
+        "candidate": [
+          {
+            "kind": "rearranged",
+            "genomes": 4,
+            "bases": 50000,
+            "seed": 12345,
+            "alignment_ms": 542.156875,
+            "peak_process_rss_kib": 155472,
+            "wasm_heap_capacity_bytes": 16777216,
+            "block_count": 3,
+            "artifacts": {
+              "alignment.xmfa": {
+                "bytes": 203141,
+                "sha256": "c1b8f5dd55c5bd574714dce4a52978cc8e9ab35c18084028b46ec3f0c5d84e58"
+              },
+              "guide.tree": {
+                "bytes": 102,
+                "sha256": "7e413874f28a44fa1a7ef2ce7b7f877b3d7c23d9d172cbe3ad1e0f928060b294"
+              },
+              "alignment.backbone": {
+                "bytes": 308,
+                "sha256": "8c78d98629a1793eeb8256f3b41c67deaf69fbefd4c583cd05718db5b56b5743"
+              }
+            }
+          },
+          {
+            "kind": "rearranged",
+            "genomes": 4,
+            "bases": 50000,
+            "seed": 12345,
+            "alignment_ms": 539.994709,
+            "peak_process_rss_kib": 157008,
+            "wasm_heap_capacity_bytes": 16777216,
+            "block_count": 3,
+            "artifacts": {
+              "alignment.xmfa": {
+                "bytes": 203141,
+                "sha256": "c1b8f5dd55c5bd574714dce4a52978cc8e9ab35c18084028b46ec3f0c5d84e58"
+              },
+              "guide.tree": {
+                "bytes": 102,
+                "sha256": "7e413874f28a44fa1a7ef2ce7b7f877b3d7c23d9d172cbe3ad1e0f928060b294"
+              },
+              "alignment.backbone": {
+                "bytes": 308,
+                "sha256": "8c78d98629a1793eeb8256f3b41c67deaf69fbefd4c583cd05718db5b56b5743"
+              }
+            }
+          },
+          {
+            "kind": "rearranged",
+            "genomes": 4,
+            "bases": 50000,
+            "seed": 12345,
+            "alignment_ms": 538.583208,
+            "peak_process_rss_kib": 157968,
+            "wasm_heap_capacity_bytes": 16777216,
+            "block_count": 3,
+            "artifacts": {
+              "alignment.xmfa": {
+                "bytes": 203141,
+                "sha256": "c1b8f5dd55c5bd574714dce4a52978cc8e9ab35c18084028b46ec3f0c5d84e58"
+              },
+              "guide.tree": {
+                "bytes": 102,
+                "sha256": "7e413874f28a44fa1a7ef2ce7b7f877b3d7c23d9d172cbe3ad1e0f928060b294"
+              },
+              "alignment.backbone": {
+                "bytes": 308,
+                "sha256": "8c78d98629a1793eeb8256f3b41c67deaf69fbefd4c583cd05718db5b56b5743"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "kind": "repeats",
+      "genomes": 4,
+      "bases": 50000,
+      "median_ms": {
+        "baseline": 516.0174999999999,
+        "candidate": 495.43329100000005
+      },
+      "speedup": 1.041547892267094,
+      "artifacts_identical": true,
+      "runs": {
+        "baseline": [
+          {
+            "kind": "repeats",
+            "genomes": 4,
+            "bases": 50000,
+            "seed": 12345,
+            "alignment_ms": 516.0174999999999,
+            "peak_process_rss_kib": 157648,
+            "wasm_heap_capacity_bytes": 16777216,
+            "block_count": 1,
+            "artifacts": {
+              "alignment.xmfa": {
+                "bytes": 202865,
+                "sha256": "4941001ddfcc78414a19a46b0b02db3fd8da9ad7e58d5e55198b5f1463394cb8"
+              },
+              "guide.tree": {
+                "bytes": 78,
+                "sha256": "d158b308e195ed9db16f82761ea23df22978e46e74f67065147d89ba7873774a"
+              },
+              "alignment.backbone": {
+                "bytes": 140,
+                "sha256": "e9376d14fcb3c67b8de5a8d90d68e0b9aa11ead201f9b25cf6f7247f4965c09d"
+              }
+            }
+          },
+          {
+            "kind": "repeats",
+            "genomes": 4,
+            "bases": 50000,
+            "seed": 12345,
+            "alignment_ms": 519.57125,
+            "peak_process_rss_kib": 159072,
+            "wasm_heap_capacity_bytes": 16777216,
+            "block_count": 1,
+            "artifacts": {
+              "alignment.xmfa": {
+                "bytes": 202865,
+                "sha256": "4941001ddfcc78414a19a46b0b02db3fd8da9ad7e58d5e55198b5f1463394cb8"
+              },
+              "guide.tree": {
+                "bytes": 78,
+                "sha256": "d158b308e195ed9db16f82761ea23df22978e46e74f67065147d89ba7873774a"
+              },
+              "alignment.backbone": {
+                "bytes": 140,
+                "sha256": "e9376d14fcb3c67b8de5a8d90d68e0b9aa11ead201f9b25cf6f7247f4965c09d"
+              }
+            }
+          },
+          {
+            "kind": "repeats",
+            "genomes": 4,
+            "bases": 50000,
+            "seed": 12345,
+            "alignment_ms": 514.9405,
+            "peak_process_rss_kib": 157056,
+            "wasm_heap_capacity_bytes": 16777216,
+            "block_count": 1,
+            "artifacts": {
+              "alignment.xmfa": {
+                "bytes": 202865,
+                "sha256": "4941001ddfcc78414a19a46b0b02db3fd8da9ad7e58d5e55198b5f1463394cb8"
+              },
+              "guide.tree": {
+                "bytes": 78,
+                "sha256": "d158b308e195ed9db16f82761ea23df22978e46e74f67065147d89ba7873774a"
+              },
+              "alignment.backbone": {
+                "bytes": 140,
+                "sha256": "e9376d14fcb3c67b8de5a8d90d68e0b9aa11ead201f9b25cf6f7247f4965c09d"
+              }
+            }
+          }
+        ],
+        "candidate": [
+          {
+            "kind": "repeats",
+            "genomes": 4,
+            "bases": 50000,
+            "seed": 12345,
+            "alignment_ms": 498.99425,
+            "peak_process_rss_kib": 156384,
+            "wasm_heap_capacity_bytes": 16777216,
+            "block_count": 1,
+            "artifacts": {
+              "alignment.xmfa": {
+                "bytes": 202865,
+                "sha256": "4941001ddfcc78414a19a46b0b02db3fd8da9ad7e58d5e55198b5f1463394cb8"
+              },
+              "guide.tree": {
+                "bytes": 78,
+                "sha256": "d158b308e195ed9db16f82761ea23df22978e46e74f67065147d89ba7873774a"
+              },
+              "alignment.backbone": {
+                "bytes": 140,
+                "sha256": "e9376d14fcb3c67b8de5a8d90d68e0b9aa11ead201f9b25cf6f7247f4965c09d"
+              }
+            }
+          },
+          {
+            "kind": "repeats",
+            "genomes": 4,
+            "bases": 50000,
+            "seed": 12345,
+            "alignment_ms": 495.43329100000005,
+            "peak_process_rss_kib": 156848,
+            "wasm_heap_capacity_bytes": 16777216,
+            "block_count": 1,
+            "artifacts": {
+              "alignment.xmfa": {
+                "bytes": 202865,
+                "sha256": "4941001ddfcc78414a19a46b0b02db3fd8da9ad7e58d5e55198b5f1463394cb8"
+              },
+              "guide.tree": {
+                "bytes": 78,
+                "sha256": "d158b308e195ed9db16f82761ea23df22978e46e74f67065147d89ba7873774a"
+              },
+              "alignment.backbone": {
+                "bytes": 140,
+                "sha256": "e9376d14fcb3c67b8de5a8d90d68e0b9aa11ead201f9b25cf6f7247f4965c09d"
+              }
+            }
+          },
+          {
+            "kind": "repeats",
+            "genomes": 4,
+            "bases": 50000,
+            "seed": 12345,
+            "alignment_ms": 494.114375,
+            "peak_process_rss_kib": 156752,
+            "wasm_heap_capacity_bytes": 16777216,
+            "block_count": 1,
+            "artifacts": {
+              "alignment.xmfa": {
+                "bytes": 202865,
+                "sha256": "4941001ddfcc78414a19a46b0b02db3fd8da9ad7e58d5e55198b5f1463394cb8"
+              },
+              "guide.tree": {
+                "bytes": 78,
+                "sha256": "d158b308e195ed9db16f82761ea23df22978e46e74f67065147d89ba7873774a"
+              },
+              "alignment.backbone": {
+                "bytes": 140,
+                "sha256": "e9376d14fcb3c67b8de5a8d90d68e0b9aa11ead201f9b25cf6f7247f4965c09d"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "kind": "ambiguous",
+      "genomes": 4,
+      "bases": 20000,
+      "median_ms": {
+        "baseline": 252.00229199999998,
+        "candidate": 243.960417
+      },
+      "speedup": 1.032963851672708,
+      "artifacts_identical": true,
+      "runs": {
+        "baseline": [
+          {
+            "kind": "ambiguous",
+            "genomes": 4,
+            "bases": 20000,
+            "seed": 12345,
+            "alignment_ms": 252.00229199999998,
+            "peak_process_rss_kib": 153744,
+            "wasm_heap_capacity_bytes": 16777216,
+            "block_count": 1,
+            "artifacts": {
+              "alignment.xmfa": {
+                "bytes": 81365,
+                "sha256": "e64a2dfc58e5a30b944d43117d3acf225d42afb65e57f91c84b2d727a4e4e516"
+              },
+              "guide.tree": {
+                "bytes": 85,
+                "sha256": "cc41c5638a4acf5aeedc21a82b52871d22b69ab45b914dd6b47c6ed006fd8fe1"
+              },
+              "alignment.backbone": {
+                "bytes": 140,
+                "sha256": "2b2e16620f6709cdbfafe3199d5276eda0cfc32859689e3d04d9b74677c74059"
+              }
+            }
+          },
+          {
+            "kind": "ambiguous",
+            "genomes": 4,
+            "bases": 20000,
+            "seed": 12345,
+            "alignment_ms": 255.15104200000002,
+            "peak_process_rss_kib": 150928,
+            "wasm_heap_capacity_bytes": 16777216,
+            "block_count": 1,
+            "artifacts": {
+              "alignment.xmfa": {
+                "bytes": 81365,
+                "sha256": "e64a2dfc58e5a30b944d43117d3acf225d42afb65e57f91c84b2d727a4e4e516"
+              },
+              "guide.tree": {
+                "bytes": 85,
+                "sha256": "cc41c5638a4acf5aeedc21a82b52871d22b69ab45b914dd6b47c6ed006fd8fe1"
+              },
+              "alignment.backbone": {
+                "bytes": 140,
+                "sha256": "2b2e16620f6709cdbfafe3199d5276eda0cfc32859689e3d04d9b74677c74059"
+              }
+            }
+          },
+          {
+            "kind": "ambiguous",
+            "genomes": 4,
+            "bases": 20000,
+            "seed": 12345,
+            "alignment_ms": 251.791542,
+            "peak_process_rss_kib": 149920,
+            "wasm_heap_capacity_bytes": 16777216,
+            "block_count": 1,
+            "artifacts": {
+              "alignment.xmfa": {
+                "bytes": 81365,
+                "sha256": "e64a2dfc58e5a30b944d43117d3acf225d42afb65e57f91c84b2d727a4e4e516"
+              },
+              "guide.tree": {
+                "bytes": 85,
+                "sha256": "cc41c5638a4acf5aeedc21a82b52871d22b69ab45b914dd6b47c6ed006fd8fe1"
+              },
+              "alignment.backbone": {
+                "bytes": 140,
+                "sha256": "2b2e16620f6709cdbfafe3199d5276eda0cfc32859689e3d04d9b74677c74059"
+              }
+            }
+          }
+        ],
+        "candidate": [
+          {
+            "kind": "ambiguous",
+            "genomes": 4,
+            "bases": 20000,
+            "seed": 12345,
+            "alignment_ms": 244.01575000000003,
+            "peak_process_rss_kib": 154256,
+            "wasm_heap_capacity_bytes": 16777216,
+            "block_count": 1,
+            "artifacts": {
+              "alignment.xmfa": {
+                "bytes": 81365,
+                "sha256": "e64a2dfc58e5a30b944d43117d3acf225d42afb65e57f91c84b2d727a4e4e516"
+              },
+              "guide.tree": {
+                "bytes": 85,
+                "sha256": "cc41c5638a4acf5aeedc21a82b52871d22b69ab45b914dd6b47c6ed006fd8fe1"
+              },
+              "alignment.backbone": {
+                "bytes": 140,
+                "sha256": "2b2e16620f6709cdbfafe3199d5276eda0cfc32859689e3d04d9b74677c74059"
+              }
+            }
+          },
+          {
+            "kind": "ambiguous",
+            "genomes": 4,
+            "bases": 20000,
+            "seed": 12345,
+            "alignment_ms": 242.962375,
+            "peak_process_rss_kib": 156240,
+            "wasm_heap_capacity_bytes": 16777216,
+            "block_count": 1,
+            "artifacts": {
+              "alignment.xmfa": {
+                "bytes": 81365,
+                "sha256": "e64a2dfc58e5a30b944d43117d3acf225d42afb65e57f91c84b2d727a4e4e516"
+              },
+              "guide.tree": {
+                "bytes": 85,
+                "sha256": "cc41c5638a4acf5aeedc21a82b52871d22b69ab45b914dd6b47c6ed006fd8fe1"
+              },
+              "alignment.backbone": {
+                "bytes": 140,
+                "sha256": "2b2e16620f6709cdbfafe3199d5276eda0cfc32859689e3d04d9b74677c74059"
+              }
+            }
+          },
+          {
+            "kind": "ambiguous",
+            "genomes": 4,
+            "bases": 20000,
+            "seed": 12345,
+            "alignment_ms": 243.960417,
+            "peak_process_rss_kib": 154576,
+            "wasm_heap_capacity_bytes": 16777216,
+            "block_count": 1,
+            "artifacts": {
+              "alignment.xmfa": {
+                "bytes": 81365,
+                "sha256": "e64a2dfc58e5a30b944d43117d3acf225d42afb65e57f91c84b2d727a4e4e516"
+              },
+              "guide.tree": {
+                "bytes": 85,
+                "sha256": "cc41c5638a4acf5aeedc21a82b52871d22b69ab45b914dd6b47c6ed006fd8fe1"
+              },
+              "alignment.backbone": {
+                "bytes": 140,
+                "sha256": "2b2e16620f6709cdbfafe3199d5276eda0cfc32859689e3d04d9b74677c74059"
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "hardware": "Apple M4 Max",
+  "candidate_configuration": {
+    "packed_profiles": true,
+    "hoisted_homology_state": true,
+    "lto": true,
+    "profile_rows": true,
+    "fast_translate": true,
+    "exceptions": "wasm",
+    "profiling": false
+  },
+  "notes": [
+    "Compare timings within this report; absolute timings differ from the earlier session.",
+    "Wasm heap capacity is distinct from whole-process peak RSS.",
+    "The earlier 128-genome measurement used the first optimized engine, not this follow-up build."
+  ]
+}

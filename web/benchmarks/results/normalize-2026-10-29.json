@@ -1,0 +1,77 @@
+{
+  "records": 2,
+  "bases_per_record": 1000000,
+  "node": "v22.23.3",
+  "median_ms": {
+    "baseline": 13.267415999999997,
+    "candidate": 10.390374999999992
+  },
+  "speedup": 1.2768948185219502,
+  "output_sha256": "a2ca7fc285ebaae2805ec24bce55f5e3ce0661416ec0a9cece976713ae62a5b0",
+  "runs": [
+    {
+      "label": "baseline",
+      "repeat": 0,
+      "ms": 15.608833000000004
+    },
+    {
+      "label": "candidate",
+      "repeat": 0,
+      "ms": 10.390374999999992
+    },
+    {
+      "label": "candidate",
+      "repeat": 1,
+      "ms": 10.751750000000001
+    },
+    {
+      "label": "baseline",
+      "repeat": 1,
+      "ms": 13.838250000000016
+    },
+    {
+      "label": "baseline",
+      "repeat": 2,
+      "ms": 13.104375000000005
+    },
+    {
+      "label": "candidate",
+      "repeat": 2,
+      "ms": 10.456457999999998
+    },
+    {
+      "label": "candidate",
+      "repeat": 3,
+      "ms": 9.631249999999994
+    },
+    {
+      "label": "baseline",
+      "repeat": 3,
+      "ms": 13.267415999999997
+    },
+    {
+      "label": "baseline",
+      "repeat": 4,
+      "ms": 12.596875000000011
+    },
+    {
+      "label": "candidate",
+      "repeat": 4,
+      "ms": 10.170457999999996
+    }
+  ],
+  "measured_at": "2026-10-29T21:27:13.405516+00:00",
+  "hardware": "Apple M4 Max",
+  "source_sha256": {
+    "baseline_core": "467d8a08d4a5d770195b4f48b692d4f61bd0640370b1579df85c421cca67774d",
+    "baseline_genbank": "60f8dc8d0b06e61288f467229df8346edbad46b7a562e3f4cc24323b0fd32df5",
+    "candidate_core": "4b07994a342b606d76116238eea0abbd155c56e85621f64b1604fce1387ab688",
+    "candidate_genbank": "5905ef43bfa9775d9a9399f8562c2302c1e8caabcb731d1f163ac58758fbd041"
+  },
+  "notes": [
+    "Output data and metadata hashes match.",
+    "Temporary line batches are capped at 1024 lines.",
+    "Five alternating measurements per version after warmup, with explicit GC between runs.",
+    "Two FASTA records of one million bases each, wrapped at 80 columns."
+  ]
+}

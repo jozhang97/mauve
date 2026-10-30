@@ -1,0 +1,651 @@
+{
+  "runs": [
+    {
+      "repeat": 0,
+      "label": "baseline",
+      "genomes": 8,
+      "visibility": "all",
+      "ms": 0.1799999952316284
+    },
+    {
+      "repeat": 0,
+      "label": "baseline",
+      "genomes": 8,
+      "visibility": "half",
+      "ms": 0.2
+    },
+    {
+      "repeat": 0,
+      "label": "baseline",
+      "genomes": 8,
+      "visibility": "one",
+      "ms": 0.1799999952316284
+    },
+    {
+      "repeat": 0,
+      "label": "baseline",
+      "genomes": 64,
+      "visibility": "all",
+      "ms": 1.8400000095367433
+    },
+    {
+      "repeat": 0,
+      "label": "baseline",
+      "genomes": 64,
+      "visibility": "half",
+      "ms": 1.2399999856948853
+    },
+    {
+      "repeat": 0,
+      "label": "baseline",
+      "genomes": 64,
+      "visibility": "one",
+      "ms": 1.1800000190734863
+    },
+    {
+      "repeat": 0,
+      "label": "baseline",
+      "genomes": 128,
+      "visibility": "all",
+      "ms": 3.2799999952316283
+    },
+    {
+      "repeat": 0,
+      "label": "baseline",
+      "genomes": 128,
+      "visibility": "half",
+      "ms": 2.6799999952316282
+    },
+    {
+      "repeat": 0,
+      "label": "baseline",
+      "genomes": 128,
+      "visibility": "one",
+      "ms": 2.359999990463257
+    },
+    {
+      "repeat": 0,
+      "label": "candidate",
+      "genomes": 8,
+      "visibility": "all",
+      "ms": 0.1799999952316284
+    },
+    {
+      "repeat": 0,
+      "label": "candidate",
+      "genomes": 8,
+      "visibility": "half",
+      "ms": 0.16000001430511473
+    },
+    {
+      "repeat": 0,
+      "label": "candidate",
+      "genomes": 8,
+      "visibility": "one",
+      "ms": 0.1799999952316284
+    },
+    {
+      "repeat": 0,
+      "label": "candidate",
+      "genomes": 64,
+      "visibility": "all",
+      "ms": 1.2
+    },
+    {
+      "repeat": 0,
+      "label": "candidate",
+      "genomes": 64,
+      "visibility": "half",
+      "ms": 1.1799999952316285
+    },
+    {
+      "repeat": 0,
+      "label": "candidate",
+      "genomes": 64,
+      "visibility": "one",
+      "ms": 1.3200000047683715
+    },
+    {
+      "repeat": 0,
+      "label": "candidate",
+      "genomes": 128,
+      "visibility": "all",
+      "ms": 2.3799999952316284
+    },
+    {
+      "repeat": 0,
+      "label": "candidate",
+      "genomes": 128,
+      "visibility": "half",
+      "ms": 2.3600000143051147
+    },
+    {
+      "repeat": 0,
+      "label": "candidate",
+      "genomes": 128,
+      "visibility": "one",
+      "ms": 2.5
+    },
+    {
+      "repeat": 1,
+      "label": "candidate",
+      "genomes": 8,
+      "visibility": "all",
+      "ms": 0.15999999046325683
+    },
+    {
+      "repeat": 1,
+      "label": "candidate",
+      "genomes": 8,
+      "visibility": "half",
+      "ms": 0.15999999046325683
+    },
+    {
+      "repeat": 1,
+      "label": "candidate",
+      "genomes": 8,
+      "visibility": "one",
+      "ms": 0.2
+    },
+    {
+      "repeat": 1,
+      "label": "candidate",
+      "genomes": 64,
+      "visibility": "all",
+      "ms": 1.2
+    },
+    {
+      "repeat": 1,
+      "label": "candidate",
+      "genomes": 64,
+      "visibility": "half",
+      "ms": 1.2
+    },
+    {
+      "repeat": 1,
+      "label": "candidate",
+      "genomes": 64,
+      "visibility": "one",
+      "ms": 1.3399999856948852
+    },
+    {
+      "repeat": 1,
+      "label": "candidate",
+      "genomes": 128,
+      "visibility": "all",
+      "ms": 2.4
+    },
+    {
+      "repeat": 1,
+      "label": "candidate",
+      "genomes": 128,
+      "visibility": "half",
+      "ms": 2.3600000143051147
+    },
+    {
+      "repeat": 1,
+      "label": "candidate",
+      "genomes": 128,
+      "visibility": "one",
+      "ms": 2.5200000047683715
+    },
+    {
+      "repeat": 1,
+      "label": "baseline",
+      "genomes": 8,
+      "visibility": "all",
+      "ms": 0.2200000047683716
+    },
+    {
+      "repeat": 1,
+      "label": "baseline",
+      "genomes": 8,
+      "visibility": "half",
+      "ms": 0.15999999046325683
+    },
+    {
+      "repeat": 1,
+      "label": "baseline",
+      "genomes": 8,
+      "visibility": "one",
+      "ms": 0.18000001907348634
+    },
+    {
+      "repeat": 1,
+      "label": "baseline",
+      "genomes": 64,
+      "visibility": "all",
+      "ms": 1.7799999952316283
+    },
+    {
+      "repeat": 1,
+      "label": "baseline",
+      "genomes": 64,
+      "visibility": "half",
+      "ms": 1.2200000047683717
+    },
+    {
+      "repeat": 1,
+      "label": "baseline",
+      "genomes": 64,
+      "visibility": "one",
+      "ms": 1.1799999952316285
+    },
+    {
+      "repeat": 1,
+      "label": "baseline",
+      "genomes": 128,
+      "visibility": "all",
+      "ms": 3.2
+    },
+    {
+      "repeat": 1,
+      "label": "baseline",
+      "genomes": 128,
+      "visibility": "half",
+      "ms": 2.7200000047683717
+    },
+    {
+      "repeat": 1,
+      "label": "baseline",
+      "genomes": 128,
+      "visibility": "one",
+      "ms": 2.3799999952316284
+    },
+    {
+      "repeat": 2,
+      "label": "baseline",
+      "genomes": 8,
+      "visibility": "all",
+      "ms": 0.1799999952316284
+    },
+    {
+      "repeat": 2,
+      "label": "baseline",
+      "genomes": 8,
+      "visibility": "half",
+      "ms": 0.1799999952316284
+    },
+    {
+      "repeat": 2,
+      "label": "baseline",
+      "genomes": 8,
+      "visibility": "one",
+      "ms": 0.1799999952316284
+    },
+    {
+      "repeat": 2,
+      "label": "baseline",
+      "genomes": 64,
+      "visibility": "all",
+      "ms": 1.7600000143051147
+    },
+    {
+      "repeat": 2,
+      "label": "baseline",
+      "genomes": 64,
+      "visibility": "half",
+      "ms": 1.2
+    },
+    {
+      "repeat": 2,
+      "label": "baseline",
+      "genomes": 64,
+      "visibility": "one",
+      "ms": 1.1599999904632567
+    },
+    {
+      "repeat": 2,
+      "label": "baseline",
+      "genomes": 128,
+      "visibility": "all",
+      "ms": 3.3200000047683718
+    },
+    {
+      "repeat": 2,
+      "label": "baseline",
+      "genomes": 128,
+      "visibility": "half",
+      "ms": 2.6599999904632567
+    },
+    {
+      "repeat": 2,
+      "label": "baseline",
+      "genomes": 128,
+      "visibility": "one",
+      "ms": 2.3400000095367433
+    },
+    {
+      "repeat": 2,
+      "label": "candidate",
+      "genomes": 8,
+      "visibility": "all",
+      "ms": 0.1799999952316284
+    },
+    {
+      "repeat": 2,
+      "label": "candidate",
+      "genomes": 8,
+      "visibility": "half",
+      "ms": 0.1799999952316284
+    },
+    {
+      "repeat": 2,
+      "label": "candidate",
+      "genomes": 8,
+      "visibility": "one",
+      "ms": 0.18000001907348634
+    },
+    {
+      "repeat": 2,
+      "label": "candidate",
+      "genomes": 64,
+      "visibility": "all",
+      "ms": 1.1799999952316285
+    },
+    {
+      "repeat": 2,
+      "label": "candidate",
+      "genomes": 64,
+      "visibility": "half",
+      "ms": 1.2
+    },
+    {
+      "repeat": 2,
+      "label": "candidate",
+      "genomes": 64,
+      "visibility": "one",
+      "ms": 1.3399999856948852
+    },
+    {
+      "repeat": 2,
+      "label": "candidate",
+      "genomes": 128,
+      "visibility": "all",
+      "ms": 2.3600000143051147
+    },
+    {
+      "repeat": 2,
+      "label": "candidate",
+      "genomes": 128,
+      "visibility": "half",
+      "ms": 2.3799999952316284
+    },
+    {
+      "repeat": 2,
+      "label": "candidate",
+      "genomes": 128,
+      "visibility": "one",
+      "ms": 2.5
+    }
+  ],
+  "source_sha256": {
+    "baseline": "37193c90ca6b0740e4dff37cd7795ede9dfae7833e0f66dff93604a4efa6f2c1",
+    "candidate": "02e9b00fb4dbc90867d098771a6b60b9f2578f3d96057f0b152f92b7e761f9e2"
+  },
+  "browser": "156.0.8078.48",
+  "medians_ms": {
+    "8/all": {
+      "baseline": 0.1799999952316284,
+      "candidate": 0.1799999952316284
+    },
+    "8/half": {
+      "baseline": 0.1799999952316284,
+      "candidate": 0.16000001430511473
+    },
+    "8/one": {
+      "baseline": 0.1799999952316284,
+      "candidate": 0.18000001907348634
+    },
+    "64/all": {
+      "baseline": 1.7799999952316283,
+      "candidate": 1.2
+    },
+    "64/half": {
+      "baseline": 1.2200000047683717,
+      "candidate": 1.2
+    },
+    "64/one": {
+      "baseline": 1.1799999952316285,
+      "candidate": 1.3399999856948852
+    },
+    "128/all": {
+      "baseline": 3.2799999952316283,
+      "candidate": 2.3799999952316284
+    },
+    "128/half": {
+      "baseline": 2.6799999952316282,
+      "candidate": 2.3600000143051147
+    },
+    "128/one": {
+      "baseline": 2.359999990463257,
+      "candidate": 2.5
+    }
+  },
+  "states_identical": true,
+  "one_visible_confirmation": {
+    "runs": [
+      {
+        "repeat": 0,
+        "label": "baseline",
+        "genomes": 64,
+        "visibility": "one",
+        "ms": 1.2440000009536742
+      },
+      {
+        "repeat": 0,
+        "label": "baseline",
+        "genomes": 128,
+        "visibility": "one",
+        "ms": 2.432000002861023
+      },
+      {
+        "repeat": 0,
+        "label": "candidate",
+        "genomes": 64,
+        "visibility": "one",
+        "ms": 1.2119999980926515
+      },
+      {
+        "repeat": 0,
+        "label": "candidate",
+        "genomes": 128,
+        "visibility": "one",
+        "ms": 2.38
+      },
+      {
+        "repeat": 1,
+        "label": "candidate",
+        "genomes": 64,
+        "visibility": "one",
+        "ms": 1.2240000009536742
+      },
+      {
+        "repeat": 1,
+        "label": "candidate",
+        "genomes": 128,
+        "visibility": "one",
+        "ms": 2.4080000019073484
+      },
+      {
+        "repeat": 1,
+        "label": "baseline",
+        "genomes": 64,
+        "visibility": "one",
+        "ms": 1.2240000009536742
+      },
+      {
+        "repeat": 1,
+        "label": "baseline",
+        "genomes": 128,
+        "visibility": "one",
+        "ms": 2.415999999046326
+      },
+      {
+        "repeat": 2,
+        "label": "baseline",
+        "genomes": 64,
+        "visibility": "one",
+        "ms": 1.2239999961853028
+      },
+      {
+        "repeat": 2,
+        "label": "baseline",
+        "genomes": 128,
+        "visibility": "one",
+        "ms": 2.395999999046326
+      },
+      {
+        "repeat": 2,
+        "label": "candidate",
+        "genomes": 64,
+        "visibility": "one",
+        "ms": 1.2280000019073487
+      },
+      {
+        "repeat": 2,
+        "label": "candidate",
+        "genomes": 128,
+        "visibility": "one",
+        "ms": 2.4280000019073484
+      },
+      {
+        "repeat": 3,
+        "label": "candidate",
+        "genomes": 64,
+        "visibility": "one",
+        "ms": 1.2280000019073487
+      },
+      {
+        "repeat": 3,
+        "label": "candidate",
+        "genomes": 128,
+        "visibility": "one",
+        "ms": 2.4040000009536744
+      },
+      {
+        "repeat": 3,
+        "label": "baseline",
+        "genomes": 64,
+        "visibility": "one",
+        "ms": 1.2159999990463257
+      },
+      {
+        "repeat": 3,
+        "label": "baseline",
+        "genomes": 128,
+        "visibility": "one",
+        "ms": 2.4
+      },
+      {
+        "repeat": 4,
+        "label": "baseline",
+        "genomes": 64,
+        "visibility": "one",
+        "ms": 1.2239999961853028
+      },
+      {
+        "repeat": 4,
+        "label": "baseline",
+        "genomes": 128,
+        "visibility": "one",
+        "ms": 2.4080000019073484
+      },
+      {
+        "repeat": 4,
+        "label": "candidate",
+        "genomes": 64,
+        "visibility": "one",
+        "ms": 1.22
+      },
+      {
+        "repeat": 4,
+        "label": "candidate",
+        "genomes": 128,
+        "visibility": "one",
+        "ms": 2.4
+      },
+      {
+        "repeat": 5,
+        "label": "candidate",
+        "genomes": 64,
+        "visibility": "one",
+        "ms": 1.2240000009536742
+      },
+      {
+        "repeat": 5,
+        "label": "candidate",
+        "genomes": 128,
+        "visibility": "one",
+        "ms": 2.4
+      },
+      {
+        "repeat": 5,
+        "label": "baseline",
+        "genomes": 64,
+        "visibility": "one",
+        "ms": 1.2159999990463257
+      },
+      {
+        "repeat": 5,
+        "label": "baseline",
+        "genomes": 128,
+        "visibility": "one",
+        "ms": 2.4040000009536744
+      },
+      {
+        "repeat": 6,
+        "label": "baseline",
+        "genomes": 64,
+        "visibility": "one",
+        "ms": 1.2239999961853028
+      },
+      {
+        "repeat": 6,
+        "label": "baseline",
+        "genomes": 128,
+        "visibility": "one",
+        "ms": 2.395999999046326
+      },
+      {
+        "repeat": 6,
+        "label": "candidate",
+        "genomes": 64,
+        "visibility": "one",
+        "ms": 1.2159999990463257
+      },
+      {
+        "repeat": 6,
+        "label": "candidate",
+        "genomes": 128,
+        "visibility": "one",
+        "ms": 2.392000002861023
+      }
+    ],
+    "genomes": [
+      64,
+      128
+    ],
+    "visibilities": [
+      "one"
+    ],
+    "iterations": 25,
+    "source_sha256": {
+      "baseline": "37193c90ca6b0740e4dff37cd7795ede9dfae7833e0f66dff93604a4efa6f2c1",
+      "candidate": "02e9b00fb4dbc90867d098771a6b60b9f2578f3d96057f0b152f92b7e761f9e2"
+    },
+    "browser": "156.0.8078.48",
+    "medians_ms": {
+      "64/one": {
+        "baseline": 1.2239999961853028,
+        "candidate": 1.2240000009536742
+      },
+      "128/one": {
+        "baseline": 2.4040000009536744,
+        "candidate": 2.4
+      }
+    },
+    "states_identical": true
+  },
+  "adopted": true
+}

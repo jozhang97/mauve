@@ -1,0 +1,244 @@
+{
+  "runs": [
+    {
+      "repeat": 0,
+      "label": "baseline",
+      "matches": 1000,
+      "query": "",
+      "ms": 17.199999928474426
+    },
+    {
+      "repeat": 0,
+      "label": "baseline",
+      "matches": 0,
+      "query": "absent species",
+      "ms": 3.3000000715255737
+    },
+    {
+      "repeat": 0,
+      "label": "baseline",
+      "matches": 666,
+      "query": "genome 64",
+      "ms": 14.300000071525574
+    },
+    {
+      "repeat": 0,
+      "label": "baseline",
+      "matches": 11,
+      "query": "block 12",
+      "ms": 3.100000023841858
+    },
+    {
+      "repeat": 0,
+      "label": "baseline",
+      "matches": 1000,
+      "query": "M\u00dcLLER",
+      "ms": 16.399999976158142
+    },
+    {
+      "repeat": 0,
+      "label": "candidate",
+      "matches": 1000,
+      "query": "",
+      "ms": 16.899999976158142
+    },
+    {
+      "repeat": 0,
+      "label": "candidate",
+      "matches": 0,
+      "query": "absent species",
+      "ms": 0.6000000238418579
+    },
+    {
+      "repeat": 0,
+      "label": "candidate",
+      "matches": 666,
+      "query": "genome 64",
+      "ms": 12.299999952316284
+    },
+    {
+      "repeat": 0,
+      "label": "candidate",
+      "matches": 11,
+      "query": "block 12",
+      "ms": 0.7000000476837158
+    },
+    {
+      "repeat": 0,
+      "label": "candidate",
+      "matches": 1000,
+      "query": "M\u00dcLLER",
+      "ms": 16.5
+    },
+    {
+      "repeat": 1,
+      "label": "candidate",
+      "matches": 1000,
+      "query": "",
+      "ms": 17
+    },
+    {
+      "repeat": 1,
+      "label": "candidate",
+      "matches": 0,
+      "query": "absent species",
+      "ms": 0.6000000238418579
+    },
+    {
+      "repeat": 1,
+      "label": "candidate",
+      "matches": 666,
+      "query": "genome 64",
+      "ms": 12.200000047683716
+    },
+    {
+      "repeat": 1,
+      "label": "candidate",
+      "matches": 11,
+      "query": "block 12",
+      "ms": 0.7999999523162842
+    },
+    {
+      "repeat": 1,
+      "label": "candidate",
+      "matches": 1000,
+      "query": "M\u00dcLLER",
+      "ms": 16.40000009536743
+    },
+    {
+      "repeat": 1,
+      "label": "baseline",
+      "matches": 1000,
+      "query": "",
+      "ms": 16.700000047683716
+    },
+    {
+      "repeat": 1,
+      "label": "baseline",
+      "matches": 0,
+      "query": "absent species",
+      "ms": 2.899999976158142
+    },
+    {
+      "repeat": 1,
+      "label": "baseline",
+      "matches": 666,
+      "query": "genome 64",
+      "ms": 14.100000023841858
+    },
+    {
+      "repeat": 1,
+      "label": "baseline",
+      "matches": 11,
+      "query": "block 12",
+      "ms": 3.1999999284744263
+    },
+    {
+      "repeat": 1,
+      "label": "baseline",
+      "matches": 1000,
+      "query": "M\u00dcLLER",
+      "ms": 16.399999976158142
+    },
+    {
+      "repeat": 2,
+      "label": "baseline",
+      "matches": 1000,
+      "query": "",
+      "ms": 16.799999952316284
+    },
+    {
+      "repeat": 2,
+      "label": "baseline",
+      "matches": 0,
+      "query": "absent species",
+      "ms": 2.6999999284744263
+    },
+    {
+      "repeat": 2,
+      "label": "baseline",
+      "matches": 666,
+      "query": "genome 64",
+      "ms": 14.5
+    },
+    {
+      "repeat": 2,
+      "label": "baseline",
+      "matches": 11,
+      "query": "block 12",
+      "ms": 3.100000023841858
+    },
+    {
+      "repeat": 2,
+      "label": "baseline",
+      "matches": 1000,
+      "query": "M\u00dcLLER",
+      "ms": 16.199999928474426
+    },
+    {
+      "repeat": 2,
+      "label": "candidate",
+      "matches": 1000,
+      "query": "",
+      "ms": 16.799999952316284
+    },
+    {
+      "repeat": 2,
+      "label": "candidate",
+      "matches": 0,
+      "query": "absent species",
+      "ms": 0.6999999284744263
+    },
+    {
+      "repeat": 2,
+      "label": "candidate",
+      "matches": 666,
+      "query": "genome 64",
+      "ms": 12.400000095367432
+    },
+    {
+      "repeat": 2,
+      "label": "candidate",
+      "matches": 11,
+      "query": "block 12",
+      "ms": 0.7999999523162842
+    },
+    {
+      "repeat": 2,
+      "label": "candidate",
+      "matches": 1000,
+      "query": "M\u00dcLLER",
+      "ms": 16.600000023841858
+    }
+  ],
+  "genomes": 64,
+  "blocks": 1000,
+  "source_sha256": {
+    "baseline": "c335f9d486af598c84c2f4dba834c2a71bf3df4eb9f4c574437d573637db5918",
+    "candidate": "9ba8b2c2c256431a22ce3539bc7c88edd02817737316ff516dc541c0e73e5847"
+  },
+  "browser": "156.0.8078.48",
+  "medians_ms": {
+    "": {
+      "baseline": 16.799999952316284,
+      "candidate": 16.899999976158142
+    },
+    "absent species": {
+      "baseline": 2.899999976158142,
+      "candidate": 0.6000000238418579
+    },
+    "genome 64": {
+      "baseline": 14.300000071525574,
+      "candidate": 12.299999952316284
+    },
+    "block 12": {
+      "baseline": 3.100000023841858,
+      "candidate": 0.7999999523162842
+    },
+    "M\u00dcLLER": {
+      "baseline": 16.399999976158142,
+      "candidate": 16.5
+    }
+  },
+  "results_identical": true
+}

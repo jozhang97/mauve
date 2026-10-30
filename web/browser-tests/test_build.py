@@ -23,6 +23,8 @@ def test_pages_artifact_is_static_and_engine_matches_manifest(tmp_path):
     assert (output / 'static/wasm/build.py').is_file()
     manifest = json.loads((output / 'static/wasm/SOURCES.json').read_text())
     assert hashlib.sha256((output / 'static/wasm/progressiveMauve.wasm').read_bytes()).hexdigest() == manifest['wasm_sha256']
+    for name, digest in manifest['local_sources'].items():
+        assert hashlib.sha256((output / 'static/wasm' / name).read_bytes()).hexdigest() == digest
 
 
 def test_analytics_configuration_is_explicit_and_validated(tmp_path):

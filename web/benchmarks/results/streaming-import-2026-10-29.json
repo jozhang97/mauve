@@ -1,0 +1,128 @@
+{
+  "genomes": 2,
+  "columns": 25000000,
+  "runs": [
+    {
+      "label": "baseline",
+      "repeat": 0,
+      "width": 0,
+      "ms": 231.09999990463257
+    },
+    {
+      "label": "baseline",
+      "repeat": 0,
+      "width": 80,
+      "ms": 304.5
+    },
+    {
+      "label": "candidate",
+      "repeat": 0,
+      "width": 0,
+      "ms": 194
+    },
+    {
+      "label": "candidate",
+      "repeat": 0,
+      "width": 80,
+      "ms": 266.60000002384186
+    },
+    {
+      "label": "candidate",
+      "repeat": 1,
+      "width": 0,
+      "ms": 187.60000002384186
+    },
+    {
+      "label": "candidate",
+      "repeat": 1,
+      "width": 80,
+      "ms": 258.5
+    },
+    {
+      "label": "baseline",
+      "repeat": 1,
+      "width": 0,
+      "ms": 252.79999995231628
+    },
+    {
+      "label": "baseline",
+      "repeat": 1,
+      "width": 80,
+      "ms": 318.60000002384186
+    },
+    {
+      "label": "baseline",
+      "repeat": 2,
+      "width": 0,
+      "ms": 244.70000004768372
+    },
+    {
+      "label": "baseline",
+      "repeat": 2,
+      "width": 80,
+      "ms": 311.1999999284744
+    },
+    {
+      "label": "candidate",
+      "repeat": 2,
+      "width": 0,
+      "ms": 188
+    },
+    {
+      "label": "candidate",
+      "repeat": 2,
+      "width": 80,
+      "ms": 262.60000002384186
+    }
+  ],
+  "browser": "156.0.8078.48",
+  "output": {
+    "metadata": {
+      "genomes": [
+        {
+          "id": 1,
+          "name": "genome-1.fa",
+          "extent": 17857144
+        },
+        {
+          "id": 2,
+          "name": "genome-2.fa",
+          "extent": 17857144
+        }
+      ],
+      "block_count": 1
+    },
+    "hashes": [
+      {
+        "sequence": "b23d23793a694e0fc8de1dadc5c8f86b0d42f9d5fc300605f9ecdadfa200c966",
+        "prefix": "322b701cf54f27724b69a807af7508ed35e4bb6bfb6096e82299b4a7d100df91"
+      },
+      {
+        "sequence": "b23d23793a694e0fc8de1dadc5c8f86b0d42f9d5fc300605f9ecdadfa200c966",
+        "prefix": "322b701cf54f27724b69a807af7508ed35e4bb6bfb6096e82299b4a7d100df91"
+      }
+    ]
+  },
+  "median_ms": {
+    "0": {
+      "baseline": 244.70000004768372,
+      "candidate": 188
+    },
+    "80": {
+      "baseline": 311.1999999284744,
+      "candidate": 262.60000002384186
+    }
+  },
+  "measured_at": "2026-10-29T21:27:13.404546+00:00",
+  "hardware": "Apple M4 Max",
+  "source_sha256": {
+    "baseline_core": "467d8a08d4a5d770195b4f48b692d4f61bd0640370b1579df85c421cca67774d",
+    "candidate_core": "4b07994a342b606d76116238eea0abbd155c56e85621f64b1604fce1387ab688"
+  },
+  "notes": [
+    "Output data and metadata hashes match.",
+    "Temporary line batches are capped at 1024 lines.",
+    "Three fresh contexts per version, alternating order; each workload has one warmup parse before measurement.",
+    "Pure parser benchmark with application workers disabled; IndexedDB storage is excluded."
+  ]
+}

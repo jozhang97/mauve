@@ -1,0 +1,163 @@
+{
+  "genomes": 32,
+  "blocks": 500,
+  "runs": [
+    {
+      "engine": "baseline",
+      "repeat": 0,
+      "full": {
+        "ms": 283.2000000476837,
+        "paths": 15500,
+        "nodes": 52796
+      },
+      "zoomed": {
+        "ms": 26.200000047683716,
+        "paths": 15500,
+        "nodes": 15870
+      }
+    },
+    {
+      "engine": "candidate",
+      "repeat": 0,
+      "full": {
+        "ms": 286.89999997615814,
+        "paths": 15500,
+        "nodes": 52796
+      },
+      "zoomed": {
+        "ms": 3,
+        "paths": 62,
+        "nodes": 432
+      }
+    },
+    {
+      "engine": "candidate",
+      "repeat": 1,
+      "full": {
+        "ms": 286.39999997615814,
+        "paths": 15500,
+        "nodes": 52796
+      },
+      "zoomed": {
+        "ms": 2.8000000715255737,
+        "paths": 62,
+        "nodes": 432
+      }
+    },
+    {
+      "engine": "baseline",
+      "repeat": 1,
+      "full": {
+        "ms": 284.10000002384186,
+        "paths": 15500,
+        "nodes": 52796
+      },
+      "zoomed": {
+        "ms": 26.199999928474426,
+        "paths": 15500,
+        "nodes": 15870
+      }
+    },
+    {
+      "engine": "baseline",
+      "repeat": 2,
+      "full": {
+        "ms": 288.8000000715256,
+        "paths": 15500,
+        "nodes": 52796
+      },
+      "zoomed": {
+        "ms": 26.600000023841858,
+        "paths": 15500,
+        "nodes": 15870
+      }
+    },
+    {
+      "engine": "candidate",
+      "repeat": 2,
+      "full": {
+        "ms": 283.89999997615814,
+        "paths": 15500,
+        "nodes": 52796
+      },
+      "zoomed": {
+        "ms": 3,
+        "paths": 62,
+        "nodes": 432
+      }
+    },
+    {
+      "engine": "candidate",
+      "repeat": 3,
+      "full": {
+        "ms": 287.3000000715256,
+        "paths": 15500,
+        "nodes": 52796
+      },
+      "zoomed": {
+        "ms": 2.899999976158142,
+        "paths": 62,
+        "nodes": 432
+      }
+    },
+    {
+      "engine": "baseline",
+      "repeat": 3,
+      "full": {
+        "ms": 287.89999997615814,
+        "paths": 15500,
+        "nodes": 52796
+      },
+      "zoomed": {
+        "ms": 26.5,
+        "paths": 15500,
+        "nodes": 15870
+      }
+    },
+    {
+      "engine": "baseline",
+      "repeat": 4,
+      "full": {
+        "ms": 285.90000009536743,
+        "paths": 15500,
+        "nodes": 52796
+      },
+      "zoomed": {
+        "ms": 26,
+        "paths": 15500,
+        "nodes": 15870
+      }
+    },
+    {
+      "engine": "candidate",
+      "repeat": 4,
+      "full": {
+        "ms": 285.7000000476837,
+        "paths": 15500,
+        "nodes": 52796
+      },
+      "zoomed": {
+        "ms": 3,
+        "paths": 62,
+        "nodes": 432
+      }
+    }
+  ],
+  "browser": "156.0.8078.48",
+  "medians_ms": {
+    "full": {
+      "baseline": 285.90000009536743,
+      "candidate": 286.39999997615814
+    },
+    "zoomed": {
+      "baseline": 26.200000047683716,
+      "candidate": 3
+    }
+  },
+  "measured_at": "2026-10-29T19:49:14.522964+00:00",
+  "hardware": "Apple M4 Max",
+  "source_sha256": {
+    "baseline": "f903f44b6b027822e2371296ffa5e8822ea541719b33cdae401da4bb71d61eb0",
+    "candidate": "3dfddfb7286b363af5004a49e3e36894b94834bd6b6ed47df776c5360537de88"
+  }
+}

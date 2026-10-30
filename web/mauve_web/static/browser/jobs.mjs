@@ -8,8 +8,10 @@ export class Jobs {
   async engine() {
     this.engineInfo ||= fetch(new URL('../wasm/SOURCES.json', import.meta.url)).then(r => { if (!r.ok) throw Error('Engine manifest is missing. Rebuild the static site.'); return r.json(); });
     const source = await this.engineInfo;
-    return {available: typeof WebAssembly !== 'undefined', version: 'progressiveMauve · WebAssembly SIMD (local)',
-      reason: 'This browser needs WebAssembly support.', max_genomes: MAX_GENOMES, source};
+    const hasWasm = typeof WebAssembly !== 'undefined';
+    const hasExceptions = hasWasm && (source.configuration?.exceptions !== 'wasm' || typeof WebAssembly.Exception === 'function');
+    return {available: hasExceptions, version: 'progressiveMauve · WebAssembly SIMD (local)',
+      reason: hasWasm ? 'Update your browser to run the aligner with WebAssembly exception support.' : 'This browser needs WebAssembly support.', max_genomes: MAX_GENOMES, source};
   }
   async addInput(blob, name, provenance = null) {
     if (blob.size > MAX_INPUT) throw Error('Each input must be at most 50 MiB.');
@@ -32,6 +34,7 @@ export class Jobs {
   async create(options) {
     if (!navigator.locks) throw Error('This browser needs Web Locks to run local jobs safely.');
     const engine = await this.engine();
+    if (!engine.available) throw Error(engine.reason);
     const ids = options.input_ids;
     if (!Array.isArray(ids) || ids.length < 2 || ids.length > MAX_GENOMES || new Set(ids).size !== ids.length) throw Error(`Choose 2–${MAX_GENOMES} different genome inputs.`);
     if (options.min_weight != null && (!Number.isInteger(options.min_weight) || options.min_weight < 0 || options.min_weight > 1e9)) throw Error('Invalid minimum LCB score.');
@@ -61,11 +64,12 @@ export class Jobs {
   }
   async run(job, inputs) {
     const run = this.running.get(job.id); if (run.cancelled) return;
-    let worker, log = '', pending = Promise.resolve();
+    let worker, logLength = 0, pending = Promise.resolve();
+    const logChunks = [];
     const writeLog = text => {
-      log += text;
-      if (log.length > 25 * 1024 * 1024) throw Error('Alignment exceeded the 25 MiB log limit.');
-      job.log = log.slice(-32768); job.log_truncated = log.length > 32768;
+      logChunks.push(text); logLength += text.length;
+      if (logLength > 25 * 1024 * 1024) throw Error('Alignment exceeded the 25 MiB log limit.');
+      job.log = (job.log + text).slice(-32768); job.log_truncated = logLength > 32768;
       const snapshot = {...job};
       pending = pending.then(() => this.store.put('jobs', job.id, snapshot)).catch(error => { run.reject?.(error); });
     };
@@ -84,6 +88,9 @@ export class Jobs {
         };
         worker.postMessage({inputs: inputs.map(i => i.normalized), command: job.spec.command});
       });
+      // The returned Blobs outlive the worker. Release the engine heap and
+      // scratch filesystem before result parsing creates another large working set.
+      worker.terminate(); run.worker = null; worker = null;
       await pending;
       if (run.cancelled) throw Error('Cancelled.');
       job.status = 'importing';
@@ -95,7 +102,7 @@ export class Jobs {
     finally {
       worker?.terminate(); await pending;
       job.finished = now(); if (!job.artifacts.includes('log')) job.artifacts.push('log');
-      await this.store.batch([['jobs', job.id, job], ['artifacts', [job.id, 'log'], new Blob([log])]]);
+      await this.store.batch([['jobs', job.id, job], ['artifacts', [job.id, 'log'], new Blob([logChunks.join('')])]]);
       if (job.status === 'succeeded') this.onComplete();
     }
   }

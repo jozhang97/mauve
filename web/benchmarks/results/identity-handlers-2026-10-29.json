@@ -1,0 +1,104 @@
+{
+  "identity_bins": 200,
+  "genomes": 128,
+  "blocks": 1,
+  "runs": [
+    {
+      "engine": "baseline",
+      "repeat": 0,
+      "full": {
+        "ms": 524.1999999284744,
+        "paths": 127,
+        "nodes": 52386,
+        "handlers": 25403,
+        "distinct_handlers": 25402,
+        "svg_sha256": "9183d233fcd34e53aef230bd60c8cea85a7d57eec0ab47eeaf5c8e9b1db2d7d2",
+        "retained_js_heap_bytes": 4712668
+      }
+    },
+    {
+      "engine": "candidate",
+      "repeat": 0,
+      "full": {
+        "ms": 523.5999999046326,
+        "paths": 127,
+        "nodes": 52386,
+        "handlers": 25403,
+        "distinct_handlers": 3,
+        "svg_sha256": "9183d233fcd34e53aef230bd60c8cea85a7d57eec0ab47eeaf5c8e9b1db2d7d2",
+        "retained_js_heap_bytes": 2690804
+      }
+    },
+    {
+      "engine": "candidate",
+      "repeat": 1,
+      "full": {
+        "ms": 522.1999999284744,
+        "paths": 127,
+        "nodes": 52386,
+        "handlers": 25403,
+        "distinct_handlers": 3,
+        "svg_sha256": "9183d233fcd34e53aef230bd60c8cea85a7d57eec0ab47eeaf5c8e9b1db2d7d2",
+        "retained_js_heap_bytes": 2699628
+      }
+    },
+    {
+      "engine": "baseline",
+      "repeat": 1,
+      "full": {
+        "ms": 525,
+        "paths": 127,
+        "nodes": 52386,
+        "handlers": 25403,
+        "distinct_handlers": 25402,
+        "svg_sha256": "9183d233fcd34e53aef230bd60c8cea85a7d57eec0ab47eeaf5c8e9b1db2d7d2",
+        "retained_js_heap_bytes": 4716980
+      }
+    },
+    {
+      "engine": "baseline",
+      "repeat": 2,
+      "full": {
+        "ms": 526.8999999761581,
+        "paths": 127,
+        "nodes": 52386,
+        "handlers": 25403,
+        "distinct_handlers": 25402,
+        "svg_sha256": "9183d233fcd34e53aef230bd60c8cea85a7d57eec0ab47eeaf5c8e9b1db2d7d2",
+        "retained_js_heap_bytes": 4796748
+      }
+    },
+    {
+      "engine": "candidate",
+      "repeat": 2,
+      "full": {
+        "ms": 523.8000000715256,
+        "paths": 127,
+        "nodes": 52386,
+        "handlers": 25403,
+        "distinct_handlers": 3,
+        "svg_sha256": "9183d233fcd34e53aef230bd60c8cea85a7d57eec0ab47eeaf5c8e9b1db2d7d2",
+        "retained_js_heap_bytes": 2709580
+      }
+    }
+  ],
+  "source_sha256": {
+    "baseline": "02e9b00fb4dbc90867d098771a6b60b9f2578f3d96057f0b152f92b7e761f9e2",
+    "candidate": "67752367b3527403ba9480b66624a1e62fc8dfb259e1ff46599034a39e81e296"
+  },
+  "browser": "156.0.8078.48",
+  "medians_ms": {
+    "full": {
+      "baseline": 525,
+      "candidate": 523.5999999046326
+    }
+  },
+  "median_retained_js_heap_bytes": {
+    "full": {
+      "baseline": 4716980,
+      "candidate": 2699628
+    }
+  },
+  "svg_identical": true,
+  "click_checks": "Both baseline and candidate selected [block 1, offset 5], then [block 2, offset 91] after state changed without rerendering."
+}

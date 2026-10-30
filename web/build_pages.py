@@ -20,6 +20,7 @@ def build(output, goatcounter_code=''):
             raise RuntimeError('Build the WebAssembly engine first: see wasm/README.md')
     shutil.copytree(source, output / 'static', ignore=shutil.ignore_patterns('index.html'))
     shutil.copyfile(ROOT / 'wasm/build.py', output / 'static/wasm/build.py')
+    shutil.copytree(ROOT / 'wasm/optimizations', output / 'static/wasm/optimizations')
     (output / 'static/analytics-config.js').write_text(
         'window.MAUVE_ANALYTICS = ' + json.dumps({'siteCode': goatcounter_code}) + ';\n')
     # The entrypoint is at the project root, so every resource respects /repo/.

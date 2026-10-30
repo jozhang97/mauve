@@ -1,8 +1,10 @@
-import {canonical, lines} from './core.mjs';
+import {canonical, lineBatches} from './core.mjs';
 const encoder = new TextEncoder();
+const complement = Uint8Array.from({length: 256}, (_, i) => i);
+complement[65] = 84; complement[84] = 65; complement[67] = 71; complement[71] = 67;
 export async function parseRecords(blob) {
   const records = []; let record = null, feature = null, qualifier = null, origin = false, features = false;
-  for await (const line of rawLines(blob)) {
+  for await (const batch of lineBatches(blob, false)) for (const line of batch) {
     if (line.startsWith('LOCUS')) {
       if (record) throw Error('GenBank record missing // terminator.');
       const fields = line.trim().split(/\s+/);
@@ -37,16 +39,6 @@ export async function parseRecords(blob) {
   if (record) throw Error('GenBank record missing // terminator.');
   if (!records.length) throw Error('No GenBank records found.');
   return records;
-}
-async function* rawLines(blob) {
-  const reader = blob.stream().pipeThrough(new TextDecoderStream('utf-8', {fatal: true})).getReader(); let pending = '';
-  try {
-    while (true) {
-      const {value, done} = await reader.read(); if (done) break; pending += value;
-      let i; while ((i = pending.indexOf('\n')) >= 0) { yield pending.slice(0, i).replace(/\r$/, ''); pending = pending.slice(i + 1); }
-    }
-    if (pending) yield pending;
-  } finally { reader.releaseLock(); }
 }
 export function locationParts(text, length, offset = 0, strand = '+') {
   text = text.replace(/\s/g, '');
@@ -92,15 +84,17 @@ export function annotationData(records, concatenate) {
 }
 export function verifyMember(m, sequence) {
   if (m.end > sequence.length) throw Error('GenBank sequence is shorter than the aligned coordinates for this genome.');
-  let pos = m.strand === '+' ? m.start - 1 : m.end - 1, count = 0;
-  for (const actual of m.sequence) {
+  const aligned = m.sequence, step = m.strand === '+' ? 1 : -1, reverse = m.strand === '-';
+  let pos = step === 1 ? m.start - 1 : m.end - 1, count = 0;
+  for (let column = 0; column < aligned.length; column++) {
+    const actual = aligned[column];
     if (actual === 45) continue;
     let expected = sequence[pos];
-    if (m.strand === '-') expected = ({65: 84, 84: 65, 67: 71, 71: 67})[expected] || expected;
+    if (reverse) expected = complement[expected];
     if (canonical(actual) && canonical(expected)) {
       count++; if (actual !== expected) throw Error('GenBank sequence does not match the selected genome at aligned coordinates. Check the genome and record order.');
     }
-    pos += m.strand === '+' ? 1 : -1;
+    pos += step;
   }
   return count;
 }
@@ -109,7 +103,7 @@ export async function normalizeInput(blob) {
   if (head.startsWith('LOCUS')) records = await parseRecords(blob);
   else if (head.startsWith('>')) {
     records = []; let record;
-    for await (const line of lines(blob)) {
+    for await (const batch of lineBatches(blob)) for (const line of batch) {
       if (!line) continue;
       if (line.startsWith('>')) { record = {name: line.slice(1).trim().split(/\s/)[0], parts: []}; records.push(record); }
       else { if (!record) throw Error('Expected a FASTA header.'); record.parts.push(line); }

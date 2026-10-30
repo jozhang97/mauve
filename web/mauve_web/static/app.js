@@ -207,12 +207,15 @@ function refreshTracks() {
   renderTrackControls(); render(); renderBases(); renderComparisonSummary();
 }
 function visibleBlocks() {
-  return state.blocks.filter(b => b.columns >= Number($("min-columns").value || 0)
-    && (!$("shared-only").checked || b.members.length > 1)
-    && (!$("isolate-block").checked || state.selected === b.id));
+  const minimum = Number($("min-columns").value || 0), shared = $("shared-only").checked,
+    isolated = $("isolate-block").checked, selected = state.selected;
+  return state.blocks.filter(b => b.columns >= minimum
+    && (!shared || b.members.length > 1)
+    && (!isolated || selected === b.id));
 }
 function renderTrackControls() {
   $("track-controls").replaceChildren();
+  const visibleCount = state.order.reduce((count, id) => count + !state.hidden.has(id), 0);
   state.order.forEach((id, index) => {
     const g = state.alignment.genomes.find(g => g.id === id);
     const row = document.createElement("div");
@@ -221,7 +224,7 @@ function renderTrackControls() {
     const label = document.createElement("label"), check = document.createElement("input");
     check.type = "checkbox";
     check.checked = !state.hidden.has(id);
-    check.disabled = check.checked && visibleGenomes().length === 1;
+    check.disabled = check.checked && visibleCount === 1;
     check.onchange = () => {
       if (check.checked) state.hidden.delete(id); else state.hidden.add(id);
       refreshTracks();
@@ -342,6 +345,22 @@ function renderBases() {
   for (const m of sequenceMembers()) {
     const row = document.createElement("div"); row.className = "base-row sequence-row";
     row.dataset.genome = m.genome_id;
+    // Share handlers across the row instead of allocating two closures per base.
+    row.onclick = event => {
+      const base = event.target.closest(".base");
+      if (base) selectColumn(Number(base.dataset.column));
+    };
+    row.onkeydown = event => {
+      if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+      const base = event.target.closest(".base");
+      if (!base) return;
+      event.preventDefault();
+      const i = Number(base.dataset.column);
+      const next = indices[indices.indexOf(i) + (event.key === "ArrowLeft" ? -1 : 1)];
+      if (next === undefined) return;
+      selectColumn(next);
+      row.querySelector(`[data-column="${next}"]`).focus();
+    };
     const label = document.createElement("span"); label.className = "base-label";
     const name = document.createElement("strong");
     name.textContent = state.alignment.genomes.find(g => g.id === m.genome_id).name;
@@ -361,19 +380,12 @@ function renderBases() {
       const base = document.createElement("button");
       base.className = "base" + (differs(i) ? " diff" : "") + (m.bases[i] === "-" ? " gap" : "");
       base.textContent = m.bases[i];
+      base.setAttribute("aria-pressed", "false");
+      base.tabIndex = -1;
       base.dataset.column = i;
       base.dataset.genome = m.genome_id;
       base.title = `${name.textContent} · Column ${b.offset + i + 1} · ${m.positions[i] === null ? "gap" : `genomic position ${fmt(m.positions[i])}`}`;
       base.setAttribute("aria-label", base.title + ` · ${m.bases[i]}`);
-      base.onclick = () => selectColumn(i);
-      base.onkeydown = e => {
-        if (!["ArrowLeft", "ArrowRight"].includes(e.key)) return;
-        e.preventDefault();
-        const next = indices[indices.indexOf(i) + (e.key === "ArrowLeft" ? -1 : 1)];
-        if (next === undefined) return;
-        selectColumn(next);
-        row.querySelector(`[data-column="${next}"]`).focus();
-      };
       cell.append(base); row.append(cell);
     }
     target.append(row);
@@ -386,7 +398,7 @@ function selectColumn(index) {
   state.activeColumn = index;
   const b = state.detail, detail = $("column-detail");
   detail.replaceChildren(); detail.hidden = false;
-  $("bases").querySelectorAll(".base").forEach(base => {
+  $("bases").querySelectorAll(`.base.active-column, .base[data-column="${index}"]`).forEach(base => {
     const selected = Number(base.dataset.column) === index;
     base.classList.toggle("active-column", selected);
     base.setAttribute("aria-pressed", String(selected));
@@ -426,10 +438,11 @@ function selectColumn(index) {
   }
   detail.append(records);
 }
-function drawIdentity(svg, x, ys) {
-  if (!state.profile || !$("show-identity").checked || !visibleBlocks().some(b => b.id === state.selected)) return;
+function drawIdentity(svg, x, ys, blocks) {
+  if (!state.profile || !$("show-identity").checked || !blocks.some(b => b.id === state.selected)) return;
   const layer = svgNode("g", {"clip-path": "url(#track-clip)", class: "identity-layer"});
   svg.append(layer);
+  const selectCurrent = safely(() => selectBlock(state.selected, state.offset));
   for (const m of state.profile.members) {
     if (!ys.has(m.genome_id)) continue;
     const baseline = ys.get(m.genome_id) + 18;
@@ -444,10 +457,24 @@ function drawIdentity(svg, x, ys) {
         class: "identity-window",
       });
       rect.append(svgNode("title", {}, `${fmt(w.start)}–${fmt(w.end)} · ${w.identity === null ? "No comparable bases" : (w.identity * 100).toFixed(1) + "% identity"} · ${w.compared}/${w.columns} comparable columns`));
-      rect.onclick = safely(() => selectBlock(state.selected, state.offset));
+      rect.onclick = selectCurrent;
       layer.append(rect);
     }
   }
+}
+// Block-member metadata is immutable after loading. Weak keys release cached
+// bounds when an alignment is discarded; replacing the members array refreshes it.
+const blockBounds = new WeakMap();
+function blockIntersectsViewport(block, padding = 0) {
+  let bounds = blockBounds.get(block.members);
+  if (!bounds) {
+    let start = Infinity, end = -Infinity;
+    for (const member of block.members) {
+      start = Math.min(start, member.start); end = Math.max(end, member.end);
+    }
+    bounds = [start, end]; blockBounds.set(block.members, bounds);
+  }
+  return bounds[1] + padding >= state.start && bounds[0] <= state.end + padding;
 }
 function render() {
   if (!state.alignment) return;
@@ -456,7 +483,8 @@ function render() {
     right = width - 26,
     top = 55,
     gap = $("show-annotations").checked && state.sources.length ? 152 : 112;
-  const genomes = visibleGenomes(), blocks = visibleBlocks();
+  const genomes = visibleGenomes(), blocks = visibleBlocks(), showLinks = $("links").checked;
+  const viewportBlocks = blocks.filter(b => blockIntersectsViewport(b, showLinks ? 1 : 0));
   const filters = Number($("min-columns").value) > 0 || $("isolate-block").checked || $("shared-only").checked;
   $("display-settings").querySelector("summary").textContent = filters ? "Display & filters · filters active" : "Display & filters";
   const height = top + genomes.length * gap;
@@ -493,16 +521,20 @@ function render() {
     x = (p) => left + ((p - state.start) / span) * (right - left),
     ys = new Map();
   genomes.forEach((g, i) => ys.set(g.id, top + i * gap));
-  const connections = svgNode("g", { "clip-path": "url(#track-clip)" });
+  const connections = svgNode("g", { "clip-path": "url(#track-clip)", class: "alignment-links" });
   svg.append(connections);
-  if ($("links").checked)
-    for (const b of blocks) {
+  if (showLinks)
+    for (const b of viewportBlocks) {
       const ms = b.members.filter(m => ys.has(m.genome_id)).sort(
         (a, c) => ys.get(a.genome_id) - ys.get(c.genome_id),
       );
       for (let i = 1; i < ms.length; i++) {
         const a = ms[i - 1],
           c = ms[i];
+        // Keep links crossing the viewport even when both endpoint blocks are
+        // outside it. Only polygons wholly on the same side can be omitted.
+        if (Math.max(a.end + 1, c.end + 1) < state.start ||
+            Math.min(a.start, c.start) > state.end + 1) continue;
         const ends = (m) =>
           m.strand === "+"
             ? [x(m.start), x(m.end + 1)]
@@ -568,8 +600,21 @@ function render() {
     }
   }
   const rectangles = svgNode("g", { "clip-path": "url(#track-clip)" });
+  rectangles.onclick = rectangles.onkeydown = safely(event => {
+    if (event.type === "keydown" && event.key !== "Enter" && event.key !== " ") return;
+    const target = event.target.closest(".block");
+    if (!target) return;
+    if (event.type === "keydown") event.preventDefault();
+    return selectBlock(target.mauveBlockId);
+  });
+  rectangles.ondblclick = event => {
+    const target = event.target.closest(".block");
+    if (!target) return;
+    const m = target.mauveMember;
+    setRange(m.start - (m.end - m.start) * 0.12, m.end + (m.end - m.start) * 0.12);
+  };
   svg.append(rectangles);
-  for (const b of blocks)
+  for (const b of viewportBlocks)
     for (const m of b.members) {
       if (!ys.has(m.genome_id)) continue;
       if (m.end < state.start || m.start > state.end) continue;
@@ -598,18 +643,8 @@ function render() {
           `Block ${b.id} · ${fmt(m.start)}–${fmt(m.end)} · ${m.strand}`,
         ),
       );
-      r.onclick = safely(() => selectBlock(b.id));
-      r.onkeydown = safely((e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          return selectBlock(b.id);
-        }
-      });
-      r.ondblclick = () =>
-        setRange(
-          m.start - (m.end - m.start) * 0.12,
-          m.end + (m.end - m.start) * 0.12,
-        );
+      // JS-only metadata keeps exported SVG markup unchanged.
+      r.mauveBlockId = b.id; r.mauveMember = m;
       rectangles.append(r);
       if (m.strand === "-")
         rectangles.append(
@@ -620,7 +655,7 @@ function render() {
           }),
         );
     }
-  drawIdentity(svg, x, ys);
+  drawIdentity(svg, x, ys, blocks);
   if (state.detail?.id === state.selected && blocks.some(b => b.id === state.selected)) {
     const layer = svgNode("g", {"clip-path": "url(#track-clip)", class: "sequence-page-markers"});
     for (const member of sequenceMembers()) {
@@ -659,9 +694,11 @@ function zoom(factor) {
 function renderList() {
   $("block-list").replaceChildren();
   const query = $("block-search").value.trim().toLowerCase();
+  const matchingGenomes = query ? new Set(state.alignment.genomes
+    .filter(g => g.name.toLowerCase().includes(query)).map(g => g.id)) : null;
   const blocks = visibleBlocks().filter(b => !query || String(b.id) === query
     || `block ${b.id}`.includes(query)
-    || b.members.some(m => state.alignment.genomes.find(g => g.id === m.genome_id).name.toLowerCase().includes(query)));
+    || b.members.some(m => matchingGenomes.has(m.genome_id)));
   $("block-results-count").textContent = `${fmt(blocks.length)} of ${fmt(state.blocks.length)}`;
   if (!blocks.length) {
     const empty = document.createElement("p"); empty.className = "small";

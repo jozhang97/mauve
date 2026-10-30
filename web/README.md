@@ -27,7 +27,7 @@ Optional usage analytics send only fixed visit/action labels to GoatCounter (see
 below). This is a static app, not yet an offline-installable PWA: reloading the site
 still needs its assets to be available.
 
-Use a current browser with module workers, WebAssembly SIMD, IndexedDB, and
+Use a current browser with module workers, WebAssembly SIMD and exception handling, IndexedDB, and
 Web Locks on HTTPS or localhost. Chrome on Apple Silicon has been exercised.
 WebGPU is optional: the app checks availability and validates its integer
 kernel against CPU results, then falls back to CPU if unavailable or lost.
@@ -127,16 +127,28 @@ with WebGPU for suitable kernels. No LocalFold code or model weights are used.
 - Imports stream text and commit one block at a time. Sequences use one byte per
   aligned base. Overview metadata is stored separately; opening an alignment
   does not read all DNA. Reads load members individually with a 64 MiB LRU cache.
+  Page scans retain upcoming cached members when a block exceeds that limit,
+  avoiding repeated eviction and reloading of the entire block. A separate
+  4 MiB cache holds copied 8,192-column windows for oversized blocks, so nearby
+  pages can avoid loading full members again.
+  The API worker currently serializes operations. The standalone cache also
+  shares pending member reads for overlapping callers, and page-window insertion
+  rechecks cache state after storage reads to preserve byte accounting when
+  another request fills or evicts the same window.
 - Sparse ungapped-prefix indexes every 1,024 columns make coordinate jumps a
   binary search plus a short scan. Profiles are cached, and sequence rendering
   computes differences once per column instead of once per genome and column.
+- XMFA span validation reuses the prefix index's base counts. Map rendering
+  omits links wholly outside the viewport while preserving crossing links.
+- XMFA and FASTA readers scan incoming chunks once and process at most 1,024
+  lines per batch, reducing per-line asynchronous overhead and long-line rescans.
 - The browser allows 2–64 inputs, with the existing 50 MiB/input, 100 million
   total input bases, and 256 MiB result/import limits. The WebAssembly heap has
   a 2 GiB ceiling and scratch files consume memory; these limits do not guarantee
   every workload fits. Genome-count capacity is experimental beyond the tested
   examples. Native progressive alignment still has expensive pairwise stages.
 
-Measured on an Apple M4 Max in Chrome, synthetic data:
+Measured on an Apple M4 Max with synthetic data (Chrome for the viewer, Node for the aligner):
 
 | Operation | Result |
 | --- | --- |
@@ -145,15 +157,176 @@ Measured on an Apple M4 Max in Chrome, synthetic data:
 | First identity profile for that block | 58 ms |
 | Cached profile / 100-column page | 1.1 ms / 0.6 ms |
 | 10,000 indexed coordinate jumps | 5.9 ms |
-| progressiveMauve, 32 genomes × 100,000 bases | 56.4 s; 222 MiB peak Node process RSS |
+| progressiveMauve, 12 genomes × 100,000 bases (first optimization pass) | 6.37 s, down from 12.08 s; 178 MiB peak Node process RSS |
+| progressiveMauve, 128 genomes × 100,000 bases (first pass, single run) | 13:29, down from 34:00; 755 MiB peak Node process RSS |
+| Zoomed SVG map, 32 genomes × 500 blocks | 3.0 ms, down from 26.2 ms |
+| XMFA parsing only, 12 genomes × 1 million columns | 64.5 ms, down from 84.5 ms |
+| Warm sequence page, 128 genomes × 750,000 columns | 10.3 ms, down from 32.8 ms; unchanged 64 MiB cache limit |
+
+The map and parsing comparisons use five alternating measurements after warmup.
+Full-view map rendering was essentially unchanged (286 ms); zooming reduced SVG
+link paths from 15,500 to 62. Parsing produced identical sequences, indexes, and
+metadata. These parser timings exclude IndexedDB storage. Raw measurements:
+[map](benchmarks/results/map-2026-10-29.json),
+[parser](benchmarks/results/import-2026-10-29.json), and
+[128-genome engine](benchmarks/results/engine-128-2026-10-29.json).
+The [paging comparison](benchmarks/results/paging-2026-10-29.json) uses three
+fresh contexts per version, each measuring one cold and three warm pages. Cold
+reads were unchanged; a smaller block fitting in cache remained at 0.4 ms per
+warm page. Every returned base and genomic position was checked on both strands.
+
+A subsequent [page-window comparison](benchmarks/results/page-windows-2026-10-29.json)
+reduced warm pages for the same 128-genome workload from 14.9 to 1.0 ms.
+Cold pages increased from 48.0 to 50.3 ms while populating windows; cached
+sequence/index buffers are bounded to 68 MiB in total, excluding object overhead.
+The [small-block comparison](benchmarks/results/page-windows-small-2026-10-29.json)
+remained at 0.5 ms per warm page. These are paired measurements against the
+preceding scan cache, not the original release. Unit checks additionally cover
+gaps, reverse strands, window boundaries, eviction, failures, and early exits.
+
+[CPU profile construction](benchmarks/results/profile-construction-2026-10-29.json)
+reuses each bin's ending ungapped count as the next bin's starting count and
+reads count fields directly. Complete one-million-column profiles improved
+5–11% across identical, mixed, gapped, and ambiguous inputs in Chrome, with
+identical output. These measurements exclude storage reads and GPU execution.
+
+A subsequent [streaming-parser comparison](benchmarks/results/streaming-import-2026-10-29.json)
+on two sequences of 25 million columns each reduced browser parsing from
+244.7 to 188.0 ms for unwrapped lines (1.30×) and from 311.2 to 262.6 ms for
+80-column wrapping (1.19×), with identical sequences, indexes, and metadata.
+[FASTA normalization](benchmarks/results/normalize-2026-10-29.json) for two
+one-million-base records improved from 13.3 to 10.4 ms in Node (1.28×), with
+identical normalized bytes and record offsets. These are paired follow-up
+comparisons against the preceding parser, not the original release.
+
+GenBank parsing uses the batched reader without trimming fixed-column feature
+lines. For five million bases and 10,000 features, [browser measurements](benchmarks/results/genbank-browser-2026-10-29.json)
+improved wrapped input from 63.5 to 47.2 ms (1.35×); unwrapped input measured
+38.9 to 37.7 ms. Sequence and annotation hashes match. [Node checks](benchmarks/results/genbank-2026-10-29.json)
+also improved GenBank parsing, with XMFA and FASTA timings essentially unchanged.
+
+Reverse-strand annotation verification uses a reusable 256-byte complement
+table. For one million genomic bases, [Chrome measurements](benchmarks/results/verify-annotations-browser-2026-10-29.json)
+improved canonical DNA from 20.5 to 5.6 ms and mixed ambiguity/gap data from
+22.7 to 5.8 ms (3.65–3.93×), with identical verified-base counts. Forward checks
+were essentially unchanged. [Node measurements](benchmarks/results/verify-annotations-2026-10-29.json)
+show the same improvement; mismatch and coordinate-limit tests also pass.
+
+A follow-up indexed verification loop resolves strand direction before scanning.
+[Chrome measurements](benchmarks/results/verify-indexed-browser-2026-10-29.json)
+show another 1.80–2.87× improvement over the table-only version: forward checks
+10.2 → 3.56 ms, reverse checks 5.62 → 3.12 ms, and mixed reverse checks
+5.80 → 2.68 ms. [Node measurements](benchmarks/results/verify-indexed-2026-10-29.json)
+also improve, with the same counts and mismatch behavior.
+
+Coordinate-prefix construction processes 1,024-column batches instead of
+checking the index boundary for every base. [Node import measurements](benchmarks/results/rank-import-2026-10-29.json)
+improved from 78.6 to 67.0 ms (1.17×). [Chrome measurements](benchmarks/results/rank-import-browser-2026-10-29.json)
+improved unwrapped input from 39.7 to 31.9 ms and wrapped input from 47.6 to
+41.9 ms, with identical sequence, prefix-index, and metadata hashes.
 
 Viewer timings measure exploration of already aligned synthetic sequences. The
 aligner measurement is a separate near-identical synthetic DNA workload in Node;
-it does not predict performance on divergent full genomes.
+it does not predict performance on divergent full genomes. The first C++
+optimization pass was 1.36–1.90× faster across five synthetic workloads. A direct
+comparison after the scoring and seed changes measured
+**1.48–2.12×** against the original release, with identical output artifacts and higher total Node process
+memory. Subsequent traceback changes reduce memory and avoid clearing cells
+before their first write. Loading row-constant gap penalties once adds a further
+1.1–2.3% runtime improvement on four of five workloads, with the fifth flat.
+A subsequent scalar deletion-score cache improved four workloads by another
+roughly 1–4%, again leaving the ambiguous workload essentially unchanged.
+See the [engine measurements and
+profiling instructions](wasm/README.md#measurements-2026-10-29).
+A fresh single-run [128-genome comparison](benchmarks/results/engine-128-current-2026-10-29.json)
+measured the current engine at 17:42 versus 18:45 for the first optimization pass
+(5.6% faster), with identical XMFA, tree, and backbone hashes. Peak Node RSS
+was 754.9 versus 762.0 MiB; Wasm heap capacity was unchanged. Both fresh runs
+used battery power. The earlier 13:29 result was measured hours earlier under
+unrecorded power conditions and should not be used as a direct regression comparison.
 The synthetic twelve-genome alignment test and an inversion/indel comparison
 against the native executable pass. Larger, divergent biological datasets need
 more validation. Current remaining scaling limits include the single-worker
 aligner, in-memory scratch data, block-sized parsing, and SVG/DOM rendering.
+
+SVG block rectangles share click, keyboard, and double-click handlers. A
+[1,000-block map comparison](benchmarks/results/map-events-2026-10-29.json)
+reduced retained JavaScript heap after garbage collection from 9.15 to 3.87 MB,
+with byte-identical serialized SVG. Full-map rendering measured 764.5 → 778.5 ms
+(about 2% slower); zoomed rendering was essentially unchanged. This is a memory
+tradeoff, not an overall rendering-speed claim, and excludes native DOM memory.
+
+Caching block coordinate bounds lets the map skip completely off-screen blocks
+before sorting link endpoints or visiting each rectangle. A further
+[1,000-block, 32-genome comparison](benchmarks/results/block-bounds-2026-10-29.json)
+reduced zoomed rendering from 5.1 to 4.0 ms; full-map rendering was essentially
+unchanged (767 to 772 ms). Rendered path/node counts match, with separate tests
+for crossing links, viewport boundaries, panning, and metadata replacement.
+
+Reading the three block-filter controls once per pass instead of once per block
+reduced a zoomed [10,000-block, eight-genome map](benchmarks/results/map-filter-values-2026-10-29.json)
+from 4.1 to 2.4 ms, with byte-identical SVG and essentially unchanged retained
+JavaScript heap. [Search timings on 1,000 blocks](benchmarks/results/block-filter-values-2026-10-29.json)
+were mostly unchanged; seven combinations of length, sharing, and isolation
+filters were checked in every benchmark context. The map harness accepts
+`--view zoomed` to focus measurements without rendering the entire map first.
+
+Sharing one viewport-filtered block list between links and rectangles then
+reduced the same zoomed map from [2.3 to 1.8 ms](benchmarks/results/map-shared-viewport-2026-10-29.json).
+[Full-map rendering](benchmarks/results/map-shared-viewport-full-2026-10-29.json)
+on 1,000 blocks and 32 genomes remained essentially unchanged (778.4 → 776.5 ms).
+Both comparisons preserve exact SVG output and approximately the same retained
+JavaScript heap.
+
+Counting visible genomes once per track-control render avoids rebuilding the
+visible-genome list for every checkbox. In the [track-control comparison](benchmarks/results/track-controls-2026-10-29.json),
+64 visible genomes improved from 1.78 to 1.20 ms and 128 from 3.28 to 2.38 ms.
+Small cases were essentially unchanged. Seven focused confirmation pairs with
+only one visible genome were also flat, resolving an initial apparent slowdown.
+Checkbox states, last-visible-track protection, ordering, and button labels
+match across all measured cases.
+
+Identity-window rectangles share one click callback per render. With 128 genomes
+and 200 bins, the [identity-overlay comparison](benchmarks/results/identity-handlers-2026-10-29.json)
+reduced retained JavaScript heap from 4.72 to 2.70 MB; rendering was essentially
+flat (525.0 → 523.6 ms), and SVG bytes were identical. Clicks still use the current
+selected block and offset after state changes. These heap figures exclude
+native DOM memory. Use `map.py --identity-bins 200` to include this overlay.
+
+Reusing the render pass's filtered blocks in the identity layer avoids another
+filter scan. A [10,000-block, eight-genome comparison with 100 identity bins](benchmarks/results/identity-filter-reuse-2026-10-29.json)
+measured 15.8 → 15.4 ms, with identical SVG and unchanged retained heap.
+
+Block search matches genome names once per query, instead of repeatedly
+searching and lowercasing them for each block member. With 64 genomes and 1,000
+blocks, [browser measurements](benchmarks/results/block-search-2026-10-29.json)
+show 2.9 → 0.6 ms for no-match queries and 3.1 → 0.8 ms for a block-name query.
+Rendering all matching blocks was unchanged; result membership and order match.
+
+Selecting a column in a 32-genome, 500-column sequence page updates only the
+old and new selections. [Browser measurements](benchmarks/results/column-selection-2026-10-29.json)
+improved from 7.78 to 2.03 ms per selection (3.84×), with keyboard focus and
+accessibility states preserved. Sharing click/keyboard handlers per row then
+reduced retained JavaScript heap after garbage collection from 3.29 to 1.69 MB
+and handlers from 32,000 to 64; this is JS heap, not total browser memory.
+[Row-handler measurements](benchmarks/results/row-events-2026-10-29.json) show
+rendering at 254.5 → 249.0 ms and unchanged selection time. Reproduce using
+`web/.venv/bin/python web/benchmarks/column-selection.py --url URL --baseline-app BASELINE_APP.js`.
+
+CPU identity-profile counting uses a 256-byte nucleotide classification table.
+[Browser measurements](benchmarks/results/profile-counts-2026-10-29.json) for one
+million columns improved from 2.68 to 1.66 ms for identical DNA, 3.06 to 2.26 ms
+for mixed DNA, and 1.96 to 1.74 ms with gaps. Ambiguity-heavy data was essentially
+unchanged (4.84 to 4.86 ms). All counts matched, with exhaustive byte-pair tests
+covering partial bins; the GPU path is unchanged.
+
+Alignment logs retain chunks and a separate 32 KiB live tail, avoiding repeated
+copies of the entire log. A [Node log-handling benchmark](benchmarks/results/logs-2026-10-29.json)
+using real job handling, 4 KiB messages, and an in-memory store measured
+20.2 → 6.4 ms for 1 MiB and 972.7 → 45.1 ms for 8 MiB. These timings exclude
+IndexedDB latency and are not alignment speedups. Full log bytes and live tails
+match; the existing log limit and failure handling are preserved. Reproduce with
+`node --expose-gc web/benchmarks/logs.mjs BASELINE_JOBS.mjs web/mauve_web/static/browser/jobs.mjs OUTPUT.json`.
 
 Reproduce the measurements against a running preview (a visible browser exposes
 hardware WebGPU on macOS; headless Chrome may use the CPU fallback):
@@ -162,6 +335,20 @@ hardware WebGPU on macOS; headless Chrome may use the CPU fallback):
 web/.venv/bin/python web/benchmarks/browser.py --url http://127.0.0.1:8766 --headful
 node web/benchmarks/aligner.mjs 32 100000
 ```
+
+For focused comparisons, save the earlier `static/app.js` and
+`static/browser/core.mjs` from the revision being compared, then run:
+
+```sh
+web/.venv/bin/python web/benchmarks/map.py --url http://127.0.0.1:8766 --baseline-app /tmp/baseline-app.js
+node --expose-gc web/benchmarks/import.mjs /tmp/baseline-core.mjs
+web/.venv/bin/python web/benchmarks/paging.py --url http://127.0.0.1:8766 --baseline-store /tmp/baseline-store.mjs --baseline-worker /tmp/baseline-worker.mjs
+web/.venv/bin/python web/benchmarks/import-browser.py --url http://127.0.0.1:8766 --baseline-core /tmp/baseline-core.mjs --columns 25000000
+node --expose-gc web/benchmarks/normalize.mjs /tmp/baseline/genbank.mjs
+```
+
+For normalization comparisons, place the matching baseline `core.mjs` alongside
+the baseline `genbank.mjs`.
 
 ### Browser tests and engine build
 
@@ -351,6 +538,50 @@ There is currently one shared workspace and no authentication. Put it behind aut
 This is an initial alignment viewer, not a replacement for every Mauve feature. It runs progressiveMauve jobs and provides selected-block pairwise identity plots but does not yet reproduce Mauve similarity profiles, call SNPs, reorder contigs, score assemblies, or export orthologs. GenBank features and overview SVG/FASTA/TSV exports are supported; these are not a claim of complete parity with the Java application. Alignment imports are limited to 256 MiB; individual sequence/GenBank uploads remain limited to 50 MiB. Alignment uploads are spooled to disk and parsed block by block into an atomic SQLite transaction. Overview metadata lives in a separate table, so loading a map or exporting coordinates does not read the aligned DNA. Sequence inspection still loads the selected block into memory, and the browser still renders all overview blocks with SVG. A five-genome yeast result (68.4 MiB, 46 blocks) was recovered and checked through the browser, including its largest 4.5-million-column block; this is not a general benchmark of all files up to the limit. Indexed viewport queries, background uploads, and canvas rendering remain scaling work.
 
 The XMFA parser accepts aligned DNA (including IUPAC ambiguity codes), validates coordinate spans and equal column counts, and handles absent `0-0` records. It does not verify source sequence identity, detect overlapping blocks, or interpret sequence IDs as contig boundaries. GenBank annotation import adds explicit record boundaries and verifies canonical bases against those source sequences.
+
+## Fresh original-versus-current engine benchmark
+
+A fresh comparison of the original release against the current V7 engine used
+three alternating runs per engine per workload, each in a new Node process on
+an Apple M4 Max running on battery power. Times below are median alignment
+runtime, excluding module loading, input staging, and output validation.
+All 30 runs passed exact XMFA, guide-tree, and backbone hash comparisons and
+parsed genome-extent checks. These inputs are synthetic, not full biological
+genomes. [Raw timings and memory measurements](benchmarks/results/engine-final-before-after-2026-10-29.json).
+
+| Workload | Genomes × bases | Original | Current | Speedup |
+| --- | --- | --- | --- | --- |
+| Similar | 12 × 100,000 | 12.041 s | 5.416 s | 2.22× |
+| Divergent | 4 × 20,000 | 2.004 s | 1.271 s | 1.58× |
+| Rearranged | 4 × 50,000 | 1.177 s | 0.713 s | 1.65× |
+| Repeats | 4 × 50,000 | 1.087 s | 0.647 s | 1.68× |
+| Ambiguous | 4 × 20,000 | 0.505 s | 0.327 s | 1.55× |
+
+## Optimization research checkpoint
+
+The autonomous research loop was stopped at the user’s request after completing
+both fresh 128-genome runs. Final checks: 40 Node tests passed; 11 browser/build
+tests passed and one optional reference check was skipped. The retained C++
+engine also passed differential profile-score, seed, traceback, coordinate,
+and homology-state checks.
+
+Unpromoted experiments for a future session:
+
+- [Retaining cached members during profile scans](benchmarks/results/member-scan-profile-experiment-2026-10-29.json)
+  reduced warm profile time from 233.1 to 201.3 ms for 128 × 750,000 columns,
+  with matching output hashes. The prototype also changes difference and FASTA
+  scans; those branches still need validation before promotion. Sources and
+  harness are in `/tmp/mauve-cache-concurrency/` and may be temporary.
+- Reusing one GPU reference buffer per profile passed four mock-device ownership,
+  overlap, failure-cleanup, and fallback tests. Real-device performance is
+  unmeasured; the prototype remains in `/tmp/mauve-gpu-reference/`.
+- MUSCLE alignment construction starts with 500 columns and can repeatedly grow
+  and copy its buffers. Reserving space from the known alignment path is a
+  candidate for investigation; no implementation or timing claim yet.
+
+The [cache concurrency comparison](benchmarks/results/cache-concurrency-2026-10-29.json)
+showed no viewer speedup: API operations are serialized. Its retained changes
+are defensive cache correctness fixes, covered by direct overlapping-call tests.
 
 ## Remaining work, in priority order
 

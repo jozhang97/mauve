@@ -1,0 +1,197 @@
+{
+  "node": "v22.23.3",
+  "bases": 5000000,
+  "features": 10000,
+  "source_sha256": {
+    "baseline": {
+      "core.mjs": "fc3fab75b30c1ad8e11aaae4d8be8a282f64eb10b213fd894bad7e4ceb27266c",
+      "genbank.mjs": "5905ef43bfa9775d9a9399f8562c2302c1e8caabcb731d1f163ac58758fbd041"
+    },
+    "candidate": {
+      "core.mjs": "e64371988940043eaafa65b95cf7f268ba67d3ffa824a4c3204bacd61865b208",
+      "genbank.mjs": "bb68cd36c9fe39b3a9c38df7d9f400ccea775fe57244f592b164242bc2789a81"
+    }
+  },
+  "cases": [
+    {
+      "width": 60,
+      "input_bytes": 7143425,
+      "runs_ms": {
+        "baseline": [
+          89.15612500000003,
+          89.60187500000006,
+          82.56658300000004,
+          83.222125,
+          82.68616699999995
+        ],
+        "candidate": [
+          71.628917,
+          73.29591600000003,
+          69.65004099999999,
+          68.58054200000004,
+          68.67454100000009
+        ]
+      },
+      "medians_ms": {
+        "baseline": 83.222125,
+        "candidate": 69.65004099999999
+      },
+      "speedup": 1.194861105681187,
+      "output_sha256": "63bcfdc5cf207e1c73b336256666c86b67cc7d57c0efcb9aa38cac617acdb123"
+    },
+    {
+      "width": 0,
+      "input_bytes": 6226762,
+      "runs_ms": {
+        "baseline": [
+          38.802834000000075,
+          38.55033400000002,
+          39.87541699999997,
+          40.15149999999994,
+          38.07020800000009
+        ],
+        "candidate": [
+          33.65270899999996,
+          40.728000000000065,
+          39.18012499999986,
+          38.80074999999988,
+          38.374624999999924
+        ]
+      },
+      "medians_ms": {
+        "baseline": 38.802834000000075,
+        "candidate": 38.80074999999988
+      },
+      "speedup": 1.0000537103019966,
+      "output_sha256": "63bcfdc5cf207e1c73b336256666c86b67cc7d57c0efcb9aa38cac617acdb123"
+    }
+  ],
+  "xmfa_check": {
+    "genomes": 12,
+    "columns_per_genome": 1000000,
+    "line_width": 80,
+    "input_bytes": 12150332,
+    "node": "v22.23.3",
+    "output_sha256": "197c63fde992635f64d82f6c31a00d381e27962f95679c000a615b8c2e09853f",
+    "median_ms": {
+      "baseline": 74.07266699999991,
+      "candidate": 74.55716600000005
+    },
+    "speedup": 0.9935016440941419,
+    "runs": [
+      {
+        "label": "baseline",
+        "repeat": 0,
+        "ms": 77.85737499999999
+      },
+      {
+        "label": "candidate",
+        "repeat": 0,
+        "ms": 77.44862499999999
+      },
+      {
+        "label": "candidate",
+        "repeat": 1,
+        "ms": 74.41929199999993
+      },
+      {
+        "label": "baseline",
+        "repeat": 1,
+        "ms": 74.07266699999991
+      },
+      {
+        "label": "baseline",
+        "repeat": 2,
+        "ms": 73.96620900000005
+      },
+      {
+        "label": "candidate",
+        "repeat": 2,
+        "ms": 74.55716600000005
+      },
+      {
+        "label": "candidate",
+        "repeat": 3,
+        "ms": 75.00933300000008
+      },
+      {
+        "label": "baseline",
+        "repeat": 3,
+        "ms": 74.20883300000003
+      },
+      {
+        "label": "baseline",
+        "repeat": 4,
+        "ms": 74.00091700000007
+      },
+      {
+        "label": "candidate",
+        "repeat": 4,
+        "ms": 74.42620799999997
+      }
+    ]
+  },
+  "fasta_check": {
+    "records": 2,
+    "bases_per_record": 1000000,
+    "node": "v22.23.3",
+    "median_ms": {
+      "baseline": 10.210167000000013,
+      "candidate": 10.274750000000012
+    },
+    "speedup": 0.9937143969439647,
+    "output_sha256": "a2ca7fc285ebaae2805ec24bce55f5e3ce0661416ec0a9cece976713ae62a5b0",
+    "runs": [
+      {
+        "label": "baseline",
+        "repeat": 0,
+        "ms": 10.410333000000008
+      },
+      {
+        "label": "candidate",
+        "repeat": 0,
+        "ms": 10.537707999999995
+      },
+      {
+        "label": "candidate",
+        "repeat": 1,
+        "ms": 10.497208
+      },
+      {
+        "label": "baseline",
+        "repeat": 1,
+        "ms": 10.487291999999997
+      },
+      {
+        "label": "baseline",
+        "repeat": 2,
+        "ms": 10.210167000000013
+      },
+      {
+        "label": "candidate",
+        "repeat": 2,
+        "ms": 10.274750000000012
+      },
+      {
+        "label": "candidate",
+        "repeat": 3,
+        "ms": 9.692667
+      },
+      {
+        "label": "baseline",
+        "repeat": 3,
+        "ms": 10.114916999999991
+      },
+      {
+        "label": "baseline",
+        "repeat": 4,
+        "ms": 9.22912500000001
+      },
+      {
+        "label": "candidate",
+        "repeat": 4,
+        "ms": 9.972875000000016
+      }
+    ]
+  }
+}

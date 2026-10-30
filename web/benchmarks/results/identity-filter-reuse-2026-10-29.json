@@ -1,0 +1,155 @@
+{
+  "identity_bins": 100,
+  "genomes": 8,
+  "blocks": 10000,
+  "runs": [
+    {
+      "engine": "baseline",
+      "repeat": 0,
+      "zoomed": {
+        "ms": 15.799999952316284,
+        "paths": 14,
+        "nodes": 1513,
+        "handlers": 703,
+        "distinct_handlers": 3,
+        "svg_sha256": "312d65158c66caa85efca413cf568153ddae090c435cf782df2c9046abac7b6a",
+        "retained_js_heap_bytes": 4989836
+      }
+    },
+    {
+      "engine": "candidate",
+      "repeat": 0,
+      "zoomed": {
+        "ms": 15.5,
+        "paths": 14,
+        "nodes": 1513,
+        "handlers": 703,
+        "distinct_handlers": 3,
+        "svg_sha256": "312d65158c66caa85efca413cf568153ddae090c435cf782df2c9046abac7b6a",
+        "retained_js_heap_bytes": 4989616
+      }
+    },
+    {
+      "engine": "candidate",
+      "repeat": 1,
+      "zoomed": {
+        "ms": 15.699999928474426,
+        "paths": 14,
+        "nodes": 1513,
+        "handlers": 703,
+        "distinct_handlers": 3,
+        "svg_sha256": "312d65158c66caa85efca413cf568153ddae090c435cf782df2c9046abac7b6a",
+        "retained_js_heap_bytes": 4987984
+      }
+    },
+    {
+      "engine": "baseline",
+      "repeat": 1,
+      "zoomed": {
+        "ms": 15.799999952316284,
+        "paths": 14,
+        "nodes": 1513,
+        "handlers": 703,
+        "distinct_handlers": 3,
+        "svg_sha256": "312d65158c66caa85efca413cf568153ddae090c435cf782df2c9046abac7b6a",
+        "retained_js_heap_bytes": 4989836
+      }
+    },
+    {
+      "engine": "baseline",
+      "repeat": 2,
+      "zoomed": {
+        "ms": 15.5,
+        "paths": 14,
+        "nodes": 1513,
+        "handlers": 703,
+        "distinct_handlers": 3,
+        "svg_sha256": "312d65158c66caa85efca413cf568153ddae090c435cf782df2c9046abac7b6a",
+        "retained_js_heap_bytes": 4989836
+      }
+    },
+    {
+      "engine": "candidate",
+      "repeat": 2,
+      "zoomed": {
+        "ms": 15.399999976158142,
+        "paths": 14,
+        "nodes": 1513,
+        "handlers": 703,
+        "distinct_handlers": 3,
+        "svg_sha256": "312d65158c66caa85efca413cf568153ddae090c435cf782df2c9046abac7b6a",
+        "retained_js_heap_bytes": 5054736
+      }
+    },
+    {
+      "engine": "candidate",
+      "repeat": 3,
+      "zoomed": {
+        "ms": 15.200000047683716,
+        "paths": 14,
+        "nodes": 1513,
+        "handlers": 703,
+        "distinct_handlers": 3,
+        "svg_sha256": "312d65158c66caa85efca413cf568153ddae090c435cf782df2c9046abac7b6a",
+        "retained_js_heap_bytes": 5054752
+      }
+    },
+    {
+      "engine": "baseline",
+      "repeat": 3,
+      "zoomed": {
+        "ms": 16.300000071525574,
+        "paths": 14,
+        "nodes": 1513,
+        "handlers": 703,
+        "distinct_handlers": 3,
+        "svg_sha256": "312d65158c66caa85efca413cf568153ddae090c435cf782df2c9046abac7b6a",
+        "retained_js_heap_bytes": 5054984
+      }
+    },
+    {
+      "engine": "baseline",
+      "repeat": 4,
+      "zoomed": {
+        "ms": 15.399999976158142,
+        "paths": 14,
+        "nodes": 1513,
+        "handlers": 703,
+        "distinct_handlers": 3,
+        "svg_sha256": "312d65158c66caa85efca413cf568153ddae090c435cf782df2c9046abac7b6a",
+        "retained_js_heap_bytes": 4989836
+      }
+    },
+    {
+      "engine": "candidate",
+      "repeat": 4,
+      "zoomed": {
+        "ms": 15.299999952316284,
+        "paths": 14,
+        "nodes": 1513,
+        "handlers": 703,
+        "distinct_handlers": 3,
+        "svg_sha256": "312d65158c66caa85efca413cf568153ddae090c435cf782df2c9046abac7b6a",
+        "retained_js_heap_bytes": 4989616
+      }
+    }
+  ],
+  "source_sha256": {
+    "baseline": "67752367b3527403ba9480b66624a1e62fc8dfb259e1ff46599034a39e81e296",
+    "candidate": "6ee77332da5c7d98548108a0ac6ca16643b40274bd0d7a4f0e9440674c2032dd"
+  },
+  "browser": "156.0.8078.48",
+  "medians_ms": {
+    "zoomed": {
+      "baseline": 15.799999952316284,
+      "candidate": 15.399999976158142
+    }
+  },
+  "median_retained_js_heap_bytes": {
+    "zoomed": {
+      "baseline": 4989836,
+      "candidate": 4989616
+    }
+  },
+  "svg_identical": true
+}

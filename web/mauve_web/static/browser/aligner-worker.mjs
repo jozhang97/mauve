@@ -1,11 +1,12 @@
 import createMauve from '../wasm/progressiveMauve.mjs';
+import {stageInputs} from './aligner-inputs.mjs';
 self.onmessage = async ({data}) => {
   let log = '';
   const flush = () => { if (log) { self.postMessage({type: 'log', text: log}); log = ''; } };
   const print = text => { log += text + '\n'; if (log.length >= 4096) flush(); };
   try {
     const module = await createMauve({noInitialRun: true, print, printErr: print});
-    for (let i = 0; i < data.inputs.length; i++) module.FS.writeFile(`/input-${i + 1}.fa`, new Uint8Array(await data.inputs[i].arrayBuffer()));
+    await stageInputs(module, data.inputs);
     const code = module.callMain(data.command);
     flush();
     if (code !== 0) throw Error(`progressiveMauve exited with status ${code}.`);

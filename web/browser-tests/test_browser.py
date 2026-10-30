@@ -80,6 +80,53 @@ def test_static_viewer_import_persistence_exports_and_job(site, browser, tmp_pat
     assert not errors
 
 
+def test_map_links_preserve_crossings_and_viewport_boundaries(site, browser):
+    page = browser.new_page(viewport={'width': 1440, 'height': 1000})
+    page.goto(site)
+    page.wait_for_function("typeof render === 'function'")
+    result = page.evaluate("""() => {
+      state.alignment = {genomes: [1, 2].map(id => ({id, name: `Genome ${id}`, extent: 1000}))};
+      state.order = [1, 2]; state.start = 100; state.end = 199;
+      state.selected = null; state.detail = null; state.profile = null;
+      state.sources = []; state.features = []; state.hidden.clear();
+      clearBlockFilters(); $('links').checked = true;
+      $('welcome').hidden = true; $('explorer').hidden = false;
+      const ranges = [
+        [[1, 20], [30, 40]],       // wholly left
+        [[201, 220], [230, 240]],  // wholly right
+        [[120, 140], [150, 170]],  // visible endpoints
+        [[1, 20], [230, 240]],     // crossing, both endpoints outside
+        [[230, 240], [1, 20]],     // crossing, inverted member
+        [[70, 99], [80, 99]],      // touches left boundary
+        [[200, 220], [200, 240]],  // touches right boundary
+      ];
+      state.blocks = ranges.map((pair, i) => ({id: i + 1, columns: 20,
+        members: pair.map(([start, end], j) => ({genome_id: j + 1, start, end,
+          strand: i === 4 && j === 1 ? '-' : '+'}))}));
+      const paths = () => [...document.querySelectorAll('.alignment-links path')];
+      render();
+      const colorsBefore = paths().map(p => p.getAttribute('fill'));
+      const crossingPaths = paths().slice(1, 3).map(p => p.getAttribute('d'));
+      state.order.reverse(); render();
+      const colorsAfter = paths().map(p => p.getAttribute('fill'));
+      state.hidden.add(1); render(); const hiddenCount = paths().length;
+      state.hidden.clear();
+      // Pan with cached metadata, then replace one block's members array.
+      state.start = 300; state.end = 399; render(); const pannedCount = paths().length;
+      state.blocks[0].members = state.blocks[0].members.map(m => ({...m, start: 320, end: 340}));
+      render(); const replacedCount = paths().length;
+      $('links').checked = false; render();
+      return {colorsBefore, colorsAfter, expected: [3,4,5,6,7].map(color),
+        crossingPaths, hiddenCount, pannedCount, replacedCount, disabledCount: paths().length};
+    }""")
+    assert result['colorsBefore'] == result['expected']
+    assert result['colorsAfter'] == result['expected']
+    assert all('NaN' not in path for path in result['crossingPaths'])
+    assert result['hiddenCount'] == result['pannedCount'] == result['disabledCount'] == 0
+    assert result['replacedCount'] == 1
+    page.close()
+
+
 def test_gpu_parity_large_data_and_cpu_fallback(site, browser):
     page = browser.new_page(); page.goto(site)
     result = page.evaluate("""async () => {
@@ -133,3 +180,77 @@ def test_interrupted_job_can_rerun_in_new_tab(site, browser):
     rerun = page.evaluate("options => mauveBrowser.request('/api/jobs',{method:'POST',body:JSON.stringify(options)})", job['spec']['options'])
     page.wait_for_function("async id => (await mauveBrowser.request('/api/jobs/'+id)).status === 'succeeded'", arg=rerun['id'], timeout=30000)
     context.close()
+
+
+def test_column_selection_preserves_keyboard_and_accessibility_state(site, browser):
+    page = browser.new_page(viewport={'width': 1440, 'height': 1000})
+    page.goto(site)
+    page.wait_for_function("typeof renderBases === 'function'")
+    page.evaluate("""() => {
+      state.alignment = {genomes: [1, 2].map(id => ({id, name: `Genome ${id}`, extent: 8}))};
+      state.order = [1, 2]; state.hidden.clear(); state.profile = null;
+      state.detail = {offset: 0, columns: 8, members: [1, 2].map(genome_id => ({
+        genome_id, start: 1, end: 8, strand: '+', bases: genome_id === 1 ? 'ACGTACGT' : 'ATGTTCGT',
+        positions: Array.from({length: 8}, (_, i) => i + 1)}))};
+      $('welcome').hidden = true; $('explorer').hidden = false;
+      $('differences-only').checked = false; state.activeColumn = 0; renderBases();
+    }""")
+    def check(column, rows=2):
+        assert page.locator('#bases .base.active-column').count() == rows
+        assert page.locator('#bases .base[aria-pressed="true"]').count() == rows
+        assert page.locator('#bases .base[tabindex="0"]').count() == rows
+        assert page.evaluate("""column => [...document.querySelectorAll('#bases .base')].every(base => {
+          const active = Number(base.dataset.column) === column;
+          return base.classList.contains('active-column') === active &&
+            base.getAttribute('aria-pressed') === String(active) && base.tabIndex === (active ? 0 : -1);
+        })""", column)
+    check(0)
+    page.locator('#bases .base[data-genome="1"][data-column="2"]').click()
+    check(2)
+    page.keyboard.press('ArrowRight')
+    check(3)
+    page.evaluate("$('differences-only').checked = true; renderBases()")
+    check(1)
+    page.locator('#bases .base[data-genome="1"][data-column="1"]').focus()
+    page.keyboard.press('ArrowRight')
+    check(4)
+    page.keyboard.press('ArrowRight')
+    check(4)
+    page.evaluate("state.hidden.add(2); renderBases()")
+    check(4, 1)
+    page.evaluate("state.hidden.add(1); renderBases()")
+    assert page.locator('#bases .base').count() == 0
+    page.evaluate("state.hidden.clear(); $('differences-only').checked = false; renderBases()")
+    check(4)
+
+
+def test_map_block_handlers_preserve_click_keys_and_double_click(site, browser):
+    page = browser.new_page(viewport={'width': 1440, 'height': 1000})
+    page.goto(site)
+    page.wait_for_function("typeof render === 'function'")
+    result = page.evaluate("""() => {
+      state.alignment = {genomes: [{id: 1, name: 'Genome', extent: 1000}]};
+      state.order = [1]; state.start = 1; state.end = 1000; state.max = 1000;
+      state.selected = null; state.detail = null; state.profile = null;
+      state.sources = []; state.features = []; state.hidden.clear();
+      state.blocks = [{id: 7, columns: 41, members: [{genome_id: 1, start: 100, end: 140, strand: '-'}]}];
+      clearBlockFilters(); $('welcome').hidden = true; $('explorer').hidden = false; render();
+      const selections = [], ranges = [], savedSelect = selectBlock, savedRange = setRange;
+      selectBlock = id => selections.push(id); setRange = (...args) => ranges.push(args);
+      const block = document.querySelector('#tracks .block');
+      const event = (type, properties = {}) => type === 'keydown'
+        ? new KeyboardEvent(type, {bubbles: true, cancelable: true, ...properties})
+        : new MouseEvent(type, {bubbles: true, cancelable: true, ...properties});
+      block.dispatchEvent(event('click'));
+      block.querySelector('title').dispatchEvent(event('click'));
+      const enter = event('keydown', {key: 'Enter'}), space = event('keydown', {key: ' '});
+      block.dispatchEvent(enter); block.dispatchEvent(space);
+      block.dispatchEvent(event('keydown', {key: 'ArrowLeft'}));
+      block.dispatchEvent(event('dblclick'));
+      block.parentNode.dispatchEvent(event('click'));
+      selectBlock = savedSelect; setRange = savedRange;
+      return {selections, ranges, enter: enter.defaultPrevented, space: space.defaultPrevented};
+    }""")
+    assert result['selections'] == [7, 7, 7, 7]
+    assert result['ranges'] == [[95.2, 144.8]]
+    assert result['enter'] and result['space']

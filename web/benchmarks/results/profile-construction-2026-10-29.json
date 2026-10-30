@@ -1,0 +1,175 @@
+{
+  "source_sha256": {
+    "baseline": "0459a6ebaab127ddbf808d28f8fd682cbb673af32c3d1426d7b5240d71b6cacc",
+    "candidate": "58fe752e77a4896a158c6f436d8d9a2572e488b5699921ba02fe36622b6265b9"
+  },
+  "runs": [
+    {
+      "repeat": 0,
+      "label": "baseline",
+      "kind": "same",
+      "ms": 2.194999998807907
+    },
+    {
+      "repeat": 0,
+      "label": "baseline",
+      "kind": "mixed",
+      "ms": 1.969999998807907
+    },
+    {
+      "repeat": 0,
+      "label": "baseline",
+      "kind": "gaps",
+      "ms": 2.010000002384186
+    },
+    {
+      "repeat": 0,
+      "label": "baseline",
+      "kind": "ambiguous",
+      "ms": 4.785000002384185
+    },
+    {
+      "repeat": 0,
+      "label": "candidate",
+      "kind": "same",
+      "ms": 1.8149999976158142
+    },
+    {
+      "repeat": 0,
+      "label": "candidate",
+      "kind": "mixed",
+      "ms": 1.9850000023841858
+    },
+    {
+      "repeat": 0,
+      "label": "candidate",
+      "kind": "gaps",
+      "ms": 1.7849999964237213
+    },
+    {
+      "repeat": 0,
+      "label": "candidate",
+      "kind": "ambiguous",
+      "ms": 4.414999997615814
+    },
+    {
+      "repeat": 1,
+      "label": "candidate",
+      "kind": "same",
+      "ms": 1.8100000023841858
+    },
+    {
+      "repeat": 1,
+      "label": "candidate",
+      "kind": "mixed",
+      "ms": 1.9150000035762786
+    },
+    {
+      "repeat": 1,
+      "label": "candidate",
+      "kind": "gaps",
+      "ms": 1.8399999976158141
+    },
+    {
+      "repeat": 1,
+      "label": "candidate",
+      "kind": "ambiguous",
+      "ms": 4.444999998807907
+    },
+    {
+      "repeat": 1,
+      "label": "baseline",
+      "kind": "same",
+      "ms": 1.9800000011920929
+    },
+    {
+      "repeat": 1,
+      "label": "baseline",
+      "kind": "mixed",
+      "ms": 2.385000002384186
+    },
+    {
+      "repeat": 1,
+      "label": "baseline",
+      "kind": "gaps",
+      "ms": 2.005000001192093
+    },
+    {
+      "repeat": 1,
+      "label": "baseline",
+      "kind": "ambiguous",
+      "ms": 4.685000002384186
+    },
+    {
+      "repeat": 2,
+      "label": "baseline",
+      "kind": "same",
+      "ms": 1.9650000035762787
+    },
+    {
+      "repeat": 2,
+      "label": "baseline",
+      "kind": "mixed",
+      "ms": 2.105000001192093
+    },
+    {
+      "repeat": 2,
+      "label": "baseline",
+      "kind": "gaps",
+      "ms": 2.0449999988079073
+    },
+    {
+      "repeat": 2,
+      "label": "baseline",
+      "kind": "ambiguous",
+      "ms": 4.680000001192093
+    },
+    {
+      "repeat": 2,
+      "label": "candidate",
+      "kind": "same",
+      "ms": 2.1950000047683718
+    },
+    {
+      "repeat": 2,
+      "label": "candidate",
+      "kind": "mixed",
+      "ms": 1.8899999976158142
+    },
+    {
+      "repeat": 2,
+      "label": "candidate",
+      "kind": "gaps",
+      "ms": 1.7900000035762786
+    },
+    {
+      "repeat": 2,
+      "label": "candidate",
+      "kind": "ambiguous",
+      "ms": 4.694999998807907
+    }
+  ],
+  "columns": 1000000,
+  "bins": 200,
+  "timing": "mean of 20 complete CPU profiles after five warmups; three alternating fresh contexts per engine",
+  "browser": "156.0.8078.48",
+  "medians_ms": {
+    "same": {
+      "baseline": 1.9800000011920929,
+      "candidate": 1.8149999976158142
+    },
+    "mixed": {
+      "baseline": 2.105000001192093,
+      "candidate": 1.9150000035762786
+    },
+    "gaps": {
+      "baseline": 2.010000002384186,
+      "candidate": 1.7900000035762786
+    },
+    "ambiguous": {
+      "baseline": 4.685000002384186,
+      "candidate": 4.444999998807907
+    }
+  },
+  "outputs_identical": true
+}

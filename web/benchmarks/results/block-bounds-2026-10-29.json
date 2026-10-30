@@ -1,0 +1,105 @@
+{
+  "genomes": 32,
+  "blocks": 1000,
+  "runs": [
+    {
+      "engine": "baseline",
+      "repeat": 0,
+      "full": {
+        "ms": 764.3999999761581,
+        "paths": 31000,
+        "nodes": 105296
+      },
+      "zoomed": {
+        "ms": 5.100000023841858,
+        "paths": 62,
+        "nodes": 432
+      }
+    },
+    {
+      "engine": "candidate",
+      "repeat": 0,
+      "full": {
+        "ms": 772,
+        "paths": 31000,
+        "nodes": 105296
+      },
+      "zoomed": {
+        "ms": 4,
+        "paths": 62,
+        "nodes": 432
+      }
+    },
+    {
+      "engine": "candidate",
+      "repeat": 1,
+      "full": {
+        "ms": 765.7000000476837,
+        "paths": 31000,
+        "nodes": 105296
+      },
+      "zoomed": {
+        "ms": 4,
+        "paths": 62,
+        "nodes": 432
+      }
+    },
+    {
+      "engine": "baseline",
+      "repeat": 1,
+      "full": {
+        "ms": 770,
+        "paths": 31000,
+        "nodes": 105296
+      },
+      "zoomed": {
+        "ms": 5.100000023841858,
+        "paths": 62,
+        "nodes": 432
+      }
+    },
+    {
+      "engine": "baseline",
+      "repeat": 2,
+      "full": {
+        "ms": 767.1000000238419,
+        "paths": 31000,
+        "nodes": 105296
+      },
+      "zoomed": {
+        "ms": 4.900000095367432,
+        "paths": 62,
+        "nodes": 432
+      }
+    },
+    {
+      "engine": "candidate",
+      "repeat": 2,
+      "full": {
+        "ms": 775.1000000238419,
+        "paths": 31000,
+        "nodes": 105296
+      },
+      "zoomed": {
+        "ms": 4,
+        "paths": 62,
+        "nodes": 432
+      }
+    }
+  ],
+  "browser": "156.0.8078.48",
+  "medians_ms": {
+    "full": {
+      "baseline": 767.1000000238419,
+      "candidate": 772
+    },
+    "zoomed": {
+      "baseline": 5.100000023841858,
+      "candidate": 4
+    }
+  },
+  "source_sha256": {
+    "baseline": "9ba8b2c2c256431a22ce3539bc7c88edd02817737316ff516dc541c0e73e5847",
+    "candidate": "91e2e8f6170fa5c8daf2f8bc0571acf2b4595075b98d644b35c0bb5ad1616a95"
+  }
+}

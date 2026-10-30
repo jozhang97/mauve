@@ -6,9 +6,10 @@ export function indexMember(member) {
   const sequence = typeof member.sequence === 'string' ? encoder.encode(member.sequence) : member.sequence;
   const prefix = new Uint32Array(Math.floor(sequence.length / STRIDE) + 1);
   let count = 0;
-  for (let i = 0; i < sequence.length; i++) {
-    if (i % STRIDE === 0) prefix[i / STRIDE] = count;
-    if (sequence[i] !== 45) count++;
+  for (let start = 0; start < sequence.length; start += STRIDE) {
+    prefix[start / STRIDE] = count;
+    const end = Math.min(start + STRIDE, sequence.length);
+    for (let i = start; i < end; i++) if (sequence[i] !== 45) count++;
   }
   if (sequence.length % STRIDE === 0) prefix[sequence.length / STRIDE] = count;
   return {...member, sequence, prefix};
@@ -56,6 +57,8 @@ export function nextDifference(block, after = 0) {
   return null;
 }
 export const canonical = b => b === 65 || b === 67 || b === 71 || b === 84;
+const canonicalBytes = new Uint8Array(256);
+for (const base of [65, 67, 71, 84]) canonicalBytes[base] = 1;
 export function pairCounts(a, b, width) {
   const result = new Uint32Array(Math.ceil(a.length / width) * 4);
   for (let bin = 0, start = 0; start < a.length; bin++, start += width) {
@@ -64,7 +67,7 @@ export function pairCounts(a, b, width) {
     for (let i = start; i < end; i++) {
       const x = a[i], y = b[i];
       if (x === 45 || y === 45) gaps++;
-      else if (canonical(x) && canonical(y)) { compared++; if (x === y) matches++; }
+      else if (canonicalBytes[x] && canonicalBytes[y]) { compared++; if (x === y) matches++; }
     }
     result.set([matches, compared, gaps, end - start - compared - gaps], bin * 4);
   }
@@ -72,9 +75,10 @@ export function pairCounts(a, b, width) {
 }
 export function profileMember(m, columns, width, counts) {
   const windows = [], totals = {matches: 0, substitutions: 0, gap_columns: 0, ambiguous_columns: 0};
+  let before = 0;
   for (let i = 0, offset = 0; offset < columns; i++, offset += width) {
-    const end = Math.min(offset + width, columns), before = consumed(m, offset), count = consumed(m, end) - before;
-    const [matches, compared, gaps, ambiguous] = counts.subarray(i * 4, i * 4 + 4);
+    const end = Math.min(offset + width, columns), after = consumed(m, end), count = after - before;
+    const matches = counts[i * 4], compared = counts[i * 4 + 1], gaps = counts[i * 4 + 2], ambiguous = counts[i * 4 + 3];
     totals.matches += matches; totals.substitutions += compared - matches;
     totals.gap_columns += gaps; totals.ambiguous_columns += ambiguous;
     if (count) {
@@ -82,39 +86,59 @@ export function profileMember(m, columns, width, counts) {
       const last = first + (m.strand === '+' ? 1 : -1) * (count - 1);
       windows.push({start: Math.min(first, last), end: Math.max(first, last), identity: compared ? matches / compared : null, compared, columns: end - offset});
     }
+    before = after;
   }
   return {genome_id: m.genome_id, windows, ...totals};
 }
-export async function* lines(blob) {
+export async function* lineBatches(blob, trim = true) {
+  const normalize = trim ? line => line.trim() : line => line.endsWith("\r") ? line.slice(0, -1) : line;
   const reader = blob.stream().pipeThrough(new TextDecoderStream('utf-8', {fatal: true})).getReader();
-  let pending = '';
+  let pending = [];
   try {
     while (true) {
       const {value, done} = await reader.read();
       if (done) break;
-      pending += value;
+      let batch = [];
       let start = 0, end;
-      while ((end = pending.indexOf('\n', start)) !== -1) { yield pending.slice(start, end).trim(); start = end + 1; }
-      pending = pending.slice(start);
+      // Search only this chunk. Unwrapped chromosome lines may span hundreds
+      // of chunks; repeatedly concatenating and rescanning them is quadratic.
+      while ((end = value.indexOf('\n', start)) !== -1) {
+        const part = value.slice(start, end);
+        if (pending.length) {
+          pending.push(part);
+          const line = pending.join(''); pending = [];
+          batch.push(normalize(line));
+        } else batch.push(normalize(part));
+        start = end + 1;
+        // Bound temporary arrays even when Node supplies a whole Blob at once.
+        if (batch.length === 1024) { yield batch; batch = []; }
+      }
+      if (start < value.length) pending.push(value.slice(start));
+      if (batch.length) yield batch;
     }
-    if (pending) yield pending.trim();
+    if (pending.length) yield [normalize(pending.join(''))];
   } finally { reader.releaseLock(); }
+}
+export async function* lines(blob) {
+  for await (const batch of lineBatches(blob)) for (const line of batch) yield line;
 }
 export async function parseXMFA(blob, saveBlock) {
   const genomes = new Map(); let current = null, members = [], blockCount = 0, lineNumber = 0;
   const finish = () => {
     if (!current) return;
     const sequence = current.parts.join('').toUpperCase(); delete current.parts;
-    let count = 0; for (let i = 0; i < sequence.length; i++) if (sequence.charCodeAt(i) !== 45) count++;
     if (current.start === 0 && current.end === 0) {
-      if (count) throw Error('Absent (0-0) records must contain only gaps.');
+      if (/[^-]/.test(sequence)) throw Error('Absent (0-0) records must contain only gaps.');
       current = null; return;
     }
     if (current.start < 1 || current.end < current.start) throw Error('Coordinates must be positive and start must not exceed end.');
+    const member = indexMember({...current, sequence});
+    // The rank index already counted every full stride; only inspect its tail.
+    const count = consumed(member, member.sequence.length);
     if (count !== current.end - current.start + 1) throw Error('Coordinate span does not match ungapped bases.');
     if (members.some(m => m.genome_id === current.genome_id)) throw Error('A block contains the same sequence more than once.');
     genomes.get(current.genome_id).extent = Math.max(genomes.get(current.genome_id).extent, current.end);
-    members.push(indexMember({...current, sequence})); current = null;
+    members.push(member); current = null;
   };
   const flush = async () => {
     finish(); if (!members.length) return;
@@ -122,7 +146,7 @@ export async function parseXMFA(blob, saveBlock) {
     if (members.some(m => m.sequence.length !== columns)) throw Error('Aligned sequences within a block must have equal column counts.');
     await saveBlock({id: ++blockCount, columns, members}); members = [];
   };
-  for await (const line of lines(blob)) {
+  for await (const batch of lineBatches(blob)) for (const line of batch) {
     lineNumber++;
     if (!line) continue;
     const meta = line.match(/^#Sequence(\d+)File\s+(.+)$/);

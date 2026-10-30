@@ -1,0 +1,152 @@
+{
+  "genomes": 32,
+  "blocks": 1000,
+  "runs": [
+    {
+      "engine": "baseline",
+      "repeat": 0,
+      "full": {
+        "ms": 762.5,
+        "paths": 31000,
+        "nodes": 105296,
+        "handlers": 96000,
+        "svg_sha256": "2ba929a043f6dc74e68f30da2470cabfaef96209e3305aa23b351b8daae4d7c0",
+        "retained_js_heap_bytes": 9392300
+      },
+      "zoomed": {
+        "ms": 4,
+        "paths": 62,
+        "nodes": 432,
+        "handlers": 96,
+        "svg_sha256": "488d9d0fdbdd97b2cb7248b297464fe15bf167a28b8ca03b436727f2a8749bad",
+        "retained_js_heap_bytes": 2614976
+      }
+    },
+    {
+      "engine": "candidate",
+      "repeat": 0,
+      "full": {
+        "ms": 773.5,
+        "paths": 31000,
+        "nodes": 105296,
+        "handlers": 3,
+        "svg_sha256": "2ba929a043f6dc74e68f30da2470cabfaef96209e3305aa23b351b8daae4d7c0",
+        "retained_js_heap_bytes": 3866392
+      },
+      "zoomed": {
+        "ms": 4.099999904632568,
+        "paths": 62,
+        "nodes": 432,
+        "handlers": 3,
+        "svg_sha256": "488d9d0fdbdd97b2cb7248b297464fe15bf167a28b8ca03b436727f2a8749bad",
+        "retained_js_heap_bytes": 2607608
+      }
+    },
+    {
+      "engine": "candidate",
+      "repeat": 1,
+      "full": {
+        "ms": 778.5,
+        "paths": 31000,
+        "nodes": 105296,
+        "handlers": 3,
+        "svg_sha256": "2ba929a043f6dc74e68f30da2470cabfaef96209e3305aa23b351b8daae4d7c0",
+        "retained_js_heap_bytes": 3865576
+      },
+      "zoomed": {
+        "ms": 3.899999976158142,
+        "paths": 62,
+        "nodes": 432,
+        "handlers": 3,
+        "svg_sha256": "488d9d0fdbdd97b2cb7248b297464fe15bf167a28b8ca03b436727f2a8749bad",
+        "retained_js_heap_bytes": 2607592
+      }
+    },
+    {
+      "engine": "baseline",
+      "repeat": 1,
+      "full": {
+        "ms": 764.5,
+        "paths": 31000,
+        "nodes": 105296,
+        "handlers": 96000,
+        "svg_sha256": "2ba929a043f6dc74e68f30da2470cabfaef96209e3305aa23b351b8daae4d7c0",
+        "retained_js_heap_bytes": 9145096
+      },
+      "zoomed": {
+        "ms": 4,
+        "paths": 62,
+        "nodes": 432,
+        "handlers": 96,
+        "svg_sha256": "488d9d0fdbdd97b2cb7248b297464fe15bf167a28b8ca03b436727f2a8749bad",
+        "retained_js_heap_bytes": 2617312
+      }
+    },
+    {
+      "engine": "baseline",
+      "repeat": 2,
+      "full": {
+        "ms": 769.2999999523163,
+        "paths": 31000,
+        "nodes": 105296,
+        "handlers": 96000,
+        "svg_sha256": "2ba929a043f6dc74e68f30da2470cabfaef96209e3305aa23b351b8daae4d7c0",
+        "retained_js_heap_bytes": 9150904
+      },
+      "zoomed": {
+        "ms": 4.100000023841858,
+        "paths": 62,
+        "nodes": 432,
+        "handlers": 96,
+        "svg_sha256": "488d9d0fdbdd97b2cb7248b297464fe15bf167a28b8ca03b436727f2a8749bad",
+        "retained_js_heap_bytes": 2617312
+      }
+    },
+    {
+      "engine": "candidate",
+      "repeat": 2,
+      "full": {
+        "ms": 801,
+        "paths": 31000,
+        "nodes": 105296,
+        "handlers": 3,
+        "svg_sha256": "2ba929a043f6dc74e68f30da2470cabfaef96209e3305aa23b351b8daae4d7c0",
+        "retained_js_heap_bytes": 3804172
+      },
+      "zoomed": {
+        "ms": 3.899999976158142,
+        "paths": 62,
+        "nodes": 432,
+        "handlers": 3,
+        "svg_sha256": "488d9d0fdbdd97b2cb7248b297464fe15bf167a28b8ca03b436727f2a8749bad",
+        "retained_js_heap_bytes": 2610208
+      }
+    }
+  ],
+  "source_sha256": {
+    "baseline": "91e2e8f6170fa5c8daf2f8bc0571acf2b4595075b98d644b35c0bb5ad1616a95",
+    "candidate": "60fdd3b2db6339b2c276db106eed262a6e42c3524aef28902ee4705783dbc37e"
+  },
+  "browser": "156.0.8078.48",
+  "medians_ms": {
+    "full": {
+      "baseline": 764.5,
+      "candidate": 778.5
+    },
+    "zoomed": {
+      "baseline": 4,
+      "candidate": 3.899999976158142
+    }
+  },
+  "median_retained_js_heap_bytes": {
+    "full": {
+      "baseline": 9150904,
+      "candidate": 3865576
+    },
+    "zoomed": {
+      "baseline": 2617312,
+      "candidate": 2607608
+    }
+  },
+  "svg_identical": true
+}

@@ -127,7 +127,7 @@ async function route(path, options = {}) {
   if (p.has('position')) offset = coordinateColumn(await cache.get(aid, bid, integer(p, 'genome_id', 0, 1)), integer(p, 'position', 1, 1));
   if (offset >= block.columns) throw Error('Column offset is outside this block.');
   const members = [];
-  for (const m of block.members) members.push(columnSlice(await cache.get(aid, bid, m.genome_id), offset, limit));
+  for await (const page of cache.pages(aid, bid, block.members.map(m => m.genome_id), offset, limit, block.columns)) members.push(page);
   return {id: bid, columns: block.columns, offset, members};
 }
 // Serialize API operations to bound simultaneous reads/compute and GPU resources.
