@@ -1,0 +1,112 @@
+{
+  "workload": {
+    "genomes": 32,
+    "bases": 100000,
+    "kind": "similar",
+    "seed": 12345,
+    "threads": 8
+  },
+  "power": "Battery; observed during experiment",
+  "sources": [
+    "native-stage-profile-2026-10-30.json",
+    "browser-stage-profile-2026-10-30.json",
+    "browser-stage-default-control-2026-10-30.json",
+    "browser-stage-mimalloc-2026-10-30.json",
+    "browser-stage-mimalloc-control-2026-10-30.json"
+  ],
+  "limitations": [
+    "Two native runs, four browser runs per allocator. Groups ran sequentially: native, default, mimalloc, default, mimalloc; compilation completed before timing.",
+    "Inclusive timers overlap. Disjoint rows are calculated per run before taking medians.",
+    "Timing identifies regions; it does not attribute all remaining differences to specific machine instructions or scheduling costs.",
+    "Allocator candidate remains experimental; browser peak memory has not been measured."
+  ],
+  "native": {
+    "runs": 2,
+    "wall_median_ms": 21599.058770923875,
+    "stages": {
+      "engine": 21425.343229,
+      "backbone": 1344.665792,
+      "progressive": 17196.7199375,
+      "guide_distance": 99.7049165,
+      "alignment_tree": 13817.3873125,
+      "profile_alignment": 11238.777665500002,
+      "gapped_alignment": 11746.655732,
+      "recursive_pairs": 38.449229,
+      "pairwise_hss": 1323.466875,
+      "muscle_refine": 0.0,
+      "muscle_profile": 0.0,
+      "muscle_align": 0.0
+    },
+    "disjoint_median_ms": {
+      "setup_output_cleanup": 2883.9574995000003,
+      "progressive_preparation": 3379.332625,
+      "alignment_and_refinement": 13817.3873125,
+      "backbone": 1344.665792
+    }
+  },
+  "browser_default": {
+    "runs": 4,
+    "wall_median_ms": 29132.035000026226,
+    "stages": {
+      "engine": 29105.872512,
+      "backbone": 1557.420032,
+      "progressive": 24134.734848,
+      "guide_distance": 897.589888,
+      "alignment_tree": 17460.419968000002,
+      "profile_alignment": 14045.533695999999,
+      "gapped_alignment": 14727.035520000001,
+      "recursive_pairs": 34.009856,
+      "pairwise_hss": 1523.327232,
+      "muscle_refine": 0.0,
+      "muscle_profile": 0.0,
+      "muscle_align": 0.0
+    },
+    "disjoint_median_ms": {
+      "setup_output_cleanup": 3403.9673600000006,
+      "progressive_preparation": 6624.555135999999,
+      "alignment_and_refinement": 17460.419968000002,
+      "backbone": 1557.420032
+    }
+  },
+  "browser_mimalloc": {
+    "runs": 4,
+    "wall_median_ms": 27761.535000026226,
+    "wall_range_ms": [
+      25257.420000076294,
+      28116.930000066757
+    ],
+    "stages": {
+      "engine": 27729.575168,
+      "backbone": 1551.95008,
+      "progressive": 22956.56,
+      "guide_distance": 183.13792,
+      "alignment_tree": 17069.530112,
+      "profile_alignment": 13681.071488000001,
+      "gapped_alignment": 14640.83712,
+      "recursive_pairs": 35.772543999999996,
+      "pairwise_hss": 1518.0098560000001,
+      "muscle_refine": 0.0,
+      "muscle_profile": 0.0,
+      "muscle_align": 0.0
+    },
+    "disjoint_median_ms": {
+      "setup_output_cleanup": 3328.935167999998,
+      "progressive_preparation": 5880.512256000002,
+      "alignment_and_refinement": 17069.530112,
+      "backbone": 1551.95008
+    }
+  },
+  "browser_artifacts_match_production": true,
+  "native_artifacts_match_prior_production": true,
+  "allocator_runtime_reduction_percent": 4.704443064134612,
+  "allocator_parity": {
+    "report": "browser-stage-mimalloc-parity-2026-10-30.json",
+    "cases": 6,
+    "runs": 12,
+    "threads": [
+      1,
+      8
+    ],
+    "all_three_artifacts_identical": true
+  }
+}

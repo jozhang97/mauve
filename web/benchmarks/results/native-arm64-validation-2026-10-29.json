@@ -1,0 +1,104 @@
+{
+  "native_build": {
+    "target": "arm64-macos",
+    "compiler": "Apple clang version 17.0.0 (clang-1700.6.3.2)\nTarget: arm64-apple-darwin27.0.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+    "sources": {
+      "mauveAligner": "3e8293836119a8a6cc883b48f234947cf55387c5",
+      "libMems": "1f067601ae48f898dc3c9b92a3b7bf636d04fc70",
+      "libGenome": "41b5c8bc02048f41dbd0d1e116b3bca8b4a384db",
+      "muscle": "ec6ab52e7a667e9d2fa70e89b3d2d9adb81f074e"
+    },
+    "libomp": "/opt/homebrew/Cellar/libomp/23.1.2",
+    "max_threads": 16,
+    "default_threads": "min(8, available processors)",
+    "sdk": "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk",
+    "flags": [
+      "-isysroot",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk",
+      "-O3",
+      "-flto",
+      "-DNDEBUG",
+      "-D_LIB",
+      "-DUSE_LIBC",
+      "-DBOOST_NO_CXX11_SCOPED_ENUMS",
+      "-ffp-contract=off",
+      "-Xpreprocessor",
+      "-fopenmp",
+      "-I/opt/homebrew/Cellar/libomp/23.1.2/include",
+      "-I/Users/jzhang/code/mauve/web/native/include",
+      "-I/Users/jzhang/code/mauve/web/wasm/optimizations",
+      "-Wno-deprecated-declarations",
+      "-Wno-register",
+      "-Wno-inconsistent-missing-override",
+      "-Wno-c++11-narrowing",
+      "-DMAUVE_PROFILE_ROWS",
+      "-DMAUVE_FAST_TRANSLATE",
+      "-DMAUVE_SEED_LOOKUP",
+      "-DMAUVE_COMPACT_TRACE",
+      "-DMAUVE_LAZY_TRACE",
+      "-DMAUVE_ROW_GAPS",
+      "-DMAUVE_LOCAL_D_SCORE",
+      "-I/private/tmp/mauve-arm64-src/libGenome",
+      "-I/private/tmp/mauve-arm64-src/muscle",
+      "-I/private/tmp/mauve-arm64-src/libMems",
+      "-I/private/tmp/mauve-arm64-src/boost_1_65_1"
+    ],
+    "sanitizer": null,
+    "local_sources": {
+      "native/build.py": "eea79ac2661d31462a9fe4b47526905b11bb42607eed829ba9e8313799ef5a82",
+      "native/main.cpp": "e23b5f9d44c07a6db587744ea7bcab05c21c90356f5e23852747f87f868aa909",
+      "native/include/wasm_simd128.h": "3a895566501a3bfad26c883cd04355de2927f71c6434ce12e386cac0d51a4cca",
+      "wasm/build.py": "4a6b0f211b85bbeede7fd342ac610f2a6514e1e4dcacd6e3212a431e9b022471",
+      "wasm/optimizations/mauve_profile_row.h": "91be9e2ff41869ecb12ec8fc804444ecb1aced70d80b542e472bce499e29ed43",
+      "wasm/optimizations/mauve_seed.h": "550a1b368807a64f7fa9035912445a97ed96a86b7a37e82d6465daea38df314f",
+      "wasm/optimizations/profile_row.cpp": "06129c53a4e8a31c9c64cc3466b7a9da6c65e9b3f4a585fcf015eaa3fb92356e",
+      "wasm/optimizations/seed_lookup.cpp": "3f0e13ccef48ba96a5e77d21b0fe43313f7420d23b4bea53462504f136f05286"
+    },
+    "executable_sha256": "ea94e8701f87e477cf224d1f06970a06aca222519d7989a6f2e816e0c593565b"
+  },
+  "wasm_sha256": "9e2dfa5c6a05754bd9032c204bd29425a3132f1ec3b0c56dadb89d2d372227f3",
+  "checks": {
+    "node_tests_passed": 40,
+    "server_browser_build_tests_passed": 26,
+    "optional_tests_skipped": 2,
+    "real_native_server_job_passed": true,
+    "neon_profile_cases": 8000,
+    "seed_cases": 100096,
+    "thread_bounds_checked": [
+      "0",
+      "17",
+      "2,4",
+      "garbage",
+      "1",
+      "8",
+      "16"
+    ],
+    "full_native_wasm_parity_cases": [
+      "similar 12x100000",
+      "divergent 4x20000",
+      "rearranged 4x50000",
+      "repeats 4x50000",
+      "ambiguous 4x20000",
+      "similar 32x100000"
+    ],
+    "normalization": "Only input-file path fields in XMFA for cross-engine parity; no normalization for thread-scaling hashes."
+  },
+  "race_detection": {
+    "tool": "ThreadSanitizer + LLVM Archer",
+    "compiler": "/Library/Developer/CommandLineTools/usr/bin/clang++",
+    "archer_source": "https://raw.githubusercontent.com/llvm/llvm-project/llvmorg-21.1.8/openmp/tools/archer/ompt-tsan.cpp",
+    "archer_source_sha256": "cc00f7dd02f2c8591b4467c20cd573b96054d4950079d52ef6c9cb3ab42ef8fe",
+    "tsan_options": "halt_on_error=1:ignore_noninstrumented_modules=1",
+    "threads": 8,
+    "passed": [
+      "five synthetic cases, each 4x5000",
+      "similar 12x20000"
+    ],
+    "limits": [
+      "Xcode sanitizer runtime segfaulted on an empty-program smoke test; used newer Command Line Tools runtime.",
+      "Plain TSan cannot model the installed OpenMP barriers; Archer loaded successfully and supplied synchronization annotations.",
+      "Sanitized 12x100000 run exceeded the 60-second limit. Normal full-size parity passed; bounded sanitizer cases passed.",
+      "These checks do not prove race freedom for every input."
+    ]
+  }
+}

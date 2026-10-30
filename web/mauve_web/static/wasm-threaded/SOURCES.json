@@ -1,0 +1,54 @@
+{
+  "compiler": "Emscripten 4.0.15",
+  "configuration": {
+    "threaded": true,
+    "parallel_refinement_windows": true,
+    "local_deletion_score": true,
+    "row_gap_loads": true,
+    "lazy_traceback": true,
+    "compact_traceback": true,
+    "seed_lookup": true,
+    "packed_profiles": true,
+    "hoisted_homology_state": true,
+    "lto": true,
+    "profile_rows": true,
+    "fast_translate": true,
+    "exceptions": "wasm",
+    "profiling": false
+  },
+  "local_sources": {
+    "build.py": "7e70181e8438a29eea0da812c20a8e19716b669da7f63a1f943fec4d3f573d15",
+    "pthread_build.py": "e3f58423340d51c433d2a43969e1162beb1c3d844861c4385af0273d7880f407",
+    "optimizations/mauve_profile_row.h": "91be9e2ff41869ecb12ec8fc804444ecb1aced70d80b542e472bce499e29ed43",
+    "optimizations/mauve_seed.h": "550a1b368807a64f7fa9035912445a97ed96a86b7a37e82d6465daea38df314f",
+    "optimizations/muscle_window_settings.h": "76960a9d280bdf823e02178da5425330df0d87fe2fdedd439ddb41c1acf646f7",
+    "optimizations/profile_row.cpp": "06129c53a4e8a31c9c64cc3466b7a9da6c65e9b3f4a585fcf015eaa3fb92356e",
+    "optimizations/seed_lookup.cpp": "3f0e13ccef48ba96a5e77d21b0fe43313f7420d23b4bea53462504f136f05286",
+    "optimizations/thread_pool.cpp": "5019a3d3bc5176297ff9f32af10f994c3c3546bac993bbc4d5071223c65e2dc1",
+    "optimizations/thread_pool.h": "70a16deeda6d4d741fdaa89051c4b19e67d40362ff32edc2414ae08f317d1564"
+  },
+  "sources": {
+    "mauveAligner": {
+      "url": "https://github.com/koadman/mauveAligner",
+      "revision": "3e8293836119a8a6cc883b48f234947cf55387c5"
+    },
+    "libMems": {
+      "url": "https://github.com/koadman/libMems",
+      "revision": "1f067601ae48f898dc3c9b92a3b7bf636d04fc70"
+    },
+    "libGenome": {
+      "url": "https://github.com/koadman/libGenome",
+      "revision": "41b5c8bc02048f41dbd0d1e116b3bca8b4a384db"
+    },
+    "muscle": {
+      "url": "https://github.com/koadman/muscle",
+      "revision": "ec6ab52e7a667e9d2fa70e89b3d2d9adb81f074e"
+    }
+  },
+  "boost": {
+    "url": "https://archives.boost.io/release/1.65.1/source/boost_1_65_1.tar.bz2",
+    "sha256": "9807a5d16566c57fd74fb522764e0b134a8bbe6b6e8967b83afefd30dcd3be81"
+  },
+  "wasm_sha256": "3d7a11830bf8c87d18e238edd08bfa6ba34b957f67a2f43417cf04c406b63fdf",
+  "rebuild": "python3 build.py --work /tmp/mauve-wasm-build --output ./rebuilt --threaded"
+}

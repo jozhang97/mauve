@@ -1,0 +1,168 @@
+{
+  "measured_at": "2026-10-30T15:34:12.992673+00:00",
+  "platform": "macOS-27.0.1-arm64-arm-64bit",
+  "engine": "/private/tmp/mauve-profile-native/progressiveMauve",
+  "engine_sha256": "2037f5bc141106a9bad6490ea77396cf003fd9c0c0956b231f43681b09aa9515",
+  "timing": "Whole native process wall time, including startup; each repetition reverses thread-count order.",
+  "threads": [
+    8
+  ],
+  "repeats": 2,
+  "cases": [
+    {
+      "kind": "similar",
+      "genomes": 32,
+      "bases": 100000,
+      "runs": [
+        {
+          "repeat": 0,
+          "threads": 8,
+          "wall_ms": 21782.74487494491,
+          "peak_rss_bytes": 234078208,
+          "artifacts": {
+            "alignment.xmfa": {
+              "bytes": 3242575,
+              "sha256": "0b5ea237e5ddb64664ae0d4626ddb6c40b32bcd613d1bfc9abd55d00f4dbd407"
+            },
+            "guide.tree": {
+              "bytes": 1011,
+              "sha256": "13425879a87254c42dd47409761ee228282a3db3f5ad742713ec87f8c733f952"
+            },
+            "alignment.backbone": {
+              "bytes": 1196,
+              "sha256": "f202af0de63294189a33741379f93a26cf0bafdc0ce970e7621557fb1d51b65c"
+            }
+          },
+          "stages": {
+            "engine": {
+              "inclusive_ms": 21504.411792,
+              "calls": 1
+            },
+            "backbone": {
+              "inclusive_ms": 1350.5915,
+              "calls": 1
+            },
+            "progressive": {
+              "inclusive_ms": 17263.107458,
+              "calls": 1
+            },
+            "guide_distance": {
+              "inclusive_ms": 100.592166,
+              "calls": 1
+            },
+            "alignment_tree": {
+              "inclusive_ms": 13879.136125,
+              "calls": 1
+            },
+            "profile_alignment": {
+              "inclusive_ms": 11298.281085,
+              "calls": 31
+            },
+            "gapped_alignment": {
+              "inclusive_ms": 11784.218422,
+              "calls": 41
+            },
+            "recursive_pairs": {
+              "inclusive_ms": 38.734749,
+              "calls": 31
+            },
+            "pairwise_hss": {
+              "inclusive_ms": 1328.97675,
+              "calls": 2
+            },
+            "muscle_refine": {
+              "inclusive_ms": 0.0,
+              "calls": 0
+            },
+            "muscle_profile": {
+              "inclusive_ms": 0.0,
+              "calls": 0
+            },
+            "muscle_align": {
+              "inclusive_ms": 0.0,
+              "calls": 0
+            }
+          },
+          "cpu_seconds": 29.23,
+          "average_cpu_cores": 1.3418878184457423
+        },
+        {
+          "repeat": 1,
+          "threads": 8,
+          "wall_ms": 21415.37266690284,
+          "peak_rss_bytes": 226770944,
+          "artifacts": {
+            "alignment.xmfa": {
+              "bytes": 3242575,
+              "sha256": "0b5ea237e5ddb64664ae0d4626ddb6c40b32bcd613d1bfc9abd55d00f4dbd407"
+            },
+            "guide.tree": {
+              "bytes": 1011,
+              "sha256": "13425879a87254c42dd47409761ee228282a3db3f5ad742713ec87f8c733f952"
+            },
+            "alignment.backbone": {
+              "bytes": 1196,
+              "sha256": "f202af0de63294189a33741379f93a26cf0bafdc0ce970e7621557fb1d51b65c"
+            }
+          },
+          "stages": {
+            "engine": {
+              "inclusive_ms": 21346.274666,
+              "calls": 1
+            },
+            "backbone": {
+              "inclusive_ms": 1338.740084,
+              "calls": 1
+            },
+            "progressive": {
+              "inclusive_ms": 17130.332417,
+              "calls": 1
+            },
+            "guide_distance": {
+              "inclusive_ms": 98.817667,
+              "calls": 1
+            },
+            "alignment_tree": {
+              "inclusive_ms": 13755.6385,
+              "calls": 1
+            },
+            "profile_alignment": {
+              "inclusive_ms": 11179.274246,
+              "calls": 31
+            },
+            "gapped_alignment": {
+              "inclusive_ms": 11709.093042,
+              "calls": 41
+            },
+            "recursive_pairs": {
+              "inclusive_ms": 38.163709,
+              "calls": 31
+            },
+            "pairwise_hss": {
+              "inclusive_ms": 1317.957,
+              "calls": 2
+            },
+            "muscle_refine": {
+              "inclusive_ms": 0.0,
+              "calls": 0
+            },
+            "muscle_profile": {
+              "inclusive_ms": 0.0,
+              "calls": 0
+            },
+            "muscle_align": {
+              "inclusive_ms": 0.0,
+              "calls": 0
+            }
+          },
+          "cpu_seconds": 29.009999999999998,
+          "average_cpu_cores": 1.3546343764932258
+        }
+      ],
+      "median_ms": {
+        "8": 21599.058770923875
+      },
+      "artifacts_identical": true
+    }
+  ]
+}

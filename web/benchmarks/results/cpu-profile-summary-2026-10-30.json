@@ -1,0 +1,816 @@
+{
+  "sampling_note": "Separate diagnostic runs, excluded from timing comparisons. Chrome samples first 23 seconds at 2ms intervals; native sample captures first 18 seconds at 2ms. This window targets preparation/refinement and excludes most backbone work. LTO inlines some functions into their callers. Idle percentages describe the sampled window, not the whole alignment.",
+  "browser": "156.0.8078.76",
+  "errors": [],
+  "workers": [
+    {
+      "target_type": "worker",
+      "url": "",
+      "samples": 9230,
+      "idle_samples": 9190,
+      "idle_percent": 99.56663055254604,
+      "top_functions": [
+        {
+          "name": "(idle)",
+          "self_samples": 9190
+        },
+        {
+          "name": "emscripten_futex_wake",
+          "self_samples": 12
+        },
+        {
+          "name": "zeroMemory",
+          "self_samples": 5
+        },
+        {
+          "name": "__emscripten_thread_mailbox_await",
+          "self_samples": 2
+        },
+        {
+          "name": "self.onmessage",
+          "self_samples": 1
+        },
+        {
+          "name": "__wasm_call_ctors",
+          "self_samples": 1
+        },
+        {
+          "name": "open",
+          "self_samples": 1
+        },
+        {
+          "name": "updateMemoryViews",
+          "self_samples": 1
+        },
+        {
+          "name": "_fd_read",
+          "self_samples": 1
+        },
+        {
+          "name": "___syscall_stat64",
+          "self_samples": 1
+        },
+        {
+          "name": "(garbage collector)",
+          "self_samples": 1
+        },
+        {
+          "name": "isAbs",
+          "self_samples": 1
+        },
+        {
+          "name": "js-to-wasm::i",
+          "self_samples": 1
+        },
+        {
+          "name": "pthread_mutex_lock",
+          "self_samples": 1
+        },
+        {
+          "name": "lookupNode",
+          "self_samples": 1
+        },
+        {
+          "name": "setattr",
+          "self_samples": 1
+        },
+        {
+          "name": "write",
+          "self_samples": 1
+        },
+        {
+          "name": "__emscripten_receive_on_main_thread_js",
+          "self_samples": 1
+        },
+        {
+          "name": "maybeExit",
+          "self_samples": 1
+        },
+        {
+          "name": "pthread_setspecific",
+          "self_samples": 1
+        }
+      ]
+    },
+    {
+      "target_type": "worker",
+      "url": "",
+      "samples": 9222,
+      "idle_samples": 8867,
+      "idle_percent": 96.15050965083496,
+      "top_functions": [
+        {
+          "name": "(idle)",
+          "self_samples": 8867
+        },
+        {
+          "name": "emscripten_futex_wake",
+          "self_samples": 119
+        },
+        {
+          "name": "__timedwait_cp",
+          "self_samples": 97
+        },
+        {
+          "name": "pthread_mutex_lock",
+          "self_samples": 31
+        },
+        {
+          "name": "mems::ProgressiveAligner::CreatePairwiseBPDistance(boost::multi_array<double, 2ul, std::__2::allocator<double>>&)::$_0::operator()(unsigned long) const",
+          "self_samples": 18
+        },
+        {
+          "name": "void mems::EliminateOverlaps_v2<mems::GenericMatchList<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*>>(mems::GenericMatchList<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*>&, bool)",
+          "self_samples": 12
+        },
+        {
+          "name": "__pthread_mutex_trylock",
+          "self_samples": 12
+        },
+        {
+          "name": "emscripten_builtin_malloc",
+          "self_samples": 12
+        },
+        {
+          "name": "mems::GetAlignment(mems::AbstractMatch const&, std::__2::vector<genome::gnSequence*, std::__2::allocator<genome::gnSequence*>> const&, std::__2::vector<std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>>, std::__2::allocator<std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>>>>&)",
+          "self_samples": 10
+        },
+        {
+          "name": "void std::__2::__introsort<std::__2::_ClassicAlgPolicy, mems::SingleStartComparator<mems::AbstractMatch>&, mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>**, false>(mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>**, mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>**, mems::SingleStartComparator<mems::AbstractMatch>&, std::__2::iterator_traits<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>**>::difference_type, bool)",
+          "self_samples": 8
+        },
+        {
+          "name": "pthread_mutex_unlock",
+          "self_samples": 6
+        },
+        {
+          "name": "mems::SortedMerList::GetSeedMer(unsigned long long) const",
+          "self_samples": 5
+        },
+        {
+          "name": "void mems::ProgressiveAligner::recurseOnPairs<mems::CompactGappedAlignment<mems::AbstractGappedAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>>>(std::__2::vector<unsigned long, std::__2::allocator<unsigned long>> const&, std::__2::vector<unsigned long, std::__2::allocator<unsigned long>> const&, mems::CompactGappedAlignment<mems::AbstractGappedAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>> const&, Matrix<mems::GenericMatchList<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*>>&, Matrix<std::__2::vector<std::__2::pair<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*, mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*>, std::__2::allocator<std::__2::pair<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*, mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*>>>>&, Matrix<std::__2::vector<std::__2::pair<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*, mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*>, std::__2::allocator<std::__2::pair<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*, mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*>>>>&, boost::multi_array<std::__2::vector<std::__2::vector<long long, std::__2::allocator<long long>>, std::__2::allocator<std::__2::vector<long long, std::__2::allocator<long long>>>>, 2ul, std::__2::allocator<std::__2::vector<std::__2::vector<long long, std::__2::allocator<long long>>, std::__2::allocator<std::__2::vector<long long, std::__2::allocator<long long>>>>>>&)::'lambda'(unsigned long)::operator()(unsigned long) const",
+          "self_samples": 4
+        },
+        {
+          "name": "mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>::LeftEnd(unsigned int) const",
+          "self_samples": 3
+        },
+        {
+          "name": "mems::computeMatchScores(std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>> const&, std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>> const&, mems::PairwiseScoringScheme const&, std::__2::vector<int, std::__2::allocator<int>>&)",
+          "self_samples": 3
+        },
+        {
+          "name": "mems::SortedMerList::RevCompMer(unsigned long long, int) const",
+          "self_samples": 2
+        },
+        {
+          "name": "mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>::Free()",
+          "self_samples": 2
+        },
+        {
+          "name": "void mems::SeedOccurrenceList::construct<mems::SortedMerList>(mems::SortedMerList&)",
+          "self_samples": 1
+        },
+        {
+          "name": "mems::FileSML::operator[](unsigned long long)",
+          "self_samples": 1
+        },
+        {
+          "name": "emscripten_futex_wait",
+          "self_samples": 1
+        }
+      ]
+    },
+    {
+      "target_type": "worker",
+      "url": "",
+      "samples": 9219,
+      "idle_samples": 8863,
+      "idle_percent": 96.13840980583578,
+      "top_functions": [
+        {
+          "name": "(idle)",
+          "self_samples": 8863
+        },
+        {
+          "name": "emscripten_futex_wake",
+          "self_samples": 111
+        },
+        {
+          "name": "__timedwait_cp",
+          "self_samples": 103
+        },
+        {
+          "name": "pthread_mutex_lock",
+          "self_samples": 42
+        },
+        {
+          "name": "mems::ProgressiveAligner::CreatePairwiseBPDistance(boost::multi_array<double, 2ul, std::__2::allocator<double>>&)::$_0::operator()(unsigned long) const",
+          "self_samples": 14
+        },
+        {
+          "name": "void mems::EliminateOverlaps_v2<mems::GenericMatchList<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*>>(mems::GenericMatchList<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*>&, bool)",
+          "self_samples": 13
+        },
+        {
+          "name": "emscripten_builtin_malloc",
+          "self_samples": 10
+        },
+        {
+          "name": "pthread_mutex_unlock",
+          "self_samples": 9
+        },
+        {
+          "name": "mems::GetAlignment(mems::AbstractMatch const&, std::__2::vector<genome::gnSequence*, std::__2::allocator<genome::gnSequence*>> const&, std::__2::vector<std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>>, std::__2::allocator<std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>>>>&)",
+          "self_samples": 9
+        },
+        {
+          "name": "__pthread_mutex_trylock",
+          "self_samples": 7
+        },
+        {
+          "name": "void std::__2::__introsort<std::__2::_ClassicAlgPolicy, mems::SingleStartComparator<mems::AbstractMatch>&, mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>**, false>(mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>**, mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>**, mems::SingleStartComparator<mems::AbstractMatch>&, std::__2::iterator_traits<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>**>::difference_type, bool)",
+          "self_samples": 5
+        },
+        {
+          "name": "void mems::ProgressiveAligner::recurseOnPairs<mems::CompactGappedAlignment<mems::AbstractGappedAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>>>(std::__2::vector<unsigned long, std::__2::allocator<unsigned long>> const&, std::__2::vector<unsigned long, std::__2::allocator<unsigned long>> const&, mems::CompactGappedAlignment<mems::AbstractGappedAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>> const&, Matrix<mems::GenericMatchList<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*>>&, Matrix<std::__2::vector<std::__2::pair<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*, mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*>, std::__2::allocator<std::__2::pair<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*, mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*>>>>&, Matrix<std::__2::vector<std::__2::pair<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*, mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*>, std::__2::allocator<std::__2::pair<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*, mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*>>>>&, boost::multi_array<std::__2::vector<std::__2::vector<long long, std::__2::allocator<long long>>, std::__2::allocator<std::__2::vector<long long, std::__2::allocator<long long>>>>, 2ul, std::__2::allocator<std::__2::vector<std::__2::vector<long long, std::__2::allocator<long long>>, std::__2::allocator<std::__2::vector<long long, std::__2::allocator<long long>>>>>>&)::'lambda'(unsigned long)::operator()(unsigned long) const",
+          "self_samples": 4
+        },
+        {
+          "name": "mems::SortedMerList::GetSeedMer(unsigned long long) const",
+          "self_samples": 3
+        },
+        {
+          "name": "void mems::SeedOccurrenceList::construct<mems::SortedMerList>(mems::SortedMerList&)",
+          "self_samples": 3
+        },
+        {
+          "name": "emscripten_futex_wait",
+          "self_samples": 3
+        },
+        {
+          "name": "mems::FileSML::operator[](unsigned long long)",
+          "self_samples": 2
+        },
+        {
+          "name": "mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>::Free()",
+          "self_samples": 2
+        },
+        {
+          "name": "mems::computeMatchScores(std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>> const&, std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>> const&, mems::PairwiseScoringScheme const&, std::__2::vector<int, std::__2::allocator<int>>&)",
+          "self_samples": 2
+        },
+        {
+          "name": "emscripten_builtin_free",
+          "self_samples": 2
+        },
+        {
+          "name": "mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>::Start(unsigned int) const",
+          "self_samples": 2
+        }
+      ]
+    },
+    {
+      "target_type": "worker",
+      "url": "",
+      "samples": 9221,
+      "idle_samples": 8864,
+      "idle_percent": 96.12840255937535,
+      "top_functions": [
+        {
+          "name": "(idle)",
+          "self_samples": 8864
+        },
+        {
+          "name": "emscripten_futex_wake",
+          "self_samples": 111
+        },
+        {
+          "name": "__timedwait_cp",
+          "self_samples": 106
+        },
+        {
+          "name": "pthread_mutex_lock",
+          "self_samples": 37
+        },
+        {
+          "name": "mems::ProgressiveAligner::CreatePairwiseBPDistance(boost::multi_array<double, 2ul, std::__2::allocator<double>>&)::$_0::operator()(unsigned long) const",
+          "self_samples": 19
+        },
+        {
+          "name": "emscripten_builtin_malloc",
+          "self_samples": 10
+        },
+        {
+          "name": "pthread_mutex_unlock",
+          "self_samples": 9
+        },
+        {
+          "name": "mems::GetAlignment(mems::AbstractMatch const&, std::__2::vector<genome::gnSequence*, std::__2::allocator<genome::gnSequence*>> const&, std::__2::vector<std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>>, std::__2::allocator<std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>>>>&)",
+          "self_samples": 9
+        },
+        {
+          "name": "__pthread_mutex_trylock",
+          "self_samples": 8
+        },
+        {
+          "name": "void mems::EliminateOverlaps_v2<mems::GenericMatchList<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*>>(mems::GenericMatchList<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*>&, bool)",
+          "self_samples": 8
+        },
+        {
+          "name": "mems::computeMatchScores(std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>> const&, std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>> const&, mems::PairwiseScoringScheme const&, std::__2::vector<int, std::__2::allocator<int>>&)",
+          "self_samples": 6
+        },
+        {
+          "name": "mems::SortedMerList::RevCompMer(unsigned long long, int) const",
+          "self_samples": 5
+        },
+        {
+          "name": "void std::__2::__introsort<std::__2::_ClassicAlgPolicy, mems::SingleStartComparator<mems::AbstractMatch>&, mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>**, false>(mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>**, mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>**, mems::SingleStartComparator<mems::AbstractMatch>&, std::__2::iterator_traits<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>**>::difference_type, bool)",
+          "self_samples": 5
+        },
+        {
+          "name": "void mems::ProgressiveAligner::recurseOnPairs<mems::CompactGappedAlignment<mems::AbstractGappedAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>>>(std::__2::vector<unsigned long, std::__2::allocator<unsigned long>> const&, std::__2::vector<unsigned long, std::__2::allocator<unsigned long>> const&, mems::CompactGappedAlignment<mems::AbstractGappedAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>> const&, Matrix<mems::GenericMatchList<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*>>&, Matrix<std::__2::vector<std::__2::pair<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*, mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*>, std::__2::allocator<std::__2::pair<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*, mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*>>>>&, Matrix<std::__2::vector<std::__2::pair<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*, mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*>, std::__2::allocator<std::__2::pair<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*, mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*>>>>&, boost::multi_array<std::__2::vector<std::__2::vector<long long, std::__2::allocator<long long>>, std::__2::allocator<std::__2::vector<long long, std::__2::allocator<long long>>>>, 2ul, std::__2::allocator<std::__2::vector<std::__2::vector<long long, std::__2::allocator<long long>>, std::__2::allocator<std::__2::vector<long long, std::__2::allocator<long long>>>>>>&)::'lambda'(unsigned long)::operator()(unsigned long) const",
+          "self_samples": 5
+        },
+        {
+          "name": "mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>::LeftEnd(unsigned int) const",
+          "self_samples": 4
+        },
+        {
+          "name": "void mems::SeedOccurrenceList::construct<mems::SortedMerList>(mems::SortedMerList&)",
+          "self_samples": 2
+        },
+        {
+          "name": "mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>::HybridAbstractMatch(mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>> const&)",
+          "self_samples": 2
+        },
+        {
+          "name": "emscripten_futex_wait",
+          "self_samples": 1
+        },
+        {
+          "name": "mems::SortedMerList::GetSeedMer(unsigned long long) const",
+          "self_samples": 1
+        },
+        {
+          "name": "mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>::Copy() const",
+          "self_samples": 1
+        }
+      ]
+    },
+    {
+      "target_type": "worker",
+      "url": "",
+      "samples": 9221,
+      "idle_samples": 8863,
+      "idle_percent": 96.11755774861729,
+      "top_functions": [
+        {
+          "name": "(idle)",
+          "self_samples": 8863
+        },
+        {
+          "name": "emscripten_futex_wake",
+          "self_samples": 113
+        },
+        {
+          "name": "__timedwait_cp",
+          "self_samples": 89
+        },
+        {
+          "name": "pthread_mutex_lock",
+          "self_samples": 38
+        },
+        {
+          "name": "mems::ProgressiveAligner::CreatePairwiseBPDistance(boost::multi_array<double, 2ul, std::__2::allocator<double>>&)::$_0::operator()(unsigned long) const",
+          "self_samples": 18
+        },
+        {
+          "name": "__pthread_mutex_trylock",
+          "self_samples": 11
+        },
+        {
+          "name": "void mems::EliminateOverlaps_v2<mems::GenericMatchList<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*>>(mems::GenericMatchList<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*>&, bool)",
+          "self_samples": 10
+        },
+        {
+          "name": "void std::__2::__introsort<std::__2::_ClassicAlgPolicy, mems::SingleStartComparator<mems::AbstractMatch>&, mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>**, false>(mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>**, mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>**, mems::SingleStartComparator<mems::AbstractMatch>&, std::__2::iterator_traits<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>**>::difference_type, bool)",
+          "self_samples": 9
+        },
+        {
+          "name": "pthread_mutex_unlock",
+          "self_samples": 9
+        },
+        {
+          "name": "mems::GetAlignment(mems::AbstractMatch const&, std::__2::vector<genome::gnSequence*, std::__2::allocator<genome::gnSequence*>> const&, std::__2::vector<std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>>, std::__2::allocator<std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>>>>&)",
+          "self_samples": 9
+        },
+        {
+          "name": "emscripten_builtin_malloc",
+          "self_samples": 8
+        },
+        {
+          "name": "void mems::ProgressiveAligner::recurseOnPairs<mems::CompactGappedAlignment<mems::AbstractGappedAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>>>(std::__2::vector<unsigned long, std::__2::allocator<unsigned long>> const&, std::__2::vector<unsigned long, std::__2::allocator<unsigned long>> const&, mems::CompactGappedAlignment<mems::AbstractGappedAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>> const&, Matrix<mems::GenericMatchList<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*>>&, Matrix<std::__2::vector<std::__2::pair<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*, mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*>, std::__2::allocator<std::__2::pair<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*, mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*>>>>&, Matrix<std::__2::vector<std::__2::pair<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*, mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*>, std::__2::allocator<std::__2::pair<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*, mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*>>>>&, boost::multi_array<std::__2::vector<std::__2::vector<long long, std::__2::allocator<long long>>, std::__2::allocator<std::__2::vector<long long, std::__2::allocator<long long>>>>, 2ul, std::__2::allocator<std::__2::vector<std::__2::vector<long long, std::__2::allocator<long long>>, std::__2::allocator<std::__2::vector<long long, std::__2::allocator<long long>>>>>>&)::'lambda'(unsigned long)::operator()(unsigned long) const",
+          "self_samples": 8
+        },
+        {
+          "name": "mems::computeMatchScores(std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>> const&, std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>> const&, mems::PairwiseScoringScheme const&, std::__2::vector<int, std::__2::allocator<int>>&)",
+          "self_samples": 6
+        },
+        {
+          "name": "mems::SortedMerList::GetSeedMer(unsigned long long) const",
+          "self_samples": 3
+        },
+        {
+          "name": "mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>::LeftEnd(unsigned int) const",
+          "self_samples": 3
+        },
+        {
+          "name": "emscripten_builtin_free",
+          "self_samples": 3
+        },
+        {
+          "name": "void mems::SeedOccurrenceList::construct<mems::SortedMerList>(mems::SortedMerList&)",
+          "self_samples": 2
+        },
+        {
+          "name": "mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>::HybridAbstractMatch(mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>> const&)",
+          "self_samples": 2
+        },
+        {
+          "name": "std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>>::__grow_by_and_replace(unsigned long, unsigned long, unsigned long, unsigned long, unsigned long, unsigned long, char const*)",
+          "self_samples": 2
+        },
+        {
+          "name": "mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>** std::__2::__partition_with_equals_on_left[abi:ne200100]<std::__2::_ClassicAlgPolicy, mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>**, mems::SingleStartComparator<mems::AbstractMatch>&>(mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>**, mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>**, mems::SingleStartComparator<mems::AbstractMatch>&)",
+          "self_samples": 2
+        }
+      ]
+    },
+    {
+      "target_type": "worker",
+      "url": "",
+      "samples": 9220,
+      "idle_samples": 8863,
+      "idle_percent": 96.12798264642082,
+      "top_functions": [
+        {
+          "name": "(idle)",
+          "self_samples": 8863
+        },
+        {
+          "name": "__timedwait_cp",
+          "self_samples": 121
+        },
+        {
+          "name": "emscripten_futex_wake",
+          "self_samples": 102
+        },
+        {
+          "name": "pthread_mutex_lock",
+          "self_samples": 33
+        },
+        {
+          "name": "mems::ProgressiveAligner::CreatePairwiseBPDistance(boost::multi_array<double, 2ul, std::__2::allocator<double>>&)::$_0::operator()(unsigned long) const",
+          "self_samples": 18
+        },
+        {
+          "name": "emscripten_builtin_malloc",
+          "self_samples": 14
+        },
+        {
+          "name": "__pthread_mutex_trylock",
+          "self_samples": 13
+        },
+        {
+          "name": "void mems::EliminateOverlaps_v2<mems::GenericMatchList<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*>>(mems::GenericMatchList<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*>&, bool)",
+          "self_samples": 9
+        },
+        {
+          "name": "pthread_mutex_unlock",
+          "self_samples": 9
+        },
+        {
+          "name": "void mems::ProgressiveAligner::recurseOnPairs<mems::CompactGappedAlignment<mems::AbstractGappedAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>>>(std::__2::vector<unsigned long, std::__2::allocator<unsigned long>> const&, std::__2::vector<unsigned long, std::__2::allocator<unsigned long>> const&, mems::CompactGappedAlignment<mems::AbstractGappedAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>> const&, Matrix<mems::GenericMatchList<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*>>&, Matrix<std::__2::vector<std::__2::pair<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*, mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*>, std::__2::allocator<std::__2::pair<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*, mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*>>>>&, Matrix<std::__2::vector<std::__2::pair<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*, mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*>, std::__2::allocator<std::__2::pair<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*, mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*>>>>&, boost::multi_array<std::__2::vector<std::__2::vector<long long, std::__2::allocator<long long>>, std::__2::allocator<std::__2::vector<long long, std::__2::allocator<long long>>>>, 2ul, std::__2::allocator<std::__2::vector<std::__2::vector<long long, std::__2::allocator<long long>>, std::__2::allocator<std::__2::vector<long long, std::__2::allocator<long long>>>>>>&)::'lambda'(unsigned long)::operator()(unsigned long) const",
+          "self_samples": 6
+        },
+        {
+          "name": "mems::GetAlignment(mems::AbstractMatch const&, std::__2::vector<genome::gnSequence*, std::__2::allocator<genome::gnSequence*>> const&, std::__2::vector<std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>>, std::__2::allocator<std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>>>>&)",
+          "self_samples": 5
+        },
+        {
+          "name": "void std::__2::__introsort<std::__2::_ClassicAlgPolicy, mems::SingleStartComparator<mems::AbstractMatch>&, mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>**, false>(mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>**, mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>**, mems::SingleStartComparator<mems::AbstractMatch>&, std::__2::iterator_traits<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>**>::difference_type, bool)",
+          "self_samples": 5
+        },
+        {
+          "name": "void mems::SeedOccurrenceList::construct<mems::SortedMerList>(mems::SortedMerList&)",
+          "self_samples": 4
+        },
+        {
+          "name": "mems::SortedMerList::GetSeedMer(unsigned long long) const",
+          "self_samples": 3
+        },
+        {
+          "name": "emscripten_builtin_free",
+          "self_samples": 2
+        },
+        {
+          "name": "mems::computeMatchScores(std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>> const&, std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>> const&, mems::PairwiseScoringScheme const&, std::__2::vector<int, std::__2::allocator<int>>&)",
+          "self_samples": 2
+        },
+        {
+          "name": "mems::SortedMerList::RevCompMer(unsigned long long, int) const",
+          "self_samples": 1
+        },
+        {
+          "name": "std::__2::__thread_specific_ptr<std::__2::__thread_struct>::__at_thread_exit(void*)",
+          "self_samples": 1
+        },
+        {
+          "name": "mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>::LeftEnd(unsigned int) const",
+          "self_samples": 1
+        },
+        {
+          "name": "emscripten_futex_wait",
+          "self_samples": 1
+        }
+      ]
+    },
+    {
+      "target_type": "worker",
+      "url": "",
+      "samples": 9229,
+      "idle_samples": 8874,
+      "idle_percent": 96.15342940730307,
+      "top_functions": [
+        {
+          "name": "(idle)",
+          "self_samples": 8874
+        },
+        {
+          "name": "emscripten_futex_wake",
+          "self_samples": 119
+        },
+        {
+          "name": "__timedwait_cp",
+          "self_samples": 106
+        },
+        {
+          "name": "pthread_mutex_lock",
+          "self_samples": 22
+        },
+        {
+          "name": "mems::ProgressiveAligner::CreatePairwiseBPDistance(boost::multi_array<double, 2ul, std::__2::allocator<double>>&)::$_0::operator()(unsigned long) const",
+          "self_samples": 21
+        },
+        {
+          "name": "emscripten_builtin_malloc",
+          "self_samples": 13
+        },
+        {
+          "name": "pthread_mutex_unlock",
+          "self_samples": 12
+        },
+        {
+          "name": "void mems::EliminateOverlaps_v2<mems::GenericMatchList<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*>>(mems::GenericMatchList<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*>&, bool)",
+          "self_samples": 8
+        },
+        {
+          "name": "mems::GetAlignment(mems::AbstractMatch const&, std::__2::vector<genome::gnSequence*, std::__2::allocator<genome::gnSequence*>> const&, std::__2::vector<std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>>, std::__2::allocator<std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>>>>&)",
+          "self_samples": 8
+        },
+        {
+          "name": "mems::computeMatchScores(std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>> const&, std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>> const&, mems::PairwiseScoringScheme const&, std::__2::vector<int, std::__2::allocator<int>>&)",
+          "self_samples": 6
+        },
+        {
+          "name": "void std::__2::__introsort<std::__2::_ClassicAlgPolicy, mems::SingleStartComparator<mems::AbstractMatch>&, mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>**, false>(mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>**, mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>**, mems::SingleStartComparator<mems::AbstractMatch>&, std::__2::iterator_traits<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>**>::difference_type, bool)",
+          "self_samples": 5
+        },
+        {
+          "name": "__pthread_mutex_trylock",
+          "self_samples": 5
+        },
+        {
+          "name": "mems::SortedMerList::RevCompMer(unsigned long long, int) const",
+          "self_samples": 4
+        },
+        {
+          "name": "void mems::ProgressiveAligner::recurseOnPairs<mems::CompactGappedAlignment<mems::AbstractGappedAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>>>(std::__2::vector<unsigned long, std::__2::allocator<unsigned long>> const&, std::__2::vector<unsigned long, std::__2::allocator<unsigned long>> const&, mems::CompactGappedAlignment<mems::AbstractGappedAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>> const&, Matrix<mems::GenericMatchList<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*>>&, Matrix<std::__2::vector<std::__2::pair<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*, mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*>, std::__2::allocator<std::__2::pair<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*, mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*>>>>&, Matrix<std::__2::vector<std::__2::pair<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*, mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*>, std::__2::allocator<std::__2::pair<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*, mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*>>>>&, boost::multi_array<std::__2::vector<std::__2::vector<long long, std::__2::allocator<long long>>, std::__2::allocator<std::__2::vector<long long, std::__2::allocator<long long>>>>, 2ul, std::__2::allocator<std::__2::vector<std::__2::vector<long long, std::__2::allocator<long long>>, std::__2::allocator<std::__2::vector<long long, std::__2::allocator<long long>>>>>>&)::'lambda'(unsigned long)::operator()(unsigned long) const",
+          "self_samples": 4
+        },
+        {
+          "name": "emscripten_futex_wait",
+          "self_samples": 3
+        },
+        {
+          "name": "emscripten_builtin_free",
+          "self_samples": 3
+        },
+        {
+          "name": "mems::SortedMerList::GetSeedMer(unsigned long long) const",
+          "self_samples": 2
+        },
+        {
+          "name": "mems::FileSML::operator[](unsigned long long)",
+          "self_samples": 2
+        },
+        {
+          "name": "mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>::Free()",
+          "self_samples": 2
+        },
+        {
+          "name": "mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>::CropRight(unsigned long long, unsigned int)",
+          "self_samples": 2
+        }
+      ]
+    },
+    {
+      "target_type": "worker",
+      "url": "",
+      "samples": 9225,
+      "idle_samples": 8869,
+      "idle_percent": 96.14092140921409,
+      "top_functions": [
+        {
+          "name": "(idle)",
+          "self_samples": 8869
+        },
+        {
+          "name": "emscripten_futex_wake",
+          "self_samples": 110
+        },
+        {
+          "name": "__timedwait_cp",
+          "self_samples": 107
+        },
+        {
+          "name": "pthread_mutex_lock",
+          "self_samples": 30
+        },
+        {
+          "name": "mems::ProgressiveAligner::CreatePairwiseBPDistance(boost::multi_array<double, 2ul, std::__2::allocator<double>>&)::$_0::operator()(unsigned long) const",
+          "self_samples": 17
+        },
+        {
+          "name": "void mems::EliminateOverlaps_v2<mems::GenericMatchList<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*>>(mems::GenericMatchList<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*>&, bool)",
+          "self_samples": 14
+        },
+        {
+          "name": "void std::__2::__introsort<std::__2::_ClassicAlgPolicy, mems::SingleStartComparator<mems::AbstractMatch>&, mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>**, false>(mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>**, mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>**, mems::SingleStartComparator<mems::AbstractMatch>&, std::__2::iterator_traits<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>**>::difference_type, bool)",
+          "self_samples": 11
+        },
+        {
+          "name": "emscripten_builtin_malloc",
+          "self_samples": 11
+        },
+        {
+          "name": "mems::GetAlignment(mems::AbstractMatch const&, std::__2::vector<genome::gnSequence*, std::__2::allocator<genome::gnSequence*>> const&, std::__2::vector<std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>>, std::__2::allocator<std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>>>>&)",
+          "self_samples": 10
+        },
+        {
+          "name": "pthread_mutex_unlock",
+          "self_samples": 8
+        },
+        {
+          "name": "mems::SortedMerList::GetSeedMer(unsigned long long) const",
+          "self_samples": 7
+        },
+        {
+          "name": "__pthread_mutex_trylock",
+          "self_samples": 5
+        },
+        {
+          "name": "mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>::LeftEnd(unsigned int) const",
+          "self_samples": 4
+        },
+        {
+          "name": "void mems::ProgressiveAligner::recurseOnPairs<mems::CompactGappedAlignment<mems::AbstractGappedAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>>>(std::__2::vector<unsigned long, std::__2::allocator<unsigned long>> const&, std::__2::vector<unsigned long, std::__2::allocator<unsigned long>> const&, mems::CompactGappedAlignment<mems::AbstractGappedAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>> const&, Matrix<mems::GenericMatchList<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*>>&, Matrix<std::__2::vector<std::__2::pair<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*, mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*>, std::__2::allocator<std::__2::pair<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*, mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*>>>>&, Matrix<std::__2::vector<std::__2::pair<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*, mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*>, std::__2::allocator<std::__2::pair<mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*, mems::UngappedLocalAlignment<mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>>*>>>>&, boost::multi_array<std::__2::vector<std::__2::vector<long long, std::__2::allocator<long long>>, std::__2::allocator<std::__2::vector<long long, std::__2::allocator<long long>>>>, 2ul, std::__2::allocator<std::__2::vector<std::__2::vector<long long, std::__2::allocator<long long>>, std::__2::allocator<std::__2::vector<long long, std::__2::allocator<long long>>>>>>&)::'lambda'(unsigned long)::operator()(unsigned long) const",
+          "self_samples": 4
+        },
+        {
+          "name": "mems::computeMatchScores(std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>> const&, std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>> const&, mems::PairwiseScoringScheme const&, std::__2::vector<int, std::__2::allocator<int>>&)",
+          "self_samples": 3
+        },
+        {
+          "name": "std::__2::vector<genome::gnBaseSource*, std::__2::allocator<genome::gnBaseSource*>>::push_back[abi:ne200100](genome::gnBaseSource* const&)",
+          "self_samples": 2
+        },
+        {
+          "name": "mems::FileSML::operator[](unsigned long long)",
+          "self_samples": 1
+        },
+        {
+          "name": "mems::SortedMerList::RevCompMer(unsigned long long, int) const",
+          "self_samples": 1
+        },
+        {
+          "name": "void mauve_parallel_pairs<mems::ProgressiveAligner::CreatePairwiseBPDistance(boost::multi_array<double, 2ul, std::__2::allocator<double>>&)::$_0>(unsigned long, unsigned int, mems::ProgressiveAligner::CreatePairwiseBPDistance(boost::multi_array<double, 2ul, std::__2::allocator<double>>&)::$_0, unsigned long)::'lambda'(unsigned int)::operator()(unsigned int) const",
+          "self_samples": 1
+        },
+        {
+          "name": "emscripten_futex_wait",
+          "self_samples": 1
+        }
+      ]
+    },
+    {
+      "target_type": "worker",
+      "url": "",
+      "samples": 9238,
+      "idle_samples": 0,
+      "idle_percent": 0.0,
+      "top_functions": [
+        {
+          "name": "muscle::GlobalAlign(muscle::ProfPos const*, unsigned int, muscle::ProfPos const*, unsigned int, muscle::PWPath&)",
+          "self_samples": 2576
+        },
+        {
+          "name": "mems::ProgressiveAligner::align(std::__2::vector<genome::gnSequence*, std::__2::allocator<genome::gnSequence*>>&, mems::GenericIntervalList<mems::GenericInterval<mems::AbstractGappedAlignment<mems::SparseAbstractMatch<std::__2::allocator<unsigned long long>, std::__2::allocator<unsigned int>>>>>&)",
+          "self_samples": 2325
+        },
+        {
+          "name": "muscle::ProfileFromMSA(muscle::MSA const&)",
+          "self_samples": 631
+        },
+        {
+          "name": "mems::MheCompare::operator()(mems::MatchHashEntry const*, mems::MatchHashEntry const*) const",
+          "self_samples": 330
+        },
+        {
+          "name": "muscle::DistCalcMSA::CalcDistRange(unsigned int, float*) const",
+          "self_samples": 227
+        },
+        {
+          "name": "muscle::MUSCLE(muscle::SeqVect&, muscle::MSA&)",
+          "self_samples": 170
+        },
+        {
+          "name": "mems::HybridAbstractMatch<2u, std::__2::allocator<long long>, std::__2::allocator<unsigned int>>::Start(unsigned int) const",
+          "self_samples": 155
+        },
+        {
+          "name": "emscripten_builtin_free",
+          "self_samples": 125
+        },
+        {
+          "name": "muscle::MSA::SetChar(unsigned int, unsigned int, char)",
+          "self_samples": 124
+        },
+        {
+          "name": "emscripten_futex_wake",
+          "self_samples": 117
+        },
+        {
+          "name": "mems::GenericInterval<mems::AbstractGappedAlignment<mems::SparseAbstractMatch<std::__2::allocator<unsigned long long>, std::__2::allocator<unsigned int>>>>::GetAlignment(std::__2::vector<boost::dynamic_bitset<unsigned long, std::__2::allocator<unsigned long>>, std::__2::allocator<boost::dynamic_bitset<unsigned long, std::__2::allocator<unsigned long>>>>&) const",
+          "self_samples": 113
+        },
+        {
+          "name": "emscripten_builtin_malloc",
+          "self_samples": 111
+        },
+        {
+          "name": "mems::ProgressiveAligner::alignProfileToProfile(unsigned long, unsigned long, unsigned long)",
+          "self_samples": 111
+        },
+        {
+          "name": "void std::__2::__introsort<std::__2::_ClassicAlgPolicy, bool (*&)(mems::bmer const&, mems::bmer const&), mems::bmer*, false>(mems::bmer*, mems::bmer*, bool (*&)(mems::bmer const&, mems::bmer const&), std::__2::iterator_traits<mems::bmer*>::difference_type, bool)",
+          "self_samples": 104
+        },
+        {
+          "name": "__timedwait_cp",
+          "self_samples": 104
+        },
+        {
+          "name": "mems::GetAlignment(mems::AbstractMatch const&, std::__2::vector<genome::gnSequence*, std::__2::allocator<genome::gnSequence*>> const&, std::__2::vector<std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>>, std::__2::allocator<std::__2::basic_string<char, std::__2::char_traits<char>, std::__2::allocator<char>>>>&)",
+          "self_samples": 99
+        },
+        {
+          "name": "pthread_mutex_lock",
+          "self_samples": 94
+        },
+        {
+          "name": "mems::MemHash::AddHashEntry(mems::MatchHashEntry&)",
+          "self_samples": 75
+        },
+        {
+          "name": "emscripten_futex_wait",
+          "self_samples": 74
+        },
+        {
+          "name": "mems::MuscleInterface::ProfileAlignFast(mems::GappedAlignment const&, mems::GappedAlignment const&, mems::GappedAlignment&, bool)",
+          "self_samples": 70
+        }
+      ]
+    }
+  ],
+  "raw_profiles": {
+    "browser-cpu-samples-2026-10-30.json.gz": {
+      "uncompressed_sha256": "0d20b50a8fd6d62eba406d8f1ab85b76036df298587ecd36b5c908ea0d0e1086"
+    },
+    "native-cpu-samples-2026-10-30.txt.gz": {
+      "uncompressed_sha256": "a4dd22ee31ce05ce803f7b2e4b2a074dde0c1ebacabe994b8f43e02282abf560"
+    }
+  }
+}

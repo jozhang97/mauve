@@ -1,0 +1,284 @@
+{
+  "environment": {
+    "engine_sha256": {
+      "wasm": "60b8f29f4d7792b4cf692310d564d7fa4389595a78ea0a0744502a8809619f95",
+      "wasm-threaded": "204380afc9a890a51217e1049128d156f678ce825acaed4a6498a14eee6751af"
+    },
+    "browser": "156.0.8078.76",
+    "platform": "macOS-27.0.1-arm64-arm-64bit",
+    "hardware_concurrency": 16
+  },
+  "results": [
+    {
+      "kind": "similar",
+      "genomes": 4,
+      "bases": 20000,
+      "repeat": 0,
+      "threads": 1,
+      "alignmentMs": 269.2549999952316,
+      "totalMs": 280.50999999046326,
+      "wallMs": 286.07999992370605,
+      "hashes": {
+        "xmfa": "e1bdaa3f117afa5435b386f544eef499fffccbfdd039f1f3773e4089d5c8e788",
+        "tree": "00bda3d6f36882075f466caf3838c9a415c560ed881595dff123955405746afb",
+        "backbone": "2b2e16620f6709cdbfafe3199d5276eda0cfc32859689e3d04d9b74677c74059"
+      }
+    },
+    {
+      "kind": "similar",
+      "genomes": 4,
+      "bases": 20000,
+      "repeat": 0,
+      "threads": 4,
+      "alignmentMs": 296.3049999475479,
+      "totalMs": 310.8550000190735,
+      "wallMs": 313.9299999475479,
+      "hashes": {
+        "xmfa": "e1bdaa3f117afa5435b386f544eef499fffccbfdd039f1f3773e4089d5c8e788",
+        "tree": "00bda3d6f36882075f466caf3838c9a415c560ed881595dff123955405746afb",
+        "backbone": "2b2e16620f6709cdbfafe3199d5276eda0cfc32859689e3d04d9b74677c74059"
+      }
+    },
+    {
+      "kind": "similar",
+      "genomes": 4,
+      "bases": 20000,
+      "repeat": 0,
+      "threads": 8,
+      "alignmentMs": 241.4099999666214,
+      "totalMs": 255.04499995708466,
+      "wallMs": 257.8799999952316,
+      "hashes": {
+        "xmfa": "e1bdaa3f117afa5435b386f544eef499fffccbfdd039f1f3773e4089d5c8e788",
+        "tree": "00bda3d6f36882075f466caf3838c9a415c560ed881595dff123955405746afb",
+        "backbone": "2b2e16620f6709cdbfafe3199d5276eda0cfc32859689e3d04d9b74677c74059"
+      }
+    },
+    {
+      "kind": "divergent",
+      "genomes": 4,
+      "bases": 20000,
+      "repeat": 0,
+      "threads": 1,
+      "alignmentMs": 1270.4850000143051,
+      "totalMs": 1279.5249999761581,
+      "wallMs": 1282.5550000667572,
+      "hashes": {
+        "xmfa": "113d959d208de41bf930025513ea1cc565799f90c9d80cfcc757a848bc3f2e85",
+        "tree": "2dafadfcb2b297d93f70b59af34b7d95ec3e86b4b6a1a5472f367bc8d7730e4f",
+        "backbone": "fef68fec30354303872a067f8f174f7eebb54bd85962bd3f0f1fd920c0a3ae97"
+      }
+    },
+    {
+      "kind": "divergent",
+      "genomes": 4,
+      "bases": 20000,
+      "repeat": 0,
+      "threads": 4,
+      "alignmentMs": 1352.2849999666214,
+      "totalMs": 1365.1850000619888,
+      "wallMs": 1368.4199999570847,
+      "hashes": {
+        "xmfa": "113d959d208de41bf930025513ea1cc565799f90c9d80cfcc757a848bc3f2e85",
+        "tree": "2dafadfcb2b297d93f70b59af34b7d95ec3e86b4b6a1a5472f367bc8d7730e4f",
+        "backbone": "fef68fec30354303872a067f8f174f7eebb54bd85962bd3f0f1fd920c0a3ae97"
+      }
+    },
+    {
+      "kind": "divergent",
+      "genomes": 4,
+      "bases": 20000,
+      "repeat": 0,
+      "threads": 8,
+      "alignmentMs": 1317.0149999856949,
+      "totalMs": 1331.6299999952316,
+      "wallMs": 1335.204999923706,
+      "hashes": {
+        "xmfa": "113d959d208de41bf930025513ea1cc565799f90c9d80cfcc757a848bc3f2e85",
+        "tree": "2dafadfcb2b297d93f70b59af34b7d95ec3e86b4b6a1a5472f367bc8d7730e4f",
+        "backbone": "fef68fec30354303872a067f8f174f7eebb54bd85962bd3f0f1fd920c0a3ae97"
+      }
+    },
+    {
+      "kind": "rearranged",
+      "genomes": 4,
+      "bases": 20000,
+      "repeat": 0,
+      "threads": 1,
+      "alignmentMs": 289.49000000953674,
+      "totalMs": 298.6950000524521,
+      "wallMs": 301.81499993801117,
+      "hashes": {
+        "xmfa": "b1e43bb93a4dabbc3d1e1aae7cb8da4ce2d08b3c56a9a0f93b56e41edbbac928",
+        "tree": "bbb0cd71fdb576b194e38346d9d810f893fdee4aca263eaecdd3cad30cded1fe",
+        "backbone": "af30da309c45af03cfda36878cd079e9d8acecc7b51a8bc1b6f7b395506f46bc"
+      }
+    },
+    {
+      "kind": "rearranged",
+      "genomes": 4,
+      "bases": 20000,
+      "repeat": 0,
+      "threads": 4,
+      "alignmentMs": 264.4300000667572,
+      "totalMs": 278.1399999856949,
+      "wallMs": 281.3950001001358,
+      "hashes": {
+        "xmfa": "b1e43bb93a4dabbc3d1e1aae7cb8da4ce2d08b3c56a9a0f93b56e41edbbac928",
+        "tree": "bbb0cd71fdb576b194e38346d9d810f893fdee4aca263eaecdd3cad30cded1fe",
+        "backbone": "af30da309c45af03cfda36878cd079e9d8acecc7b51a8bc1b6f7b395506f46bc"
+      }
+    },
+    {
+      "kind": "rearranged",
+      "genomes": 4,
+      "bases": 20000,
+      "repeat": 0,
+      "threads": 8,
+      "alignmentMs": 272.8549998998642,
+      "totalMs": 287.2850000858307,
+      "wallMs": 290.68499994277954,
+      "hashes": {
+        "xmfa": "b1e43bb93a4dabbc3d1e1aae7cb8da4ce2d08b3c56a9a0f93b56e41edbbac928",
+        "tree": "bbb0cd71fdb576b194e38346d9d810f893fdee4aca263eaecdd3cad30cded1fe",
+        "backbone": "af30da309c45af03cfda36878cd079e9d8acecc7b51a8bc1b6f7b395506f46bc"
+      }
+    },
+    {
+      "kind": "repeats",
+      "genomes": 4,
+      "bases": 20000,
+      "repeat": 0,
+      "threads": 1,
+      "alignmentMs": 260.19000005722046,
+      "totalMs": 269.77499997615814,
+      "wallMs": 273.1200000047684,
+      "hashes": {
+        "xmfa": "7ddfb7e7ad277e0afb7c7ac8ef77bccc1f227b3c3c8283c2f2139dc5e387262d",
+        "tree": "8fee2447ee57673e1783abeb68fe3b49e83205b430fec47cffaa0a9804c63a04",
+        "backbone": "2b2e16620f6709cdbfafe3199d5276eda0cfc32859689e3d04d9b74677c74059"
+      }
+    },
+    {
+      "kind": "repeats",
+      "genomes": 4,
+      "bases": 20000,
+      "repeat": 0,
+      "threads": 4,
+      "alignmentMs": 233.33500003814697,
+      "totalMs": 246.3049999475479,
+      "wallMs": 249.6800000667572,
+      "hashes": {
+        "xmfa": "7ddfb7e7ad277e0afb7c7ac8ef77bccc1f227b3c3c8283c2f2139dc5e387262d",
+        "tree": "8fee2447ee57673e1783abeb68fe3b49e83205b430fec47cffaa0a9804c63a04",
+        "backbone": "2b2e16620f6709cdbfafe3199d5276eda0cfc32859689e3d04d9b74677c74059"
+      }
+    },
+    {
+      "kind": "repeats",
+      "genomes": 4,
+      "bases": 20000,
+      "repeat": 0,
+      "threads": 8,
+      "alignmentMs": 231.77500009536743,
+      "totalMs": 246.12999999523163,
+      "wallMs": 249.7850000858307,
+      "hashes": {
+        "xmfa": "7ddfb7e7ad277e0afb7c7ac8ef77bccc1f227b3c3c8283c2f2139dc5e387262d",
+        "tree": "8fee2447ee57673e1783abeb68fe3b49e83205b430fec47cffaa0a9804c63a04",
+        "backbone": "2b2e16620f6709cdbfafe3199d5276eda0cfc32859689e3d04d9b74677c74059"
+      }
+    },
+    {
+      "kind": "ambiguous",
+      "genomes": 4,
+      "bases": 20000,
+      "repeat": 0,
+      "threads": 1,
+      "alignmentMs": 294.6050000190735,
+      "totalMs": 304.36500000953674,
+      "wallMs": 307.70499992370605,
+      "hashes": {
+        "xmfa": "e64a2dfc58e5a30b944d43117d3acf225d42afb65e57f91c84b2d727a4e4e516",
+        "tree": "cc41c5638a4acf5aeedc21a82b52871d22b69ab45b914dd6b47c6ed006fd8fe1",
+        "backbone": "2b2e16620f6709cdbfafe3199d5276eda0cfc32859689e3d04d9b74677c74059"
+      }
+    },
+    {
+      "kind": "ambiguous",
+      "genomes": 4,
+      "bases": 20000,
+      "repeat": 0,
+      "threads": 4,
+      "alignmentMs": 259.86500000953674,
+      "totalMs": 272.0699999332428,
+      "wallMs": 275.27999997138977,
+      "hashes": {
+        "xmfa": "e64a2dfc58e5a30b944d43117d3acf225d42afb65e57f91c84b2d727a4e4e516",
+        "tree": "cc41c5638a4acf5aeedc21a82b52871d22b69ab45b914dd6b47c6ed006fd8fe1",
+        "backbone": "2b2e16620f6709cdbfafe3199d5276eda0cfc32859689e3d04d9b74677c74059"
+      }
+    },
+    {
+      "kind": "ambiguous",
+      "genomes": 4,
+      "bases": 20000,
+      "repeat": 0,
+      "threads": 8,
+      "alignmentMs": 257.55999994277954,
+      "totalMs": 272.3400000333786,
+      "wallMs": 275.5049999952316,
+      "hashes": {
+        "xmfa": "e64a2dfc58e5a30b944d43117d3acf225d42afb65e57f91c84b2d727a4e4e516",
+        "tree": "cc41c5638a4acf5aeedc21a82b52871d22b69ab45b914dd6b47c6ed006fd8fe1",
+        "backbone": "2b2e16620f6709cdbfafe3199d5276eda0cfc32859689e3d04d9b74677c74059"
+      }
+    },
+    {
+      "kind": "unrelated-first",
+      "genomes": 4,
+      "bases": 20000,
+      "repeat": 0,
+      "threads": 1,
+      "alignmentMs": 784.9049999713898,
+      "totalMs": 793.8900001049042,
+      "wallMs": 797.3150000572205,
+      "hashes": {
+        "xmfa": "81caf073ede9ad0f6a9166fe5dec82be2f14bc58c72c2f061b0d0b2af855a5cd",
+        "tree": "80409f890dee2b5ef26f27c0f18983b22724b711b1fe8c934c062137b6172d02",
+        "backbone": "db57e657fbb4e9da719d824e3ff49a796244adbac0aa5b3687cd0da77ec2da6b"
+      }
+    },
+    {
+      "kind": "unrelated-first",
+      "genomes": 4,
+      "bases": 20000,
+      "repeat": 0,
+      "threads": 4,
+      "alignmentMs": 885.5349999666214,
+      "totalMs": 898.0249999761581,
+      "wallMs": 901.0149999856949,
+      "hashes": {
+        "xmfa": "81caf073ede9ad0f6a9166fe5dec82be2f14bc58c72c2f061b0d0b2af855a5cd",
+        "tree": "80409f890dee2b5ef26f27c0f18983b22724b711b1fe8c934c062137b6172d02",
+        "backbone": "db57e657fbb4e9da719d824e3ff49a796244adbac0aa5b3687cd0da77ec2da6b"
+      }
+    },
+    {
+      "kind": "unrelated-first",
+      "genomes": 4,
+      "bases": 20000,
+      "repeat": 0,
+      "threads": 8,
+      "alignmentMs": 873.7549999952316,
+      "totalMs": 887.8200000524521,
+      "wallMs": 890.9499999284744,
+      "hashes": {
+        "xmfa": "81caf073ede9ad0f6a9166fe5dec82be2f14bc58c72c2f061b0d0b2af855a5cd",
+        "tree": "80409f890dee2b5ef26f27c0f18983b22724b711b1fe8c934c062137b6172d02",
+        "backbone": "db57e657fbb4e9da719d824e3ff49a796244adbac0aa5b3687cd0da77ec2da6b"
+      }
+    }
+  ],
+  "note": "Fresh workers and heaps per run. Wall time includes worker startup and input staging. Alternating thread order. Exact hashes, no normalization."
+}

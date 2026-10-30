@@ -1,0 +1,133 @@
+{
+  "environment": {
+    "engine_sha256": {
+      "wasm": "60b8f29f4d7792b4cf692310d564d7fa4389595a78ea0a0744502a8809619f95",
+      "wasm-threaded": "204380afc9a890a51217e1049128d156f678ce825acaed4a6498a14eee6751af"
+    },
+    "browser": "156.0.8078.76",
+    "platform": "macOS-27.0.1-arm64-arm-64bit",
+    "hardware_concurrency": 16,
+    "cpu": "Apple M4 Max",
+    "power_source": "Battery Power"
+  },
+  "results": [
+    {
+      "kind": "similar",
+      "genomes": 32,
+      "bases": 100000,
+      "repeat": 0,
+      "threads": 1,
+      "alignmentMs": 33911.2800000906,
+      "totalMs": 33926.544999957085,
+      "wallMs": 33932.2800000906,
+      "hashes": {
+        "xmfa": "bcf6450684e5a71ea1376d3bb28108c575152a2b0f250acb9525a2a42954365e",
+        "tree": "13425879a87254c42dd47409761ee228282a3db3f5ad742713ec87f8c733f952",
+        "backbone": "f202af0de63294189a33741379f93a26cf0bafdc0ce970e7621557fb1d51b65c"
+      }
+    },
+    {
+      "kind": "similar",
+      "genomes": 32,
+      "bases": 100000,
+      "repeat": 0,
+      "threads": 8,
+      "alignmentMs": 29251.33999991417,
+      "totalMs": 29271.02999997139,
+      "wallMs": 29275.355000019073,
+      "hashes": {
+        "xmfa": "bcf6450684e5a71ea1376d3bb28108c575152a2b0f250acb9525a2a42954365e",
+        "tree": "13425879a87254c42dd47409761ee228282a3db3f5ad742713ec87f8c733f952",
+        "backbone": "f202af0de63294189a33741379f93a26cf0bafdc0ce970e7621557fb1d51b65c"
+      }
+    },
+    {
+      "kind": "similar",
+      "genomes": 32,
+      "bases": 100000,
+      "repeat": 1,
+      "threads": 8,
+      "alignmentMs": 29487.894999980927,
+      "totalMs": 29507.68500006199,
+      "wallMs": 29511.47000002861,
+      "hashes": {
+        "xmfa": "bcf6450684e5a71ea1376d3bb28108c575152a2b0f250acb9525a2a42954365e",
+        "tree": "13425879a87254c42dd47409761ee228282a3db3f5ad742713ec87f8c733f952",
+        "backbone": "f202af0de63294189a33741379f93a26cf0bafdc0ce970e7621557fb1d51b65c"
+      }
+    },
+    {
+      "kind": "similar",
+      "genomes": 32,
+      "bases": 100000,
+      "repeat": 1,
+      "threads": 1,
+      "alignmentMs": 34483.56499993801,
+      "totalMs": 34498.645000100136,
+      "wallMs": 34503.014999985695,
+      "hashes": {
+        "xmfa": "bcf6450684e5a71ea1376d3bb28108c575152a2b0f250acb9525a2a42954365e",
+        "tree": "13425879a87254c42dd47409761ee228282a3db3f5ad742713ec87f8c733f952",
+        "backbone": "f202af0de63294189a33741379f93a26cf0bafdc0ce970e7621557fb1d51b65c"
+      }
+    }
+  ],
+  "note": "Fresh workers and heaps per run. Wall time includes worker startup and input staging. Alternating thread order. Exact hashes, no normalization. Backbone-only reference was run separately after the candidate/serial alternating runs, with the same inputs. All three hashes were checked across both reports. These are small samples, not a confidence interval.",
+  "reference_backbone_only": {
+    "environment": {
+      "engine_sha256": {
+        "wasm": "d8b59472529bb7497e55f6f58e236933d74b33eb0b0668ed2e153b8bbb11742d",
+        "wasm-threaded": "40dd62ef4476d20778cd806939b224be53920bb2e496d1b9938d234bd1946ace"
+      },
+      "browser": "156.0.8078.76",
+      "platform": "macOS-27.0.1-arm64-arm-64bit",
+      "hardware_concurrency": 16
+    },
+    "results": [
+      {
+        "kind": "similar",
+        "genomes": 32,
+        "bases": 100000,
+        "repeat": 0,
+        "seed_family": false,
+        "collinear": false,
+        "threads": 8,
+        "alignmentMs": 29982.2199999094,
+        "totalMs": 30003.08999991417,
+        "wallMs": 30009.084999918938,
+        "hashes": {
+          "xmfa": "bcf6450684e5a71ea1376d3bb28108c575152a2b0f250acb9525a2a42954365e",
+          "tree": "13425879a87254c42dd47409761ee228282a3db3f5ad742713ec87f8c733f952",
+          "backbone": "f202af0de63294189a33741379f93a26cf0bafdc0ce970e7621557fb1d51b65c"
+        }
+      },
+      {
+        "kind": "similar",
+        "genomes": 32,
+        "bases": 100000,
+        "repeat": 1,
+        "seed_family": false,
+        "collinear": false,
+        "threads": 8,
+        "alignmentMs": 30096.5,
+        "totalMs": 30115.355000019073,
+        "wallMs": 30118.59500002861,
+        "hashes": {
+          "xmfa": "bcf6450684e5a71ea1376d3bb28108c575152a2b0f250acb9525a2a42954365e",
+          "tree": "13425879a87254c42dd47409761ee228282a3db3f5ad742713ec87f8c733f952",
+          "backbone": "f202af0de63294189a33741379f93a26cf0bafdc0ce970e7621557fb1d51b65c"
+        }
+      }
+    ],
+    "note": "Fresh workers and heaps per run. Wall time includes worker startup and input staging. Alternating thread order. Exact hashes, no normalization."
+  },
+  "summary": {
+    "serial_ms": 34217.64750003815,
+    "backbone_only_eight_threads_ms": 30063.839999973774,
+    "full_stages_eight_threads_ms": 29393.412500023842,
+    "additional_runtime_reduction_percent": 2.2300128657899876,
+    "total_runtime_reduction_percent": 14.09867525232098,
+    "total_speedup": 1.1641264007712746,
+    "runs_per_configuration": 2
+  }
+}

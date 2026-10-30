@@ -1,0 +1,179 @@
+{
+  "workload": {
+    "kind": "similar",
+    "genomes": 32,
+    "bases": 100000,
+    "seed": 12345,
+    "threads": 8
+  },
+  "method": "Two repeats per variant, order baseline/candidate/candidate/baseline, fresh processes or browser workers. All runs confirmed AC before and after. Compilation and sampled profiling excluded from timing.",
+  "production_status": "Diagnostic prototype only; production assets unchanged.",
+  "limitations": [
+    "Small timing sample on a synthetic workload; do not generalize percentages to all genomes.",
+    "Coverage is serial and the fast path handles ungapped equal-length rows; gapped rows retain column-by-column behavior.",
+    "Microbenchmark reference coverage was not slower in Chrome, so the full-stage gap is not evidence of a universal Wasm penalty. Compiler context and actual match geometry matter; individual instruction costs have not been isolated.",
+    "Browser peak memory was not measured. Native peak RSS is included.",
+    "Earlier battery timings must not be compared with the AC candidate; power state changed mid-investigation."
+  ],
+  "native": {
+    "sources": [
+      "native-coverage-ac-0-functions-2026-10-30.json",
+      "native-coverage-ac-1-ranges-2026-10-30.json",
+      "native-coverage-ac-2-ranges-2026-10-30.json",
+      "native-coverage-ac-3-functions-2026-10-30.json"
+    ],
+    "baseline": {
+      "median_wall_ms": 14763.416417001281,
+      "wall_ms": [
+        14508.075541933067,
+        15018.757292069495
+      ],
+      "stages_inclusive_median_ms": {
+        "engine": 14718.3576455,
+        "backbone": 860.0661035,
+        "progressive": 11920.074520999999,
+        "guide_distance": 71.7406665,
+        "alignment_tree": 9608.8497915,
+        "profile_alignment": 7790.133314000001,
+        "gapped_alignment": 8160.4701685,
+        "recursive_pairs": 32.379001,
+        "pairwise_hss": 845.9538749999999,
+        "muscle_refine": 0.0,
+        "muscle_profile": 0.0,
+        "muscle_align": 0.0,
+        "muscle_refine_fast": 5852.335853500001,
+        "muscle_profile_fast": 2016.634149,
+        "single_copy_distance": 2226.735896,
+        "seed_occurrence": 84.8319995,
+        "nw_small": 4738.0713515,
+        "muscle_tree": 543.4239319999999,
+        "refine_windows": 5466.6311239999995,
+        "refine_horizontal": 0.0
+      },
+      "median_peak_rss_bytes": 232660992.0
+    },
+    "candidate": {
+      "median_wall_ms": 12628.762375446968,
+      "wall_ms": [
+        12627.855916973203,
+        12629.668833920732
+      ],
+      "stages_inclusive_median_ms": {
+        "engine": 12582.9201045,
+        "backbone": 861.3366040000001,
+        "progressive": 9767.950771,
+        "guide_distance": 71.823104,
+        "alignment_tree": 9613.728749999998,
+        "profile_alignment": 7798.3800415000005,
+        "gapped_alignment": 8177.49877,
+        "recursive_pairs": 28.428437000000002,
+        "pairwise_hss": 847.380063,
+        "muscle_refine": 0.0,
+        "muscle_profile": 0.0,
+        "muscle_align": 0.0,
+        "muscle_refine_fast": 5858.8726025,
+        "muscle_profile_fast": 2026.30008,
+        "single_copy_distance": 69.23112499999999,
+        "seed_occurrence": 86.482185,
+        "nw_small": 4736.069681999999,
+        "muscle_tree": 548.365023,
+        "refine_windows": 5470.039958,
+        "refine_horizontal": 0.0
+      },
+      "median_peak_rss_bytes": 237314048.0
+    },
+    "runtime_reduction_percent": 14.45907899133756,
+    "exact_artifacts_match": true
+  },
+  "browser": {
+    "sources": [
+      "browser-coverage-ac-0-functions-2026-10-30.json",
+      "browser-coverage-ac-1-ranges-2026-10-30.json",
+      "browser-coverage-ac-2-ranges-2026-10-30.json",
+      "browser-coverage-ac-3-functions-2026-10-30.json"
+    ],
+    "baseline": {
+      "median_wall_ms": 21118.602499961853,
+      "wall_ms": [
+        21395.25499999523,
+        20841.949999928474
+      ],
+      "stages_inclusive_median_ms": {
+        "engine": 21091.737728,
+        "backbone": 991.857536,
+        "progressive": 17553.990016000003,
+        "guide_distance": 677.9825920000001,
+        "alignment_tree": 12661.265152,
+        "profile_alignment": 10180.986112,
+        "gapped_alignment": 10708.169728,
+        "recursive_pairs": 25.997312,
+        "pairwise_hss": 967.775104,
+        "muscle_refine": 0.0,
+        "muscle_profile": 0.0,
+        "muscle_align": 0.0,
+        "muscle_refine_fast": 7735.168384,
+        "muscle_profile_fast": 2627.203712,
+        "single_copy_distance": 4189.692288,
+        "seed_occurrence": 135.482368,
+        "nw_small": 6011.046528,
+        "muscle_tree": 598.255616,
+        "refine_windows": 7368.56768,
+        "refine_horizontal": 0.0
+      }
+    },
+    "candidate": {
+      "median_wall_ms": 17075.802500009537,
+      "wall_ms": [
+        17105.050000071526,
+        17046.554999947548
+      ],
+      "stages_inclusive_median_ms": {
+        "engine": 17049.505151999998,
+        "backbone": 993.092352,
+        "progressive": 13465.402752,
+        "guide_distance": 683.707392,
+        "alignment_tree": 12623.420160000001,
+        "profile_alignment": 10118.227072,
+        "gapped_alignment": 10654.319872,
+        "recursive_pairs": 26.447232,
+        "pairwise_hss": 970.060032,
+        "muscle_refine": 0.0,
+        "muscle_profile": 0.0,
+        "muscle_align": 0.0,
+        "muscle_refine_fast": 7700.4375039999995,
+        "muscle_profile_fast": 2608.883712,
+        "single_copy_distance": 134.827648,
+        "seed_occurrence": 126.00192,
+        "nw_small": 5953.466624000001,
+        "muscle_tree": 594.495104,
+        "refine_windows": 7335.243136,
+        "refine_horizontal": 0.0
+      }
+    },
+    "runtime_reduction_percent": 19.14331215789311,
+    "exact_artifacts_match": true
+  },
+  "kernel_report": "matched-kernels-ac-2026-10-30.json",
+  "cpu_report": "cpu-profile-summary-2026-10-30.json",
+  "validation": {
+    "browser_reports": [
+      "browser-coverage-parity-2026-10-30.json",
+      "browser-coverage-seed-family-2026-10-30.json",
+      "browser-coverage-collinear-2026-10-30.json"
+    ],
+    "browser_runs": 36,
+    "browser_cases": [
+      "similar",
+      "divergent",
+      "rearranged",
+      "repeats",
+      "ambiguous",
+      "unrelated-first"
+    ],
+    "native_parity_cases": 5,
+    "native_parity_output": "similar: native 8-thread and Wasm artifacts match (file paths normalized)\ndivergent: native 8-thread and Wasm artifacts match (file paths normalized)\nrearranged: native 8-thread and Wasm artifacts match (file paths normalized)\nrepeats: native 8-thread and Wasm artifacts match (file paths normalized)\nambiguous: native 8-thread and Wasm artifacts match (file paths normalized)\n",
+    "kernel_differential_matrices_per_target": 100,
+    "kernel_range_boundaries": "Exhaustive small ranges, overlaps, zero lengths, partial final words",
+    "scope": "Correctness-suite times excluded from performance analysis; native and browser correctness checks overlapped."
+  }
+}

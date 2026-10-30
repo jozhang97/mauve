@@ -1,0 +1,148 @@
+{
+  "environment": {
+    "engine_sha256": {
+      "wasm": "d8b59472529bb7497e55f6f58e236933d74b33eb0b0668ed2e153b8bbb11742d",
+      "wasm-threaded": "22875a067c8683e0462dba4f7f761c7102e38d85cfa42ea354704d94f59cea9c"
+    },
+    "browser": "156.0.8078.76",
+    "platform": "macOS-27.0.1-arm64-arm-64bit",
+    "hardware_concurrency": 16
+  },
+  "results": [
+    {
+      "kind": "similar",
+      "genomes": 32,
+      "bases": 100000,
+      "repeat": 0,
+      "seed_family": false,
+      "collinear": false,
+      "threads": 8,
+      "alignmentMs": 28085.15499997139,
+      "totalMs": 28110.325000047684,
+      "wallMs": 28116.930000066757,
+      "hashes": {
+        "xmfa": "bcf6450684e5a71ea1376d3bb28108c575152a2b0f250acb9525a2a42954365e",
+        "tree": "13425879a87254c42dd47409761ee228282a3db3f5ad742713ec87f8c733f952",
+        "backbone": "f202af0de63294189a33741379f93a26cf0bafdc0ce970e7621557fb1d51b65c"
+      },
+      "stages": {
+        "engine": {
+          "inclusive_ms": 28083.140096,
+          "calls": 1
+        },
+        "backbone": {
+          "inclusive_ms": 1555.265024,
+          "calls": 1
+        },
+        "progressive": {
+          "inclusive_ms": 23082.435072,
+          "calls": 1
+        },
+        "guide_distance": {
+          "inclusive_ms": 162.535168,
+          "calls": 1
+        },
+        "alignment_tree": {
+          "inclusive_ms": 17063.450112,
+          "calls": 1
+        },
+        "profile_alignment": {
+          "inclusive_ms": 13688.641792,
+          "calls": 31
+        },
+        "gapped_alignment": {
+          "inclusive_ms": 14634.4448,
+          "calls": 41
+        },
+        "recursive_pairs": {
+          "inclusive_ms": 35.814912,
+          "calls": 31
+        },
+        "pairwise_hss": {
+          "inclusive_ms": 1521.369856,
+          "calls": 2
+        },
+        "muscle_refine": {
+          "inclusive_ms": 0,
+          "calls": 0
+        },
+        "muscle_profile": {
+          "inclusive_ms": 0,
+          "calls": 0
+        },
+        "muscle_align": {
+          "inclusive_ms": 0,
+          "calls": 0
+        }
+      }
+    },
+    {
+      "kind": "similar",
+      "genomes": 32,
+      "bases": 100000,
+      "repeat": 1,
+      "seed_family": false,
+      "collinear": false,
+      "threads": 8,
+      "alignmentMs": 27631.394999980927,
+      "totalMs": 27652.075000047684,
+      "wallMs": 27655.240000009537,
+      "hashes": {
+        "xmfa": "bcf6450684e5a71ea1376d3bb28108c575152a2b0f250acb9525a2a42954365e",
+        "tree": "13425879a87254c42dd47409761ee228282a3db3f5ad742713ec87f8c733f952",
+        "backbone": "f202af0de63294189a33741379f93a26cf0bafdc0ce970e7621557fb1d51b65c"
+      },
+      "stages": {
+        "engine": {
+          "inclusive_ms": 27629.435136,
+          "calls": 1
+        },
+        "backbone": {
+          "inclusive_ms": 1339.524864,
+          "calls": 1
+        },
+        "progressive": {
+          "inclusive_ms": 22939.709952,
+          "calls": 1
+        },
+        "guide_distance": {
+          "inclusive_ms": 183.600384,
+          "calls": 1
+        },
+        "alignment_tree": {
+          "inclusive_ms": 17076.485376,
+          "calls": 1
+        },
+        "profile_alignment": {
+          "inclusive_ms": 13677.419008,
+          "calls": 31
+        },
+        "gapped_alignment": {
+          "inclusive_ms": 14561.470464,
+          "calls": 41
+        },
+        "recursive_pairs": {
+          "inclusive_ms": 36.665344,
+          "calls": 31
+        },
+        "pairwise_hss": {
+          "inclusive_ms": 1307.844864,
+          "calls": 2
+        },
+        "muscle_refine": {
+          "inclusive_ms": 0,
+          "calls": 0
+        },
+        "muscle_profile": {
+          "inclusive_ms": 0,
+          "calls": 0
+        },
+        "muscle_align": {
+          "inclusive_ms": 0,
+          "calls": 0
+        }
+      }
+    }
+  ],
+  "note": "Fresh workers and heaps per run. Wall time includes worker startup and input staging. Alternating thread order. Exact hashes, no normalization."
+}

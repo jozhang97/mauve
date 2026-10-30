@@ -1,0 +1,233 @@
+{
+  "measured_at": "2026-10-30T17:01:23.938708+00:00",
+  "platform": "macOS-27.0.1-arm64-arm-64bit",
+  "engine": "/private/tmp/mauve-ranges-native/progressiveMauve",
+  "engine_sha256": "edf2f6495a77c05f7948ba1008cea8a0f771711f33506c231a49acd46a5dcb66",
+  "timing": "Whole native process wall time, including startup; each repetition reverses thread-count order.",
+  "threads": [
+    8
+  ],
+  "repeats": 2,
+  "cases": [
+    {
+      "kind": "similar",
+      "genomes": 32,
+      "bases": 100000,
+      "runs": [
+        {
+          "repeat": 0,
+          "threads": 8,
+          "wall_ms": 12831.621250021271,
+          "peak_rss_bytes": 241909760,
+          "artifacts": {
+            "alignment.xmfa": {
+              "bytes": 3242575,
+              "sha256": "0b5ea237e5ddb64664ae0d4626ddb6c40b32bcd613d1bfc9abd55d00f4dbd407"
+            },
+            "guide.tree": {
+              "bytes": 1011,
+              "sha256": "13425879a87254c42dd47409761ee228282a3db3f5ad742713ec87f8c733f952"
+            },
+            "alignment.backbone": {
+              "bytes": 1196,
+              "sha256": "f202af0de63294189a33741379f93a26cf0bafdc0ce970e7621557fb1d51b65c"
+            }
+          },
+          "stages": {
+            "engine": {
+              "inclusive_ms": 12619.982417,
+              "calls": 1
+            },
+            "backbone": {
+              "inclusive_ms": 854.127,
+              "calls": 1
+            },
+            "progressive": {
+              "inclusive_ms": 9794.889875,
+              "calls": 1
+            },
+            "guide_distance": {
+              "inclusive_ms": 71.647375,
+              "calls": 1
+            },
+            "alignment_tree": {
+              "inclusive_ms": 9637.491459,
+              "calls": 1
+            },
+            "profile_alignment": {
+              "inclusive_ms": 7833.022124,
+              "calls": 31
+            },
+            "gapped_alignment": {
+              "inclusive_ms": 8196.539876,
+              "calls": 41
+            },
+            "recursive_pairs": {
+              "inclusive_ms": 28.408498,
+              "calls": 31
+            },
+            "pairwise_hss": {
+              "inclusive_ms": 840.245291,
+              "calls": 2
+            },
+            "muscle_refine": {
+              "inclusive_ms": 0.0,
+              "calls": 0
+            },
+            "muscle_profile": {
+              "inclusive_ms": 0.0,
+              "calls": 0
+            },
+            "muscle_align": {
+              "inclusive_ms": 0.0,
+              "calls": 0
+            },
+            "muscle_refine_fast": {
+              "inclusive_ms": 5862.910668,
+              "calls": 20
+            },
+            "muscle_profile_fast": {
+              "inclusive_ms": 2038.295625,
+              "calls": 62
+            },
+            "single_copy_distance": {
+              "inclusive_ms": 72.418083,
+              "calls": 1
+            },
+            "seed_occurrence": {
+              "inclusive_ms": 86.409875,
+              "calls": 32
+            },
+            "nw_small": {
+              "inclusive_ms": 4766.322042,
+              "calls": 85364
+            },
+            "muscle_tree": {
+              "inclusive_ms": 541.405979,
+              "calls": 64872
+            },
+            "refine_windows": {
+              "inclusive_ms": 5481.578499,
+              "calls": 20
+            },
+            "refine_horizontal": {
+              "inclusive_ms": 0.0,
+              "calls": 0
+            }
+          },
+          "cpu_seconds": 17.5,
+          "average_cpu_cores": 1.3638183093949245
+        },
+        {
+          "repeat": 1,
+          "threads": 8,
+          "wall_ms": 12677.02087503858,
+          "peak_rss_bytes": 234307584,
+          "artifacts": {
+            "alignment.xmfa": {
+              "bytes": 3242575,
+              "sha256": "0b5ea237e5ddb64664ae0d4626ddb6c40b32bcd613d1bfc9abd55d00f4dbd407"
+            },
+            "guide.tree": {
+              "bytes": 1011,
+              "sha256": "13425879a87254c42dd47409761ee228282a3db3f5ad742713ec87f8c733f952"
+            },
+            "alignment.backbone": {
+              "bytes": 1196,
+              "sha256": "f202af0de63294189a33741379f93a26cf0bafdc0ce970e7621557fb1d51b65c"
+            }
+          },
+          "stages": {
+            "engine": {
+              "inclusive_ms": 12613.67425,
+              "calls": 1
+            },
+            "backbone": {
+              "inclusive_ms": 861.376375,
+              "calls": 1
+            },
+            "progressive": {
+              "inclusive_ms": 9782.557041,
+              "calls": 1
+            },
+            "guide_distance": {
+              "inclusive_ms": 72.029208,
+              "calls": 1
+            },
+            "alignment_tree": {
+              "inclusive_ms": 9627.330417,
+              "calls": 1
+            },
+            "profile_alignment": {
+              "inclusive_ms": 7812.674042,
+              "calls": 31
+            },
+            "gapped_alignment": {
+              "inclusive_ms": 8192.403918,
+              "calls": 41
+            },
+            "recursive_pairs": {
+              "inclusive_ms": 28.394999,
+              "calls": 31
+            },
+            "pairwise_hss": {
+              "inclusive_ms": 847.718667,
+              "calls": 2
+            },
+            "muscle_refine": {
+              "inclusive_ms": 0.0,
+              "calls": 0
+            },
+            "muscle_profile": {
+              "inclusive_ms": 0.0,
+              "calls": 0
+            },
+            "muscle_align": {
+              "inclusive_ms": 0.0,
+              "calls": 0
+            },
+            "muscle_refine_fast": {
+              "inclusive_ms": 5864.553001,
+              "calls": 20
+            },
+            "muscle_profile_fast": {
+              "inclusive_ms": 2037.18129,
+              "calls": 62
+            },
+            "single_copy_distance": {
+              "inclusive_ms": 70.265166,
+              "calls": 1
+            },
+            "seed_occurrence": {
+              "inclusive_ms": 85.451335,
+              "calls": 32
+            },
+            "nw_small": {
+              "inclusive_ms": 4754.568171,
+              "calls": 85364
+            },
+            "muscle_tree": {
+              "inclusive_ms": 552.336436,
+              "calls": 64872
+            },
+            "refine_windows": {
+              "inclusive_ms": 5476.957498,
+              "calls": 20
+            },
+            "refine_horizontal": {
+              "inclusive_ms": 0.0,
+              "calls": 0
+            }
+          },
+          "cpu_seconds": 17.479999999999997,
+          "average_cpu_cores": 1.378872857614254
+        }
+      ],
+      "median_ms": {
+        "8": 12754.321062529925
+      },
+      "artifacts_identical": true
+    }
+  ],
+  "comparison_warning": "AC power was detected after these runs. Do not compare with the earlier battery baseline; use function-profile-findings-2026-10-30.json for the controlled comparison."
+}

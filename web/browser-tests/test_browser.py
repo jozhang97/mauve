@@ -45,6 +45,7 @@ def test_static_viewer_import_persistence_exports_and_job(site, browser, tmp_pat
     page.on('request', lambda r: requests.append(r.url))
     page.on('pageerror', lambda e: errors.append(str(e)))
     page.goto(site)
+    page.wait_for_function("window.mauveReady === true")
     page.locator('#welcome-demo').click()
     page.wait_for_selector('svg .feature')
     assert page.locator('#genome-count').inner_text() == '2'
@@ -83,6 +84,7 @@ def test_static_viewer_import_persistence_exports_and_job(site, browser, tmp_pat
 def test_map_links_preserve_crossings_and_viewport_boundaries(site, browser):
     page = browser.new_page(viewport={'width': 1440, 'height': 1000})
     page.goto(site)
+    page.wait_for_function("window.mauveReady === true")
     page.wait_for_function("typeof render === 'function'")
     result = page.evaluate("""() => {
       state.alignment = {genomes: [1, 2].map(id => ({id, name: `Genome ${id}`, extent: 1000}))};
@@ -129,6 +131,7 @@ def test_map_links_preserve_crossings_and_viewport_boundaries(site, browser):
 
 def test_gpu_parity_large_data_and_cpu_fallback(site, browser):
     page = browser.new_page(); page.goto(site)
+    page.wait_for_function("window.mauveReady === true")
     result = page.evaluate("""async () => {
       const {Accelerator} = await import('./static/browser/gpu.mjs');
       const {pairCounts} = await import('./static/browser/core.mjs');
@@ -149,6 +152,7 @@ def test_gpu_parity_large_data_and_cpu_fallback(site, browser):
 
 def test_failed_import_atomicity_and_cancel(site, browser):
     page = browser.new_page(); page.goto(site)
+    page.wait_for_function("window.mauveReady === true")
     result = page.evaluate("""async () => {
       const req = (p,o) => mauveBrowser.request(p,o);
       let failed=false;
@@ -165,9 +169,11 @@ def test_failed_import_atomicity_and_cancel(site, browser):
 
 
 def test_interrupted_job_can_rerun_in_new_tab(site, browser):
-    context = browser.new_context()
+    # Request interception needs the serial fallback, without a service worker.
+    context = browser.new_context(service_workers='block')
     context.route('**/progressiveMauve.wasm', lambda route: None)
     page = context.new_page(); page.goto(site)
+    page.wait_for_function("window.mauveReady === true")
     job = page.evaluate("""async () => {
       let seed=12345,s='';for(let i=0;i<5000;i++){seed=(Math.imul(seed,1664525)+1013904223)>>>0;s+='ACGT'[seed>>>30];}
       const ids=[];for(let i=0;i<2;i++)ids.push((await mauveBrowser.request('/api/inputs?name='+i+'.fa',{method:'POST',body:new Blob(['>a\\n'+s])})).id);
@@ -176,6 +182,7 @@ def test_interrupted_job_can_rerun_in_new_tab(site, browser):
     page.wait_for_function("async id => (await mauveBrowser.request('/api/jobs/'+id)).status === 'running'", arg=job['id'])
     page.close(); context.unroute('**/progressiveMauve.wasm')
     page = context.new_page(); page.goto(site)
+    page.wait_for_function("window.mauveReady === true")
     page.wait_for_function("async id => (await mauveBrowser.request('/api/jobs')).find(j=>j.id===id)?.status === 'interrupted'", arg=job['id'])
     rerun = page.evaluate("options => mauveBrowser.request('/api/jobs',{method:'POST',body:JSON.stringify(options)})", job['spec']['options'])
     page.wait_for_function("async id => (await mauveBrowser.request('/api/jobs/'+id)).status === 'succeeded'", arg=rerun['id'], timeout=30000)
@@ -185,6 +192,7 @@ def test_interrupted_job_can_rerun_in_new_tab(site, browser):
 def test_column_selection_preserves_keyboard_and_accessibility_state(site, browser):
     page = browser.new_page(viewport={'width': 1440, 'height': 1000})
     page.goto(site)
+    page.wait_for_function("window.mauveReady === true")
     page.wait_for_function("typeof renderBases === 'function'")
     page.evaluate("""() => {
       state.alignment = {genomes: [1, 2].map(id => ({id, name: `Genome ${id}`, extent: 8}))};
@@ -227,6 +235,7 @@ def test_column_selection_preserves_keyboard_and_accessibility_state(site, brows
 def test_map_block_handlers_preserve_click_keys_and_double_click(site, browser):
     page = browser.new_page(viewport={'width': 1440, 'height': 1000})
     page.goto(site)
+    page.wait_for_function("window.mauveReady === true")
     page.wait_for_function("typeof render === 'function'")
     result = page.evaluate("""() => {
       state.alignment = {genomes: [{id: 1, name: 'Genome', extent: 1000}]};

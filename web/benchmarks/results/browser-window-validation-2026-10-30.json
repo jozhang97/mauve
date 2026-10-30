@@ -1,0 +1,110 @@
+{
+  "feature": "Parallel independent MUSCLE refinement windows in the production browser engine",
+  "default_max_threads": 8,
+  "workload": {
+    "genomes": 32,
+    "bases": 100000,
+    "kind": "similar",
+    "seed": 12345
+  },
+  "median_wall_ms": {
+    "1": 23981.35750001669,
+    "4": 15898.527499973774,
+    "8": 15340.395000040531,
+    "16": 15830.072500050068
+  },
+  "previous_threaded_median_ms": 20598.512500047684,
+  "runtime_reduction_vs_serial_percent": 36.031999022449604,
+  "runtime_reduction_vs_previous_threaded_percent": 25.52668548272591,
+  "final_binary_wall_ms": 15394.829999923706,
+  "large_artifacts_identical": true,
+  "timing_note": "AC power before/after every timing run. Two alternating repeats per thread count. Prior-threaded control rerun after candidate. No compilation/tests/sampling overlapped performance runs. Synthetic workload; not a general speed guarantee.",
+  "validation": {
+    "node_tests": {
+      "passed": 41
+    },
+    "browser_tests": {
+      "passed": 15,
+      "skipped": 1
+    },
+    "worker_status_tests_after_ui_change": {
+      "passed": 4
+    },
+    "server_tests": {
+      "passed": 65,
+      "skipped": 9
+    },
+    "browser_exact_parity": {
+      "runs": 42,
+      "cases": [
+        "similar",
+        "divergent",
+        "rearranged",
+        "repeats",
+        "ambiguous",
+        "unrelated-first"
+      ],
+      "modes": [
+        "default",
+        "seed-family",
+        "collinear"
+      ],
+      "reports": [
+        "browser-window-final-default-2026-10-30.json",
+        "browser-window-final-seed-family-2026-10-30.json",
+        "browser-window-final-collinear-2026-10-30.json"
+      ]
+    },
+    "thread_sanitizer": {
+      "cases": 5,
+      "bases": 20000,
+      "threads": 8,
+      "output": "similar: native 8-thread and Wasm artifacts match (file paths normalized)\ndivergent: native 8-thread and Wasm artifacts match (file paths normalized)\nrearranged: native 8-thread and Wasm artifacts match (file paths normalized)\nrepeats: native 8-thread and Wasm artifacts match (file paths normalized)\nambiguous: native 8-thread and Wasm artifacts match (file paths normalized)\n",
+      "note": "Native Apple Silicon TSan executes the browser-patched std::thread C++ implementation; it does not instrument JS. Tested before adding a window-range precondition guard."
+    },
+    "cpu_samples": "browser-window-cpu-summary-2026-10-30.json",
+    "source_preparation_idempotent": true,
+    "manifests_verified": true
+  },
+  "production_engines": {
+    "wasm": {
+      "sha256": "fd925cd33c9ccee588ef59e961e21886eac8581a456766bb40a27f7b271c6beb",
+      "configuration": {
+        "threaded": false,
+        "parallel_refinement_windows": false,
+        "local_deletion_score": true,
+        "row_gap_loads": true,
+        "lazy_traceback": true,
+        "compact_traceback": true,
+        "seed_lookup": true,
+        "packed_profiles": true,
+        "hoisted_homology_state": true,
+        "lto": true,
+        "profile_rows": true,
+        "fast_translate": true,
+        "exceptions": "wasm",
+        "profiling": false
+      }
+    },
+    "wasm-threaded": {
+      "sha256": "3d7a11830bf8c87d18e238edd08bfa6ba34b957f67a2f43417cf04c406b63fdf",
+      "configuration": {
+        "threaded": true,
+        "parallel_refinement_windows": true,
+        "local_deletion_score": true,
+        "row_gap_loads": true,
+        "lazy_traceback": true,
+        "compact_traceback": true,
+        "seed_lookup": true,
+        "packed_profiles": true,
+        "hoisted_homology_state": true,
+        "lto": true,
+        "profile_rows": true,
+        "fast_translate": true,
+        "exceptions": "wasm",
+        "profiling": false
+      }
+    }
+  },
+  "release_directory": "/tmp/mauve-multicore-release"
+}

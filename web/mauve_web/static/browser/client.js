@@ -1,6 +1,13 @@
 "use strict";
-(() => {
-  const worker = new Worker(new URL('./worker.mjs', document.currentScript.src), {type: 'module'});
+(async () => {
+  const scriptURL = document.currentScript.src;
+  const ready = window.mauveIsolationReady;
+  window.mauveBrowser = {async request(...args) {
+    await ready;
+    return window.mauveBrowser.request(...args);
+  }};
+  await ready;
+  const worker = new Worker(new URL('./worker.mjs', scriptURL), {type: 'module'});
   const pending = new Map(); let serial = 0, failure;
   window.mauveBrowser = {
     request(path, options) {
@@ -26,11 +33,15 @@
       const url = URL.createObjectURL(blob), a = document.createElement('a'); a.href = url; a.download = filename; a.click(); window.mauveAnalytics?.recordDownload(link.getAttribute('href')); setTimeout(() => URL.revokeObjectURL(url), 60000);
     } catch (e) { document.getElementById('notice').textContent = e.message; document.getElementById('notice').hidden = false; }
   });
-  document.addEventListener('DOMContentLoaded', async () => {
+  const showCapabilities = async () => {
     try {
-      const caps = await window.mauveBrowser.request('/api/capabilities');
-      document.getElementById('compute-status').textContent = caps.mode;
+      const [caps, engine] = await Promise.all([window.mauveBrowser.request('/api/capabilities'), window.mauveBrowser.request('/api/engine')]);
+      const alignment = engine.available ? `Alignment: ${engine.threads > 1 ? 'up to ' : ''}${engine.threads} CPU thread${engine.threads === 1 ? '' : 's'}` : 'Alignment unavailable';
+      document.getElementById('compute-status').textContent = `${caps.mode} · ${alignment}`;
       document.getElementById('compute-status').title = caps.adapter || 'Local processing';
     } catch (e) { document.getElementById('compute-status').textContent = e.message; }
-  });
+  };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', showCapabilities);
+  else showCapabilities();
+  window.mauveReady = true;
 })();

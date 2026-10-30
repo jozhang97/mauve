@@ -22,10 +22,7 @@ BOOST_SHA256 = '9807a5d16566c57fd74fb522764e0b134a8bbe6b6e8967b83afefd30dcd3be81
 HERE = Path(__file__).resolve().parent
 
 
-def build(root, output, workers, baseline=False, profiling=False):
-    version = subprocess.check_output(['emcc', '--version'], text=True)
-    if '4.0.15' not in version:
-        raise RuntimeError('Use Emscripten 4.0.15 for this pinned build.')
+def prepare_sources(root):
     root.mkdir(parents=True, exist_ok=True)
     for name, revision in PINS.items():
         dest = root / name
@@ -243,6 +240,24 @@ def build(root, output, workers, baseline=False, profiling=False):
     }
 #endif
 ''')
+    return boost
+
+
+def build(root, output, workers, baseline=False, profiling=False, threaded=False):
+    if (root / '.mauve-native-work').exists():
+        raise RuntimeError('Use a separate --work directory for WebAssembly and native builds.')
+    version = subprocess.check_output(['emcc', '--version'], text=True)
+    if '4.0.15' not in version:
+        raise RuntimeError('Use Emscripten 4.0.15 for this pinned build.')
+    if (root / '.mauve-threaded-work').exists() and not threaded:
+        raise RuntimeError('Use a separate --work directory for threaded builds.')
+    if threaded and (root / 'objects-optimized').exists() and not (root / '.mauve-threaded-work').exists():
+        raise RuntimeError('Use a separate --work directory for threaded builds.')
+    boost = prepare_sources(root)
+    if threaded:
+        from pthread_build import prepare_threads
+        (root / '.mauve-threaded-work').touch()
+        prepare_threads(root)
     def sources(folder, key):
         text = (folder / 'Makefile.am').read_text().replace('\\\n', ' ')
         return [folder / f for f in re.search(r'^' + key + r'\s*=([^\n]+)', text, re.M)[1].split()]
@@ -253,12 +268,16 @@ def build(root, output, workers, baseline=False, profiling=False):
     files += list((boost / 'libs/filesystem/src').glob('*.cpp')) + [boost / 'libs/system/src/error_code.cpp', boost / 'libs/iostreams/src/mapped_file.cpp']
     files += [HERE / 'optimizations/profile_row.cpp']
     files += [HERE / 'optimizations/seed_lookup.cpp']
+    if threaded:
+        files += [HERE / 'optimizations/thread_pool.cpp']
     flags = ['-O3', '-msimd128', '-DNDEBUG', '-D_LIB', '-DUSE_LIBC', '-DBOOST_NO_CXX11_SCOPED_ENUMS',
              '-Wno-deprecated-declarations', '-Wno-register', '-Wno-inconsistent-missing-override', '-Wno-c++11-narrowing']
     flags += ['-I' + str(root / f) for f in ['libGenome', 'muscle', 'libMems', 'boost_1_65_1']]
     flags += ['-I' + str(HERE / 'optimizations')]
     if not baseline:
         flags += ['-flto', '-DMAUVE_PROFILE_ROWS', '-DMAUVE_FAST_TRANSLATE', '-DMAUVE_SEED_LOOKUP', '-DMAUVE_COMPACT_TRACE', '-DMAUVE_LAZY_TRACE', '-DMAUVE_ROW_GAPS', '-DMAUVE_LOCAL_D_SCORE']
+    if threaded:
+        flags += ['-pthread']
     exceptions = ['-fexceptions'] if baseline else ['-fwasm-exceptions']
     obj = root / ('objects-baseline' if baseline else 'objects-optimized'); obj.mkdir(exist_ok=True)
     def compile_one(file):
@@ -273,19 +292,24 @@ def build(root, output, workers, baseline=False, profiling=False):
         objects = list(pool.map(compile_one, files))
     output.mkdir(parents=True, exist_ok=True)
     link_flags = ['-sDISABLE_EXCEPTION_CATCHING=0'] if baseline else ['-flto']
+    if threaded:
+        link_flags += ['-pthread', '-sPROXY_TO_PTHREAD=1', '-sEXIT_RUNTIME=1',
+                       '-sPTHREAD_POOL_SIZE=Module.mauveThreads', '-sPTHREAD_POOL_SIZE_STRICT=2',
+                       '-sDEFAULT_PTHREAD_STACK_SIZE=8388608',
+                       "-sINCOMING_MODULE_JS_API=['noInitialRun','print','printErr','onExit','onAbort','preRun','locateFile','mainScriptUrlOrBlob']"]
     if profiling:
         link_flags += ['--profiling-funcs']
     subprocess.run(['em++', *map(str, objects), '-O3', '-msimd128', *exceptions, *link_flags,
                     '-sALLOW_MEMORY_GROWTH=1', '-sMAXIMUM_MEMORY=2147483648', '-sSTACK_SIZE=8388608',
-                    '-sMODULARIZE=1', '-sEXPORT_ES6=1', '-sINVOKE_RUN=0', "-sEXPORTED_RUNTIME_METHODS=['FS','callMain']",
+                    '-sMODULARIZE=1', '-sEXPORT_ES6=1', '-sINVOKE_RUN=0', "-sEXPORTED_RUNTIME_METHODS=['FS','callMain','ENV']",
                     '-sFORCE_FILESYSTEM=1', '-sENVIRONMENT=web,worker,node', '-o', str(output / 'progressiveMauve.mjs')], check=True)
     for name in PINS:
         shutil.copyfile(root / name / 'COPYING', output / (name + '-COPYING'))
     shutil.copyfile(root / 'libMems/LICENSE', output / 'libMems-LICENSE')
     shutil.copyfile(boost / 'LICENSE_1_0.txt', output / 'Boost-LICENSE')
-    local_sources = [HERE / 'build.py', *sorted((HERE / 'optimizations').glob('*'))]
+    local_sources = [HERE / 'build.py', HERE / 'pthread_build.py', *sorted((HERE / 'optimizations').glob('*'))]
     manifest = {'compiler': 'Emscripten 4.0.15',
-                'configuration': {'local_deletion_score': not baseline, 'row_gap_loads': not baseline, 'lazy_traceback': not baseline, 'compact_traceback': not baseline, 'seed_lookup': not baseline,
+                'configuration': {'threaded': threaded, 'parallel_refinement_windows': threaded, 'local_deletion_score': not baseline, 'row_gap_loads': not baseline, 'lazy_traceback': not baseline, 'compact_traceback': not baseline, 'seed_lookup': not baseline,
                                   'packed_profiles': not baseline, 'hoisted_homology_state': not baseline,
                                   'lto': not baseline, 'profile_rows': not baseline, 'fast_translate': not baseline,
                                   'exceptions': 'javascript' if baseline else 'wasm', 'profiling': profiling},
@@ -293,16 +317,18 @@ def build(root, output, workers, baseline=False, profiling=False):
                 'sources': {name: {'url': 'https://github.com/koadman/' + name, 'revision': rev} for name, rev in PINS.items()},
                 'boost': {'url': 'https://archives.boost.io/release/1.65.1/source/boost_1_65_1.tar.bz2', 'sha256': BOOST_SHA256},
                 'wasm_sha256': hashlib.sha256((output / 'progressiveMauve.wasm').read_bytes()).hexdigest(),
-                'rebuild': 'python3 build.py --work /tmp/mauve-wasm-build --output ./rebuilt' + (' --baseline' if baseline else '') + (' --profiling' if profiling else '')}
+                'rebuild': 'python3 build.py --work /tmp/mauve-wasm-build --output ./rebuilt' + (' --baseline' if baseline else '') + (' --profiling' if profiling else '') + (' --threaded' if threaded else '')}
     (output / 'SOURCES.json').write_text(json.dumps(manifest, indent=2) + '\n')
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--work', type=Path, required=True)
-    parser.add_argument('--output', type=Path, default=HERE.parent / 'mauve_web/static/wasm')
+    parser.add_argument('--output', type=Path, help='Defaults to static/wasm or static/wasm-threaded for --threaded')
     parser.add_argument('--jobs', type=int, default=4)
     parser.add_argument('--baseline', action='store_true', help='Original scalar scoring, no LTO, JavaScript exception handling')
     parser.add_argument('--profiling', action='store_true', help='Preserve C++ function names in optimized output')
+    parser.add_argument('--threaded', action='store_true', help='Build a separate pthread backbone engine')
     args = parser.parse_args()
-    build(args.work.resolve(), args.output.resolve(), args.jobs, args.baseline, args.profiling)
+    output = args.output or HERE.parent / 'mauve_web/static' / ('wasm-threaded' if args.threaded else 'wasm')
+    build(args.work.resolve(), output.resolve(), args.jobs, args.baseline, args.profiling, args.threaded)

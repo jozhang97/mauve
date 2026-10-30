@@ -1,0 +1,130 @@
+{
+  "measured_at": "2026-10-30T17:03:28.792113+00:00",
+  "platform": "macOS-27.0.1-arm64-arm-64bit",
+  "engine": "/tmp/mauve-functions-native/progressiveMauve",
+  "engine_sha256": "3525024bc48b5006f19cd0f06a9143d6b29ecae183b2c787733b2f27edefc46f",
+  "timing": "Whole native process wall time, including startup; each repetition reverses thread-count order.",
+  "threads": [
+    8
+  ],
+  "repeats": 1,
+  "cases": [
+    {
+      "kind": "similar",
+      "genomes": 32,
+      "bases": 100000,
+      "runs": [
+        {
+          "power_before": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=35520611)\t68%; charging; 1:14 remaining present: true",
+          "power_after": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=35520611)\t68%; charging; 1:14 remaining present: true",
+          "repeat": 0,
+          "threads": 8,
+          "wall_ms": 15018.757292069495,
+          "peak_rss_bytes": 231522304,
+          "artifacts": {
+            "alignment.xmfa": {
+              "bytes": 3242575,
+              "sha256": "0b5ea237e5ddb64664ae0d4626ddb6c40b32bcd613d1bfc9abd55d00f4dbd407"
+            },
+            "guide.tree": {
+              "bytes": 1011,
+              "sha256": "13425879a87254c42dd47409761ee228282a3db3f5ad742713ec87f8c733f952"
+            },
+            "alignment.backbone": {
+              "bytes": 1196,
+              "sha256": "f202af0de63294189a33741379f93a26cf0bafdc0ce970e7621557fb1d51b65c"
+            }
+          },
+          "stages": {
+            "engine": {
+              "inclusive_ms": 14971.189916,
+              "calls": 1
+            },
+            "backbone": {
+              "inclusive_ms": 860.413541,
+              "calls": 1
+            },
+            "progressive": {
+              "inclusive_ms": 12134.668167,
+              "calls": 1
+            },
+            "guide_distance": {
+              "inclusive_ms": 71.309792,
+              "calls": 1
+            },
+            "alignment_tree": {
+              "inclusive_ms": 9789.92225,
+              "calls": 1
+            },
+            "profile_alignment": {
+              "inclusive_ms": 7926.542668,
+              "calls": 31
+            },
+            "gapped_alignment": {
+              "inclusive_ms": 8304.914791,
+              "calls": 41
+            },
+            "recursive_pairs": {
+              "inclusive_ms": 35.8085,
+              "calls": 31
+            },
+            "pairwise_hss": {
+              "inclusive_ms": 845.733875,
+              "calls": 2
+            },
+            "muscle_refine": {
+              "inclusive_ms": 0.0,
+              "calls": 0
+            },
+            "muscle_profile": {
+              "inclusive_ms": 0.0,
+              "calls": 0
+            },
+            "muscle_align": {
+              "inclusive_ms": 0.0,
+              "calls": 0
+            },
+            "muscle_refine_fast": {
+              "inclusive_ms": 5953.914499,
+              "calls": 20
+            },
+            "muscle_profile_fast": {
+              "inclusive_ms": 2054.109378,
+              "calls": 62
+            },
+            "single_copy_distance": {
+              "inclusive_ms": 2260.535833,
+              "calls": 1
+            },
+            "seed_occurrence": {
+              "inclusive_ms": 85.365542,
+              "calls": 32
+            },
+            "nw_small": {
+              "inclusive_ms": 4809.241636,
+              "calls": 85364
+            },
+            "muscle_tree": {
+              "inclusive_ms": 557.361867,
+              "calls": 64872
+            },
+            "refine_windows": {
+              "inclusive_ms": 5561.018873,
+              "calls": 20
+            },
+            "refine_horizontal": {
+              "inclusive_ms": 0.0,
+              "calls": 0
+            }
+          },
+          "cpu_seconds": 19.85,
+          "average_cpu_cores": 1.3216805900766235
+        }
+      ],
+      "median_ms": {
+        "8": 15018.757292069495
+      },
+      "artifacts_identical": true
+    }
+  ]
+}

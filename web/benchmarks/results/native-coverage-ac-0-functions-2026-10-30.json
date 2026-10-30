@@ -1,0 +1,130 @@
+{
+  "measured_at": "2026-10-30T17:02:48.363352+00:00",
+  "platform": "macOS-27.0.1-arm64-arm-64bit",
+  "engine": "/tmp/mauve-functions-native/progressiveMauve",
+  "engine_sha256": "3525024bc48b5006f19cd0f06a9143d6b29ecae183b2c787733b2f27edefc46f",
+  "timing": "Whole native process wall time, including startup; each repetition reverses thread-count order.",
+  "threads": [
+    8
+  ],
+  "repeats": 1,
+  "cases": [
+    {
+      "kind": "similar",
+      "genomes": 32,
+      "bases": 100000,
+      "runs": [
+        {
+          "power_before": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=35520611)\t67%; charging; 1:22 remaining present: true",
+          "power_after": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=35520611)\t68%; charging; 1:14 remaining present: true",
+          "repeat": 0,
+          "threads": 8,
+          "wall_ms": 14508.075541933067,
+          "peak_rss_bytes": 233799680,
+          "artifacts": {
+            "alignment.xmfa": {
+              "bytes": 3242575,
+              "sha256": "0b5ea237e5ddb64664ae0d4626ddb6c40b32bcd613d1bfc9abd55d00f4dbd407"
+            },
+            "guide.tree": {
+              "bytes": 1011,
+              "sha256": "13425879a87254c42dd47409761ee228282a3db3f5ad742713ec87f8c733f952"
+            },
+            "alignment.backbone": {
+              "bytes": 1196,
+              "sha256": "f202af0de63294189a33741379f93a26cf0bafdc0ce970e7621557fb1d51b65c"
+            }
+          },
+          "stages": {
+            "engine": {
+              "inclusive_ms": 14465.525375,
+              "calls": 1
+            },
+            "backbone": {
+              "inclusive_ms": 859.718666,
+              "calls": 1
+            },
+            "progressive": {
+              "inclusive_ms": 11705.480875,
+              "calls": 1
+            },
+            "guide_distance": {
+              "inclusive_ms": 72.171541,
+              "calls": 1
+            },
+            "alignment_tree": {
+              "inclusive_ms": 9427.777333,
+              "calls": 1
+            },
+            "profile_alignment": {
+              "inclusive_ms": 7653.72396,
+              "calls": 31
+            },
+            "gapped_alignment": {
+              "inclusive_ms": 8016.025546,
+              "calls": 41
+            },
+            "recursive_pairs": {
+              "inclusive_ms": 28.949502,
+              "calls": 31
+            },
+            "pairwise_hss": {
+              "inclusive_ms": 846.173875,
+              "calls": 2
+            },
+            "muscle_refine": {
+              "inclusive_ms": 0.0,
+              "calls": 0
+            },
+            "muscle_profile": {
+              "inclusive_ms": 0.0,
+              "calls": 0
+            },
+            "muscle_align": {
+              "inclusive_ms": 0.0,
+              "calls": 0
+            },
+            "muscle_refine_fast": {
+              "inclusive_ms": 5750.757208,
+              "calls": 20
+            },
+            "muscle_profile_fast": {
+              "inclusive_ms": 1979.15892,
+              "calls": 62
+            },
+            "single_copy_distance": {
+              "inclusive_ms": 2192.935959,
+              "calls": 1
+            },
+            "seed_occurrence": {
+              "inclusive_ms": 84.298457,
+              "calls": 32
+            },
+            "nw_small": {
+              "inclusive_ms": 4666.901067,
+              "calls": 85364
+            },
+            "muscle_tree": {
+              "inclusive_ms": 529.485997,
+              "calls": 64872
+            },
+            "refine_windows": {
+              "inclusive_ms": 5372.243375,
+              "calls": 20
+            },
+            "refine_horizontal": {
+              "inclusive_ms": 0.0,
+              "calls": 0
+            }
+          },
+          "cpu_seconds": 19.349999999999998,
+          "average_cpu_cores": 1.3337399535915146
+        }
+      ],
+      "median_ms": {
+        "8": 14508.075541933067
+      },
+      "artifacts_identical": true
+    }
+  ]
+}

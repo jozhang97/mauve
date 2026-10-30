@@ -1,0 +1,115 @@
+{
+  "environment": {
+    "engine_sha256": {
+      "wasm": "d8b59472529bb7497e55f6f58e236933d74b33eb0b0668ed2e153b8bbb11742d",
+      "wasm-threaded": "fae93528bb6d15f564f03f5d231b82d2dfc9266587e8561d0a613847f67bdbef"
+    },
+    "browser": "156.0.8078.76",
+    "platform": "macOS-27.0.1-arm64-arm-64bit",
+    "hardware_concurrency": 16
+  },
+  "results": [
+    {
+      "kind": "similar",
+      "genomes": 32,
+      "bases": 100000,
+      "repeat": 0,
+      "seed_family": false,
+      "collinear": false,
+      "threads": 8,
+      "alignmentMs": 20817.03499996662,
+      "totalMs": 20837.110000014305,
+      "wallMs": 20841.949999928474,
+      "hashes": {
+        "xmfa": "bcf6450684e5a71ea1376d3bb28108c575152a2b0f250acb9525a2a42954365e",
+        "tree": "13425879a87254c42dd47409761ee228282a3db3f5ad742713ec87f8c733f952",
+        "backbone": "f202af0de63294189a33741379f93a26cf0bafdc0ce970e7621557fb1d51b65c"
+      },
+      "stages": {
+        "engine": {
+          "inclusive_ms": 20815.620352,
+          "calls": 1
+        },
+        "backbone": {
+          "inclusive_ms": 996.035072,
+          "calls": 1
+        },
+        "progressive": {
+          "inclusive_ms": 17324.335104,
+          "calls": 1
+        },
+        "guide_distance": {
+          "inclusive_ms": 678.265088,
+          "calls": 1
+        },
+        "alignment_tree": {
+          "inclusive_ms": 12521.095168,
+          "calls": 1
+        },
+        "profile_alignment": {
+          "inclusive_ms": 10057.896192,
+          "calls": 31
+        },
+        "gapped_alignment": {
+          "inclusive_ms": 10583.917824,
+          "calls": 41
+        },
+        "recursive_pairs": {
+          "inclusive_ms": 25.955584,
+          "calls": 31
+        },
+        "pairwise_hss": {
+          "inclusive_ms": 971.559936,
+          "calls": 2
+        },
+        "muscle_refine": {
+          "inclusive_ms": 0,
+          "calls": 0
+        },
+        "muscle_profile": {
+          "inclusive_ms": 0,
+          "calls": 0
+        },
+        "muscle_align": {
+          "inclusive_ms": 0,
+          "calls": 0
+        },
+        "muscle_refine_fast": {
+          "inclusive_ms": 7643.496192,
+          "calls": 20
+        },
+        "muscle_profile_fast": {
+          "inclusive_ms": 2596.91136,
+          "calls": 62
+        },
+        "single_copy_distance": {
+          "inclusive_ms": 4101.679872,
+          "calls": 1
+        },
+        "seed_occurrence": {
+          "inclusive_ms": 126.700032,
+          "calls": 32
+        },
+        "nw_small": {
+          "inclusive_ms": 5932.588288,
+          "calls": 85364
+        },
+        "muscle_tree": {
+          "inclusive_ms": 595.744768,
+          "calls": 64872
+        },
+        "refine_windows": {
+          "inclusive_ms": 7277.569792,
+          "calls": 20
+        },
+        "refine_horizontal": {
+          "inclusive_ms": 0,
+          "calls": 0
+        }
+      },
+      "power_before": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=35520611)\t69%; charging; 1:25 remaining present: true",
+      "power_after": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=35520611)\t70%; charging; 1:24 remaining present: true"
+    }
+  ],
+  "note": "Fresh workers and heaps per run. Wall time includes worker startup and input staging. Alternating thread order. Exact hashes, no normalization."
+}

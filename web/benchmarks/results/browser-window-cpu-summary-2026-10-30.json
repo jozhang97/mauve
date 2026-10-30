@@ -1,0 +1,276 @@
+{
+  "note": "Separate diagnostic run, first 12 seconds. Sample activity includes runtime work/waits and is not a CPU utilization percentage. Production Wasm strips internal names.",
+  "workers": [
+    {
+      "samples": 4099,
+      "idle_percent": 99.21932178580141,
+      "top": [
+        [
+          "(idle)",
+          4067
+        ],
+        [
+          "__emscripten_thread_mailbox_await",
+          5
+        ],
+        [
+          "(program)",
+          3
+        ],
+        [
+          "wasm-function[148]",
+          3
+        ],
+        [
+          "write",
+          3
+        ],
+        [
+          "growMemViews",
+          2
+        ]
+      ]
+    },
+    {
+      "samples": 4072,
+      "idle_percent": 85.73182711198429,
+      "top": [
+        [
+          "(idle)",
+          3491
+        ],
+        [
+          "wasm-function[348]",
+          143
+        ],
+        [
+          "wasm-function[148]",
+          131
+        ],
+        [
+          "wasm-function[677]",
+          125
+        ],
+        [
+          "wasm-function[117]",
+          38
+        ],
+        [
+          "wasm-function[168]",
+          30
+        ]
+      ]
+    },
+    {
+      "samples": 4085,
+      "idle_percent": 85.5813953488372,
+      "top": [
+        [
+          "(idle)",
+          3496
+        ],
+        [
+          "wasm-function[677]",
+          140
+        ],
+        [
+          "wasm-function[148]",
+          127
+        ],
+        [
+          "wasm-function[348]",
+          123
+        ],
+        [
+          "wasm-function[117]",
+          52
+        ],
+        [
+          "wasm-function[168]",
+          32
+        ]
+      ]
+    },
+    {
+      "samples": 4092,
+      "idle_percent": 85.48387096774194,
+      "top": [
+        [
+          "(idle)",
+          3498
+        ],
+        [
+          "wasm-function[677]",
+          141
+        ],
+        [
+          "wasm-function[148]",
+          139
+        ],
+        [
+          "wasm-function[348]",
+          125
+        ],
+        [
+          "wasm-function[117]",
+          41
+        ],
+        [
+          "wasm-function[168]",
+          23
+        ]
+      ]
+    },
+    {
+      "samples": 4083,
+      "idle_percent": 85.35390644134215,
+      "top": [
+        [
+          "(idle)",
+          3485
+        ],
+        [
+          "wasm-function[348]",
+          145
+        ],
+        [
+          "wasm-function[677]",
+          136
+        ],
+        [
+          "wasm-function[148]",
+          135
+        ],
+        [
+          "wasm-function[117]",
+          40
+        ],
+        [
+          "wasm-function[168]",
+          27
+        ]
+      ]
+    },
+    {
+      "samples": 4086,
+      "idle_percent": 85.78071463534019,
+      "top": [
+        [
+          "(idle)",
+          3505
+        ],
+        [
+          "wasm-function[148]",
+          134
+        ],
+        [
+          "wasm-function[677]",
+          128
+        ],
+        [
+          "wasm-function[348]",
+          114
+        ],
+        [
+          "wasm-function[117]",
+          49
+        ],
+        [
+          "wasm-function[168]",
+          31
+        ]
+      ]
+    },
+    {
+      "samples": 4095,
+      "idle_percent": 85.66544566544566,
+      "top": [
+        [
+          "(idle)",
+          3508
+        ],
+        [
+          "wasm-function[677]",
+          150
+        ],
+        [
+          "wasm-function[348]",
+          133
+        ],
+        [
+          "wasm-function[148]",
+          131
+        ],
+        [
+          "wasm-function[117]",
+          40
+        ],
+        [
+          "wasm-function[79]",
+          22
+        ]
+      ]
+    },
+    {
+      "samples": 4094,
+      "idle_percent": 85.61309233023937,
+      "top": [
+        [
+          "(idle)",
+          3505
+        ],
+        [
+          "wasm-function[348]",
+          141
+        ],
+        [
+          "wasm-function[677]",
+          140
+        ],
+        [
+          "wasm-function[148]",
+          119
+        ],
+        [
+          "wasm-function[117]",
+          58
+        ],
+        [
+          "wasm-function[168]",
+          20
+        ]
+      ]
+    },
+    {
+      "samples": 4093,
+      "idle_percent": 0.0,
+      "top": [
+        [
+          "wasm-function[1925]",
+          1410
+        ],
+        [
+          "wasm-function[348]",
+          515
+        ],
+        [
+          "wasm-function[445]",
+          191
+        ],
+        [
+          "wasm-function[677]",
+          157
+        ],
+        [
+          "wasm-function[1417]",
+          118
+        ],
+        [
+          "wasm-function[148]",
+          115
+        ]
+      ]
+    }
+  ],
+  "errors": []
+}

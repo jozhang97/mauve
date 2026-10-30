@@ -1,3 +1,4 @@
+import {alignerConfig} from './aligner-config.mjs';
 import {normalizeInput} from './genbank.mjs';
 import {basename} from './core.mjs';
 export const MAX_GENOMES = 64, MAX_BASES = 100000000, MAX_INPUT = 50 * 1024 * 1024;
@@ -6,11 +7,12 @@ const hash = async blob => [...new Uint8Array(await crypto.subtle.digest('SHA-25
 export class Jobs {
   constructor(store, importer, onComplete = () => {}) { this.onComplete = onComplete; this.store = store; this.importer = importer; this.running = new Map(); }
   async engine() {
-    this.engineInfo ||= fetch(new URL('../wasm/SOURCES.json', import.meta.url)).then(r => { if (!r.ok) throw Error('Engine manifest is missing. Rebuild the static site.'); return r.json(); });
+    const config = alignerConfig();
+    this.engineInfo ||= fetch(new URL(`../${config.directory}/SOURCES.json`, import.meta.url)).then(r => { if (!r.ok) throw Error('Engine manifest is missing. Rebuild the static site.'); return r.json(); });
     const source = await this.engineInfo;
     const hasWasm = typeof WebAssembly !== 'undefined';
     const hasExceptions = hasWasm && (source.configuration?.exceptions !== 'wasm' || typeof WebAssembly.Exception === 'function');
-    return {available: hasExceptions, version: 'progressiveMauve · WebAssembly SIMD (local)',
+    return {available: hasExceptions, threads: config.threads, version: `progressiveMauve · WebAssembly SIMD (${config.threads} thread${config.threads === 1 ? '' : 's'}, local)`,
       reason: hasWasm ? 'Update your browser to run the aligner with WebAssembly exception support.' : 'This browser needs WebAssembly support.', max_genomes: MAX_GENOMES, source};
   }
   async addInput(blob, name, provenance = null) {
@@ -47,7 +49,7 @@ export class Jobs {
     if (options.min_weight != null) command.push(`--weight=${options.min_weight}`);
     command.push(...inputs.map((_, i) => `/input-${i + 1}.fa`));
     const job = {id: crypto.randomUUID(), name: (options.name || 'New alignment').slice(0, 200), created: now(), status: 'queued', log: '', log_truncated: false, error: '', artifacts: ['manifest'],
-      spec: {options, command, engine: {version: engine.version, ...engine.source}, inputs: inputs.map(({normalized, ...i}) => i)}};
+      spec: {options, command, engine: {version: engine.version, threads: engine.threads, ...engine.source}, inputs: inputs.map(({normalized, ...i}) => i)}};
     // Claim ownership before publishing so other tabs cannot mark a queued job interrupted.
     await new Promise((resolve, reject) => {
       navigator.locks.request('mauve-job-' + job.id, async () => {
@@ -86,7 +88,7 @@ export class Jobs {
             else if (data.type === 'error') reject(Error(data.error));
           } catch (e) { reject(e); }
         };
-        worker.postMessage({inputs: inputs.map(i => i.normalized), command: job.spec.command});
+        worker.postMessage({inputs: inputs.map(i => i.normalized), command: job.spec.command, threads: job.spec.engine?.threads ?? 1});
       });
       // The returned Blobs outlive the worker. Release the engine heap and
       // scratch filesystem before result parsing creates another large working set.

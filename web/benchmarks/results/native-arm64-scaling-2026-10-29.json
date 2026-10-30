@@ -1,0 +1,1154 @@
+{
+  "measured_at": "2026-10-30T03:08:41.898559+00:00",
+  "platform": "macOS-27.0.1-arm64-arm-64bit",
+  "engine": "/Users/jzhang/code/mauve/web/native/bin/progressiveMauve",
+  "engine_sha256": "ea94e8701f87e477cf224d1f06970a06aca222519d7989a6f2e816e0c593565b",
+  "timing": "Whole native process wall time, including startup; each repetition reverses thread-count order.",
+  "threads": [
+    1,
+    8,
+    16
+  ],
+  "repeats": 3,
+  "cases": [
+    {
+      "kind": "similar",
+      "genomes": 12,
+      "bases": 100000,
+      "runs": [
+        {
+          "repeat": 0,
+          "threads": 1,
+          "wall_ms": 4492.902041994967,
+          "peak_rss_bytes": 64569344,
+          "artifacts": {
+            "alignment.xmfa": {
+              "bytes": 1215975,
+              "sha256": "51c07561641917334d95127b6bc67cbb5fc9d468e6c0aecba54bed83041c7d41"
+            },
+            "guide.tree": {
+              "bytes": 351,
+              "sha256": "38e25041f240074965859e7768c47b8c99e98a350f584303bb2864d0f594a34e"
+            },
+            "alignment.backbone": {
+              "bytes": 436,
+              "sha256": "613813ee1e849778253c39de2ba77105e58454036f38bd3330e74879d549b8a1"
+            }
+          },
+          "cpu_seconds": 4.44,
+          "average_cpu_cores": 0.988225418337526
+        },
+        {
+          "repeat": 0,
+          "threads": 8,
+          "wall_ms": 3974.8252499848604,
+          "peak_rss_bytes": 133120000,
+          "artifacts": {
+            "alignment.xmfa": {
+              "bytes": 1215975,
+              "sha256": "51c07561641917334d95127b6bc67cbb5fc9d468e6c0aecba54bed83041c7d41"
+            },
+            "guide.tree": {
+              "bytes": 351,
+              "sha256": "38e25041f240074965859e7768c47b8c99e98a350f584303bb2864d0f594a34e"
+            },
+            "alignment.backbone": {
+              "bytes": 436,
+              "sha256": "613813ee1e849778253c39de2ba77105e58454036f38bd3330e74879d549b8a1"
+            }
+          },
+          "cpu_seconds": 4.57,
+          "average_cpu_cores": 1.1497360795968092
+        },
+        {
+          "repeat": 0,
+          "threads": 16,
+          "wall_ms": 3944.7213750099763,
+          "peak_rss_bytes": 166100992,
+          "artifacts": {
+            "alignment.xmfa": {
+              "bytes": 1215975,
+              "sha256": "51c07561641917334d95127b6bc67cbb5fc9d468e6c0aecba54bed83041c7d41"
+            },
+            "guide.tree": {
+              "bytes": 351,
+              "sha256": "38e25041f240074965859e7768c47b8c99e98a350f584303bb2864d0f594a34e"
+            },
+            "alignment.backbone": {
+              "bytes": 436,
+              "sha256": "613813ee1e849778253c39de2ba77105e58454036f38bd3330e74879d549b8a1"
+            }
+          },
+          "cpu_seconds": 4.569999999999999,
+          "average_cpu_cores": 1.158510212901524
+        },
+        {
+          "repeat": 1,
+          "threads": 16,
+          "wall_ms": 4036.239166976884,
+          "peak_rss_bytes": 178192384,
+          "artifacts": {
+            "alignment.xmfa": {
+              "bytes": 1215975,
+              "sha256": "51c07561641917334d95127b6bc67cbb5fc9d468e6c0aecba54bed83041c7d41"
+            },
+            "guide.tree": {
+              "bytes": 351,
+              "sha256": "38e25041f240074965859e7768c47b8c99e98a350f584303bb2864d0f594a34e"
+            },
+            "alignment.backbone": {
+              "bytes": 436,
+              "sha256": "613813ee1e849778253c39de2ba77105e58454036f38bd3330e74879d549b8a1"
+            }
+          },
+          "cpu_seconds": 4.680000000000001,
+          "average_cpu_cores": 1.1594952148252624
+        },
+        {
+          "repeat": 1,
+          "threads": 8,
+          "wall_ms": 3979.4729161076248,
+          "peak_rss_bytes": 130711552,
+          "artifacts": {
+            "alignment.xmfa": {
+              "bytes": 1215975,
+              "sha256": "51c07561641917334d95127b6bc67cbb5fc9d468e6c0aecba54bed83041c7d41"
+            },
+            "guide.tree": {
+              "bytes": 351,
+              "sha256": "38e25041f240074965859e7768c47b8c99e98a350f584303bb2864d0f594a34e"
+            },
+            "alignment.backbone": {
+              "bytes": 436,
+              "sha256": "613813ee1e849778253c39de2ba77105e58454036f38bd3330e74879d549b8a1"
+            }
+          },
+          "cpu_seconds": 4.47,
+          "average_cpu_cores": 1.1232643353110607
+        },
+        {
+          "repeat": 1,
+          "threads": 1,
+          "wall_ms": 4519.406332983635,
+          "peak_rss_bytes": 64569344,
+          "artifacts": {
+            "alignment.xmfa": {
+              "bytes": 1215975,
+              "sha256": "51c07561641917334d95127b6bc67cbb5fc9d468e6c0aecba54bed83041c7d41"
+            },
+            "guide.tree": {
+              "bytes": 351,
+              "sha256": "38e25041f240074965859e7768c47b8c99e98a350f584303bb2864d0f594a34e"
+            },
+            "alignment.backbone": {
+              "bytes": 436,
+              "sha256": "613813ee1e849778253c39de2ba77105e58454036f38bd3330e74879d549b8a1"
+            }
+          },
+          "cpu_seconds": 4.44,
+          "average_cpu_cores": 0.982429919521927
+        },
+        {
+          "repeat": 2,
+          "threads": 1,
+          "wall_ms": 4522.823583101854,
+          "peak_rss_bytes": 59195392,
+          "artifacts": {
+            "alignment.xmfa": {
+              "bytes": 1215975,
+              "sha256": "51c07561641917334d95127b6bc67cbb5fc9d468e6c0aecba54bed83041c7d41"
+            },
+            "guide.tree": {
+              "bytes": 351,
+              "sha256": "38e25041f240074965859e7768c47b8c99e98a350f584303bb2864d0f594a34e"
+            },
+            "alignment.backbone": {
+              "bytes": 436,
+              "sha256": "613813ee1e849778253c39de2ba77105e58454036f38bd3330e74879d549b8a1"
+            }
+          },
+          "cpu_seconds": 4.45,
+          "average_cpu_cores": 0.9838986461081665
+        },
+        {
+          "repeat": 2,
+          "threads": 8,
+          "wall_ms": 3964.5927500678226,
+          "peak_rss_bytes": 121536512,
+          "artifacts": {
+            "alignment.xmfa": {
+              "bytes": 1215975,
+              "sha256": "51c07561641917334d95127b6bc67cbb5fc9d468e6c0aecba54bed83041c7d41"
+            },
+            "guide.tree": {
+              "bytes": 351,
+              "sha256": "38e25041f240074965859e7768c47b8c99e98a350f584303bb2864d0f594a34e"
+            },
+            "alignment.backbone": {
+              "bytes": 436,
+              "sha256": "613813ee1e849778253c39de2ba77105e58454036f38bd3330e74879d549b8a1"
+            }
+          },
+          "cpu_seconds": 4.49,
+          "average_cpu_cores": 1.1325248980297382
+        },
+        {
+          "repeat": 2,
+          "threads": 16,
+          "wall_ms": 3907.3086669668555,
+          "peak_rss_bytes": 162463744,
+          "artifacts": {
+            "alignment.xmfa": {
+              "bytes": 1215975,
+              "sha256": "51c07561641917334d95127b6bc67cbb5fc9d468e6c0aecba54bed83041c7d41"
+            },
+            "guide.tree": {
+              "bytes": 351,
+              "sha256": "38e25041f240074965859e7768c47b8c99e98a350f584303bb2864d0f594a34e"
+            },
+            "alignment.backbone": {
+              "bytes": 436,
+              "sha256": "613813ee1e849778253c39de2ba77105e58454036f38bd3330e74879d549b8a1"
+            }
+          },
+          "cpu_seconds": 4.52,
+          "average_cpu_cores": 1.1568064837602812
+        }
+      ],
+      "median_ms": {
+        "1": 4519.406332983635,
+        "8": 3974.8252499848604,
+        "16": 3944.7213750099763
+      },
+      "artifacts_identical": true,
+      "median_rss_mib": {
+        "1": 61.578125,
+        "8": 124.65625,
+        "16": 158.40625
+      }
+    },
+    {
+      "kind": "divergent",
+      "genomes": 4,
+      "bases": 20000,
+      "runs": [
+        {
+          "repeat": 0,
+          "threads": 1,
+          "wall_ms": 1138.7884160503745,
+          "peak_rss_bytes": 125829120,
+          "artifacts": {
+            "alignment.xmfa": {
+              "bytes": 106128,
+              "sha256": "d90870d6e0ce30c190405a8e6ea9c771f6a37d6459d7547da3c192f965d905d6"
+            },
+            "guide.tree": {
+              "bytes": 95,
+              "sha256": "2dafadfcb2b297d93f70b59af34b7d95ec3e86b4b6a1a5472f367bc8d7730e4f"
+            },
+            "alignment.backbone": {
+              "bytes": 1918,
+              "sha256": "fef68fec30354303872a067f8f174f7eebb54bd85962bd3f0f1fd920c0a3ae97"
+            }
+          },
+          "cpu_seconds": 1.06,
+          "average_cpu_cores": 0.9308138237622455
+        },
+        {
+          "repeat": 0,
+          "threads": 8,
+          "wall_ms": 1142.1461660647765,
+          "peak_rss_bytes": 128401408,
+          "artifacts": {
+            "alignment.xmfa": {
+              "bytes": 106128,
+              "sha256": "d90870d6e0ce30c190405a8e6ea9c771f6a37d6459d7547da3c192f965d905d6"
+            },
+            "guide.tree": {
+              "bytes": 95,
+              "sha256": "2dafadfcb2b297d93f70b59af34b7d95ec3e86b4b6a1a5472f367bc8d7730e4f"
+            },
+            "alignment.backbone": {
+              "bytes": 1918,
+              "sha256": "fef68fec30354303872a067f8f174f7eebb54bd85962bd3f0f1fd920c0a3ae97"
+            }
+          },
+          "cpu_seconds": 1.09,
+          "average_cpu_cores": 0.954343701695866
+        },
+        {
+          "repeat": 0,
+          "threads": 16,
+          "wall_ms": 1147.731666918844,
+          "peak_rss_bytes": 128614400,
+          "artifacts": {
+            "alignment.xmfa": {
+              "bytes": 106128,
+              "sha256": "d90870d6e0ce30c190405a8e6ea9c771f6a37d6459d7547da3c192f965d905d6"
+            },
+            "guide.tree": {
+              "bytes": 95,
+              "sha256": "2dafadfcb2b297d93f70b59af34b7d95ec3e86b4b6a1a5472f367bc8d7730e4f"
+            },
+            "alignment.backbone": {
+              "bytes": 1918,
+              "sha256": "fef68fec30354303872a067f8f174f7eebb54bd85962bd3f0f1fd920c0a3ae97"
+            }
+          },
+          "cpu_seconds": 1.12,
+          "average_cpu_cores": 0.9758378480631354
+        },
+        {
+          "repeat": 1,
+          "threads": 16,
+          "wall_ms": 1137.3492080019787,
+          "peak_rss_bytes": 128647168,
+          "artifacts": {
+            "alignment.xmfa": {
+              "bytes": 106128,
+              "sha256": "d90870d6e0ce30c190405a8e6ea9c771f6a37d6459d7547da3c192f965d905d6"
+            },
+            "guide.tree": {
+              "bytes": 95,
+              "sha256": "2dafadfcb2b297d93f70b59af34b7d95ec3e86b4b6a1a5472f367bc8d7730e4f"
+            },
+            "alignment.backbone": {
+              "bytes": 1918,
+              "sha256": "fef68fec30354303872a067f8f174f7eebb54bd85962bd3f0f1fd920c0a3ae97"
+            }
+          },
+          "cpu_seconds": 1.11,
+          "average_cpu_cores": 0.9759535525153054
+        },
+        {
+          "repeat": 1,
+          "threads": 8,
+          "wall_ms": 1148.3819999266416,
+          "peak_rss_bytes": 127221760,
+          "artifacts": {
+            "alignment.xmfa": {
+              "bytes": 106128,
+              "sha256": "d90870d6e0ce30c190405a8e6ea9c771f6a37d6459d7547da3c192f965d905d6"
+            },
+            "guide.tree": {
+              "bytes": 95,
+              "sha256": "2dafadfcb2b297d93f70b59af34b7d95ec3e86b4b6a1a5472f367bc8d7730e4f"
+            },
+            "alignment.backbone": {
+              "bytes": 1918,
+              "sha256": "fef68fec30354303872a067f8f174f7eebb54bd85962bd3f0f1fd920c0a3ae97"
+            }
+          },
+          "cpu_seconds": 1.09,
+          "average_cpu_cores": 0.9491615160021918
+        },
+        {
+          "repeat": 1,
+          "threads": 1,
+          "wall_ms": 1149.4711670093238,
+          "peak_rss_bytes": 125665280,
+          "artifacts": {
+            "alignment.xmfa": {
+              "bytes": 106128,
+              "sha256": "d90870d6e0ce30c190405a8e6ea9c771f6a37d6459d7547da3c192f965d905d6"
+            },
+            "guide.tree": {
+              "bytes": 95,
+              "sha256": "2dafadfcb2b297d93f70b59af34b7d95ec3e86b4b6a1a5472f367bc8d7730e4f"
+            },
+            "alignment.backbone": {
+              "bytes": 1918,
+              "sha256": "fef68fec30354303872a067f8f174f7eebb54bd85962bd3f0f1fd920c0a3ae97"
+            }
+          },
+          "cpu_seconds": 1.07,
+          "average_cpu_cores": 0.9308628443320675
+        },
+        {
+          "repeat": 2,
+          "threads": 1,
+          "wall_ms": 1163.248792057857,
+          "peak_rss_bytes": 125992960,
+          "artifacts": {
+            "alignment.xmfa": {
+              "bytes": 106128,
+              "sha256": "d90870d6e0ce30c190405a8e6ea9c771f6a37d6459d7547da3c192f965d905d6"
+            },
+            "guide.tree": {
+              "bytes": 95,
+              "sha256": "2dafadfcb2b297d93f70b59af34b7d95ec3e86b4b6a1a5472f367bc8d7730e4f"
+            },
+            "alignment.backbone": {
+              "bytes": 1918,
+              "sha256": "fef68fec30354303872a067f8f174f7eebb54bd85962bd3f0f1fd920c0a3ae97"
+            }
+          },
+          "cpu_seconds": 1.08,
+          "average_cpu_cores": 0.9284342329635393
+        },
+        {
+          "repeat": 2,
+          "threads": 8,
+          "wall_ms": 1138.997207977809,
+          "peak_rss_bytes": 128270336,
+          "artifacts": {
+            "alignment.xmfa": {
+              "bytes": 106128,
+              "sha256": "d90870d6e0ce30c190405a8e6ea9c771f6a37d6459d7547da3c192f965d905d6"
+            },
+            "guide.tree": {
+              "bytes": 95,
+              "sha256": "2dafadfcb2b297d93f70b59af34b7d95ec3e86b4b6a1a5472f367bc8d7730e4f"
+            },
+            "alignment.backbone": {
+              "bytes": 1918,
+              "sha256": "fef68fec30354303872a067f8f174f7eebb54bd85962bd3f0f1fd920c0a3ae97"
+            }
+          },
+          "cpu_seconds": 1.09,
+          "average_cpu_cores": 0.9569821526913141
+        },
+        {
+          "repeat": 2,
+          "threads": 16,
+          "wall_ms": 1146.1110829841346,
+          "peak_rss_bytes": 128319488,
+          "artifacts": {
+            "alignment.xmfa": {
+              "bytes": 106128,
+              "sha256": "d90870d6e0ce30c190405a8e6ea9c771f6a37d6459d7547da3c192f965d905d6"
+            },
+            "guide.tree": {
+              "bytes": 95,
+              "sha256": "2dafadfcb2b297d93f70b59af34b7d95ec3e86b4b6a1a5472f367bc8d7730e4f"
+            },
+            "alignment.backbone": {
+              "bytes": 1918,
+              "sha256": "fef68fec30354303872a067f8f174f7eebb54bd85962bd3f0f1fd920c0a3ae97"
+            }
+          },
+          "cpu_seconds": 1.1300000000000001,
+          "average_cpu_cores": 0.9859428259412815
+        }
+      ],
+      "median_ms": {
+        "1": 1149.4711670093238,
+        "8": 1142.1461660647765,
+        "16": 1146.1110829841346
+      },
+      "artifacts_identical": true,
+      "median_rss_mib": {
+        "1": 120.0,
+        "8": 122.328125,
+        "16": 122.65625
+      }
+    },
+    {
+      "kind": "rearranged",
+      "genomes": 4,
+      "bases": 50000,
+      "runs": [
+        {
+          "repeat": 0,
+          "threads": 1,
+          "wall_ms": 519.6993749123067,
+          "peak_rss_bytes": 35422208,
+          "artifacts": {
+            "alignment.xmfa": {
+              "bytes": 203124,
+              "sha256": "6814bf3805004fcb520203959c4fed844f32bba96e54bd3a647893d7d96c2180"
+            },
+            "guide.tree": {
+              "bytes": 102,
+              "sha256": "7e413874f28a44fa1a7ef2ce7b7f877b3d7c23d9d172cbe3ad1e0f928060b294"
+            },
+            "alignment.backbone": {
+              "bytes": 308,
+              "sha256": "8c78d98629a1793eeb8256f3b41c67deaf69fbefd4c583cd05718db5b56b5743"
+            }
+          },
+          "cpu_seconds": 0.45,
+          "average_cpu_cores": 0.8658852054150198
+        },
+        {
+          "repeat": 0,
+          "threads": 8,
+          "wall_ms": 497.9563750093803,
+          "peak_rss_bytes": 42500096,
+          "artifacts": {
+            "alignment.xmfa": {
+              "bytes": 203124,
+              "sha256": "6814bf3805004fcb520203959c4fed844f32bba96e54bd3a647893d7d96c2180"
+            },
+            "guide.tree": {
+              "bytes": 102,
+              "sha256": "7e413874f28a44fa1a7ef2ce7b7f877b3d7c23d9d172cbe3ad1e0f928060b294"
+            },
+            "alignment.backbone": {
+              "bytes": 308,
+              "sha256": "8c78d98629a1793eeb8256f3b41c67deaf69fbefd4c583cd05718db5b56b5743"
+            }
+          },
+          "cpu_seconds": 0.45,
+          "average_cpu_cores": 0.9036936217384969
+        },
+        {
+          "repeat": 0,
+          "threads": 16,
+          "wall_ms": 491.7107919463888,
+          "peak_rss_bytes": 45449216,
+          "artifacts": {
+            "alignment.xmfa": {
+              "bytes": 203124,
+              "sha256": "6814bf3805004fcb520203959c4fed844f32bba96e54bd3a647893d7d96c2180"
+            },
+            "guide.tree": {
+              "bytes": 102,
+              "sha256": "7e413874f28a44fa1a7ef2ce7b7f877b3d7c23d9d172cbe3ad1e0f928060b294"
+            },
+            "alignment.backbone": {
+              "bytes": 308,
+              "sha256": "8c78d98629a1793eeb8256f3b41c67deaf69fbefd4c583cd05718db5b56b5743"
+            }
+          },
+          "cpu_seconds": 0.45,
+          "average_cpu_cores": 0.9151721039489886
+        },
+        {
+          "repeat": 1,
+          "threads": 16,
+          "wall_ms": 489.6327080205083,
+          "peak_rss_bytes": 44023808,
+          "artifacts": {
+            "alignment.xmfa": {
+              "bytes": 203124,
+              "sha256": "6814bf3805004fcb520203959c4fed844f32bba96e54bd3a647893d7d96c2180"
+            },
+            "guide.tree": {
+              "bytes": 102,
+              "sha256": "7e413874f28a44fa1a7ef2ce7b7f877b3d7c23d9d172cbe3ad1e0f928060b294"
+            },
+            "alignment.backbone": {
+              "bytes": 308,
+              "sha256": "8c78d98629a1793eeb8256f3b41c67deaf69fbefd4c583cd05718db5b56b5743"
+            }
+          },
+          "cpu_seconds": 0.45,
+          "average_cpu_cores": 0.9190562489570279
+        },
+        {
+          "repeat": 1,
+          "threads": 8,
+          "wall_ms": 502.8300000121817,
+          "peak_rss_bytes": 44810240,
+          "artifacts": {
+            "alignment.xmfa": {
+              "bytes": 203124,
+              "sha256": "6814bf3805004fcb520203959c4fed844f32bba96e54bd3a647893d7d96c2180"
+            },
+            "guide.tree": {
+              "bytes": 102,
+              "sha256": "7e413874f28a44fa1a7ef2ce7b7f877b3d7c23d9d172cbe3ad1e0f928060b294"
+            },
+            "alignment.backbone": {
+              "bytes": 308,
+              "sha256": "8c78d98629a1793eeb8256f3b41c67deaf69fbefd4c583cd05718db5b56b5743"
+            }
+          },
+          "cpu_seconds": 0.45,
+          "average_cpu_cores": 0.894934669747426
+        },
+        {
+          "repeat": 1,
+          "threads": 1,
+          "wall_ms": 506.20233407244086,
+          "peak_rss_bytes": 34897920,
+          "artifacts": {
+            "alignment.xmfa": {
+              "bytes": 203124,
+              "sha256": "6814bf3805004fcb520203959c4fed844f32bba96e54bd3a647893d7d96c2180"
+            },
+            "guide.tree": {
+              "bytes": 102,
+              "sha256": "7e413874f28a44fa1a7ef2ce7b7f877b3d7c23d9d172cbe3ad1e0f928060b294"
+            },
+            "alignment.backbone": {
+              "bytes": 308,
+              "sha256": "8c78d98629a1793eeb8256f3b41c67deaf69fbefd4c583cd05718db5b56b5743"
+            }
+          },
+          "cpu_seconds": 0.45,
+          "average_cpu_cores": 0.8889725900307723
+        },
+        {
+          "repeat": 2,
+          "threads": 1,
+          "wall_ms": 513.2793340599164,
+          "peak_rss_bytes": 34537472,
+          "artifacts": {
+            "alignment.xmfa": {
+              "bytes": 203124,
+              "sha256": "6814bf3805004fcb520203959c4fed844f32bba96e54bd3a647893d7d96c2180"
+            },
+            "guide.tree": {
+              "bytes": 102,
+              "sha256": "7e413874f28a44fa1a7ef2ce7b7f877b3d7c23d9d172cbe3ad1e0f928060b294"
+            },
+            "alignment.backbone": {
+              "bytes": 308,
+              "sha256": "8c78d98629a1793eeb8256f3b41c67deaf69fbefd4c583cd05718db5b56b5743"
+            }
+          },
+          "cpu_seconds": 0.45,
+          "average_cpu_cores": 0.8767156013093454
+        },
+        {
+          "repeat": 2,
+          "threads": 8,
+          "wall_ms": 498.130708001554,
+          "peak_rss_bytes": 42844160,
+          "artifacts": {
+            "alignment.xmfa": {
+              "bytes": 203124,
+              "sha256": "6814bf3805004fcb520203959c4fed844f32bba96e54bd3a647893d7d96c2180"
+            },
+            "guide.tree": {
+              "bytes": 102,
+              "sha256": "7e413874f28a44fa1a7ef2ce7b7f877b3d7c23d9d172cbe3ad1e0f928060b294"
+            },
+            "alignment.backbone": {
+              "bytes": 308,
+              "sha256": "8c78d98629a1793eeb8256f3b41c67deaf69fbefd4c583cd05718db5b56b5743"
+            }
+          },
+          "cpu_seconds": 0.45,
+          "average_cpu_cores": 0.9033773521117597
+        },
+        {
+          "repeat": 2,
+          "threads": 16,
+          "wall_ms": 494.84241695608944,
+          "peak_rss_bytes": 45203456,
+          "artifacts": {
+            "alignment.xmfa": {
+              "bytes": 203124,
+              "sha256": "6814bf3805004fcb520203959c4fed844f32bba96e54bd3a647893d7d96c2180"
+            },
+            "guide.tree": {
+              "bytes": 102,
+              "sha256": "7e413874f28a44fa1a7ef2ce7b7f877b3d7c23d9d172cbe3ad1e0f928060b294"
+            },
+            "alignment.backbone": {
+              "bytes": 308,
+              "sha256": "8c78d98629a1793eeb8256f3b41c67deaf69fbefd4c583cd05718db5b56b5743"
+            }
+          },
+          "cpu_seconds": 0.45,
+          "average_cpu_cores": 0.9093804099658082
+        }
+      ],
+      "median_ms": {
+        "1": 513.2793340599164,
+        "8": 498.130708001554,
+        "16": 491.7107919463888
+      },
+      "artifacts_identical": true,
+      "median_rss_mib": {
+        "1": 33.28125,
+        "8": 40.859375,
+        "16": 43.109375
+      }
+    },
+    {
+      "kind": "repeats",
+      "genomes": 4,
+      "bases": 50000,
+      "runs": [
+        {
+          "repeat": 0,
+          "threads": 1,
+          "wall_ms": 480.4283329285681,
+          "peak_rss_bytes": 33439744,
+          "artifacts": {
+            "alignment.xmfa": {
+              "bytes": 202856,
+              "sha256": "b9b2b907df5c3a31b4f281444c22a5fcbad83a4726e4c345c94aabf6d012e25e"
+            },
+            "guide.tree": {
+              "bytes": 78,
+              "sha256": "d158b308e195ed9db16f82761ea23df22978e46e74f67065147d89ba7873774a"
+            },
+            "alignment.backbone": {
+              "bytes": 140,
+              "sha256": "e9376d14fcb3c67b8de5a8d90d68e0b9aa11ead201f9b25cf6f7247f4965c09d"
+            }
+          },
+          "cpu_seconds": 0.41000000000000003,
+          "average_cpu_cores": 0.8534051218435537
+        },
+        {
+          "repeat": 0,
+          "threads": 8,
+          "wall_ms": 467.5254160538316,
+          "peak_rss_bytes": 43565056,
+          "artifacts": {
+            "alignment.xmfa": {
+              "bytes": 202856,
+              "sha256": "b9b2b907df5c3a31b4f281444c22a5fcbad83a4726e4c345c94aabf6d012e25e"
+            },
+            "guide.tree": {
+              "bytes": 78,
+              "sha256": "d158b308e195ed9db16f82761ea23df22978e46e74f67065147d89ba7873774a"
+            },
+            "alignment.backbone": {
+              "bytes": 140,
+              "sha256": "e9376d14fcb3c67b8de5a8d90d68e0b9aa11ead201f9b25cf6f7247f4965c09d"
+            }
+          },
+          "cpu_seconds": 0.41000000000000003,
+          "average_cpu_cores": 0.8769576710088249
+        },
+        {
+          "repeat": 0,
+          "threads": 16,
+          "wall_ms": 464.97991704382,
+          "peak_rss_bytes": 43286528,
+          "artifacts": {
+            "alignment.xmfa": {
+              "bytes": 202856,
+              "sha256": "b9b2b907df5c3a31b4f281444c22a5fcbad83a4726e4c345c94aabf6d012e25e"
+            },
+            "guide.tree": {
+              "bytes": 78,
+              "sha256": "d158b308e195ed9db16f82761ea23df22978e46e74f67065147d89ba7873774a"
+            },
+            "alignment.backbone": {
+              "bytes": 140,
+              "sha256": "e9376d14fcb3c67b8de5a8d90d68e0b9aa11ead201f9b25cf6f7247f4965c09d"
+            }
+          },
+          "cpu_seconds": 0.41000000000000003,
+          "average_cpu_cores": 0.8817585125108992
+        },
+        {
+          "repeat": 1,
+          "threads": 16,
+          "wall_ms": 470.1222920557484,
+          "peak_rss_bytes": 43483136,
+          "artifacts": {
+            "alignment.xmfa": {
+              "bytes": 202856,
+              "sha256": "b9b2b907df5c3a31b4f281444c22a5fcbad83a4726e4c345c94aabf6d012e25e"
+            },
+            "guide.tree": {
+              "bytes": 78,
+              "sha256": "d158b308e195ed9db16f82761ea23df22978e46e74f67065147d89ba7873774a"
+            },
+            "alignment.backbone": {
+              "bytes": 140,
+              "sha256": "e9376d14fcb3c67b8de5a8d90d68e0b9aa11ead201f9b25cf6f7247f4965c09d"
+            }
+          },
+          "cpu_seconds": 0.42000000000000004,
+          "average_cpu_cores": 0.8933845663081114
+        },
+        {
+          "repeat": 1,
+          "threads": 8,
+          "wall_ms": 473.6675830790773,
+          "peak_rss_bytes": 42942464,
+          "artifacts": {
+            "alignment.xmfa": {
+              "bytes": 202856,
+              "sha256": "b9b2b907df5c3a31b4f281444c22a5fcbad83a4726e4c345c94aabf6d012e25e"
+            },
+            "guide.tree": {
+              "bytes": 78,
+              "sha256": "d158b308e195ed9db16f82761ea23df22978e46e74f67065147d89ba7873774a"
+            },
+            "alignment.backbone": {
+              "bytes": 140,
+              "sha256": "e9376d14fcb3c67b8de5a8d90d68e0b9aa11ead201f9b25cf6f7247f4965c09d"
+            }
+          },
+          "cpu_seconds": 0.41000000000000003,
+          "average_cpu_cores": 0.86558593968959
+        },
+        {
+          "repeat": 1,
+          "threads": 1,
+          "wall_ms": 486.83758394327015,
+          "peak_rss_bytes": 32931840,
+          "artifacts": {
+            "alignment.xmfa": {
+              "bytes": 202856,
+              "sha256": "b9b2b907df5c3a31b4f281444c22a5fcbad83a4726e4c345c94aabf6d012e25e"
+            },
+            "guide.tree": {
+              "bytes": 78,
+              "sha256": "d158b308e195ed9db16f82761ea23df22978e46e74f67065147d89ba7873774a"
+            },
+            "alignment.backbone": {
+              "bytes": 140,
+              "sha256": "e9376d14fcb3c67b8de5a8d90d68e0b9aa11ead201f9b25cf6f7247f4965c09d"
+            }
+          },
+          "cpu_seconds": 0.41000000000000003,
+          "average_cpu_cores": 0.8421699834246491
+        },
+        {
+          "repeat": 2,
+          "threads": 1,
+          "wall_ms": 485.03974999766797,
+          "peak_rss_bytes": 32751616,
+          "artifacts": {
+            "alignment.xmfa": {
+              "bytes": 202856,
+              "sha256": "b9b2b907df5c3a31b4f281444c22a5fcbad83a4726e4c345c94aabf6d012e25e"
+            },
+            "guide.tree": {
+              "bytes": 78,
+              "sha256": "d158b308e195ed9db16f82761ea23df22978e46e74f67065147d89ba7873774a"
+            },
+            "alignment.backbone": {
+              "bytes": 140,
+              "sha256": "e9376d14fcb3c67b8de5a8d90d68e0b9aa11ead201f9b25cf6f7247f4965c09d"
+            }
+          },
+          "cpu_seconds": 0.41000000000000003,
+          "average_cpu_cores": 0.8452915456969687
+        },
+        {
+          "repeat": 2,
+          "threads": 8,
+          "wall_ms": 466.11062495503575,
+          "peak_rss_bytes": 43106304,
+          "artifacts": {
+            "alignment.xmfa": {
+              "bytes": 202856,
+              "sha256": "b9b2b907df5c3a31b4f281444c22a5fcbad83a4726e4c345c94aabf6d012e25e"
+            },
+            "guide.tree": {
+              "bytes": 78,
+              "sha256": "d158b308e195ed9db16f82761ea23df22978e46e74f67065147d89ba7873774a"
+            },
+            "alignment.backbone": {
+              "bytes": 140,
+              "sha256": "e9376d14fcb3c67b8de5a8d90d68e0b9aa11ead201f9b25cf6f7247f4965c09d"
+            }
+          },
+          "cpu_seconds": 0.41000000000000003,
+          "average_cpu_cores": 0.8796195110110426
+        },
+        {
+          "repeat": 2,
+          "threads": 16,
+          "wall_ms": 462.1671249624342,
+          "peak_rss_bytes": 43745280,
+          "artifacts": {
+            "alignment.xmfa": {
+              "bytes": 202856,
+              "sha256": "b9b2b907df5c3a31b4f281444c22a5fcbad83a4726e4c345c94aabf6d012e25e"
+            },
+            "guide.tree": {
+              "bytes": 78,
+              "sha256": "d158b308e195ed9db16f82761ea23df22978e46e74f67065147d89ba7873774a"
+            },
+            "alignment.backbone": {
+              "bytes": 140,
+              "sha256": "e9376d14fcb3c67b8de5a8d90d68e0b9aa11ead201f9b25cf6f7247f4965c09d"
+            }
+          },
+          "cpu_seconds": 0.41000000000000003,
+          "average_cpu_cores": 0.887124976778315
+        }
+      ],
+      "median_ms": {
+        "1": 485.03974999766797,
+        "8": 467.5254160538316,
+        "16": 464.97991704382
+      },
+      "artifacts_identical": true,
+      "median_rss_mib": {
+        "1": 31.40625,
+        "8": 41.109375,
+        "16": 41.46875
+      }
+    },
+    {
+      "kind": "ambiguous",
+      "genomes": 4,
+      "bases": 20000,
+      "runs": [
+        {
+          "repeat": 0,
+          "threads": 1,
+          "wall_ms": 251.0490840068087,
+          "peak_rss_bytes": 29130752,
+          "artifacts": {
+            "alignment.xmfa": {
+              "bytes": 81356,
+              "sha256": "41682de573224652bbecfff33d4f83acc3cf6a542f42b9a2e3cc71b4454aa890"
+            },
+            "guide.tree": {
+              "bytes": 85,
+              "sha256": "cc41c5638a4acf5aeedc21a82b52871d22b69ab45b914dd6b47c6ed006fd8fe1"
+            },
+            "alignment.backbone": {
+              "bytes": 140,
+              "sha256": "2b2e16620f6709cdbfafe3199d5276eda0cfc32859689e3d04d9b74677c74059"
+            }
+          },
+          "cpu_seconds": 0.18000000000000002,
+          "average_cpu_cores": 0.7169912637288023
+        },
+        {
+          "repeat": 0,
+          "threads": 8,
+          "wall_ms": 240.72066694498062,
+          "peak_rss_bytes": 33095680,
+          "artifacts": {
+            "alignment.xmfa": {
+              "bytes": 81356,
+              "sha256": "41682de573224652bbecfff33d4f83acc3cf6a542f42b9a2e3cc71b4454aa890"
+            },
+            "guide.tree": {
+              "bytes": 85,
+              "sha256": "cc41c5638a4acf5aeedc21a82b52871d22b69ab45b914dd6b47c6ed006fd8fe1"
+            },
+            "alignment.backbone": {
+              "bytes": 140,
+              "sha256": "2b2e16620f6709cdbfafe3199d5276eda0cfc32859689e3d04d9b74677c74059"
+            }
+          },
+          "cpu_seconds": 0.18000000000000002,
+          "average_cpu_cores": 0.7477546580624131
+        },
+        {
+          "repeat": 0,
+          "threads": 16,
+          "wall_ms": 244.97495801188052,
+          "peak_rss_bytes": 33210368,
+          "artifacts": {
+            "alignment.xmfa": {
+              "bytes": 81356,
+              "sha256": "41682de573224652bbecfff33d4f83acc3cf6a542f42b9a2e3cc71b4454aa890"
+            },
+            "guide.tree": {
+              "bytes": 85,
+              "sha256": "cc41c5638a4acf5aeedc21a82b52871d22b69ab45b914dd6b47c6ed006fd8fe1"
+            },
+            "alignment.backbone": {
+              "bytes": 140,
+              "sha256": "2b2e16620f6709cdbfafe3199d5276eda0cfc32859689e3d04d9b74677c74059"
+            }
+          },
+          "cpu_seconds": 0.18000000000000002,
+          "average_cpu_cores": 0.7347689799023074
+        },
+        {
+          "repeat": 1,
+          "threads": 16,
+          "wall_ms": 239.3224169500172,
+          "peak_rss_bytes": 33390592,
+          "artifacts": {
+            "alignment.xmfa": {
+              "bytes": 81356,
+              "sha256": "41682de573224652bbecfff33d4f83acc3cf6a542f42b9a2e3cc71b4454aa890"
+            },
+            "guide.tree": {
+              "bytes": 85,
+              "sha256": "cc41c5638a4acf5aeedc21a82b52871d22b69ab45b914dd6b47c6ed006fd8fe1"
+            },
+            "alignment.backbone": {
+              "bytes": 140,
+              "sha256": "2b2e16620f6709cdbfafe3199d5276eda0cfc32859689e3d04d9b74677c74059"
+            }
+          },
+          "cpu_seconds": 0.18000000000000002,
+          "average_cpu_cores": 0.7521234420659944
+        },
+        {
+          "repeat": 1,
+          "threads": 8,
+          "wall_ms": 248.597165918909,
+          "peak_rss_bytes": 33128448,
+          "artifacts": {
+            "alignment.xmfa": {
+              "bytes": 81356,
+              "sha256": "41682de573224652bbecfff33d4f83acc3cf6a542f42b9a2e3cc71b4454aa890"
+            },
+            "guide.tree": {
+              "bytes": 85,
+              "sha256": "cc41c5638a4acf5aeedc21a82b52871d22b69ab45b914dd6b47c6ed006fd8fe1"
+            },
+            "alignment.backbone": {
+              "bytes": 140,
+              "sha256": "2b2e16620f6709cdbfafe3199d5276eda0cfc32859689e3d04d9b74677c74059"
+            }
+          },
+          "cpu_seconds": 0.18000000000000002,
+          "average_cpu_cores": 0.7240629607930245
+        },
+        {
+          "repeat": 1,
+          "threads": 1,
+          "wall_ms": 249.55795798450708,
+          "peak_rss_bytes": 28868608,
+          "artifacts": {
+            "alignment.xmfa": {
+              "bytes": 81356,
+              "sha256": "41682de573224652bbecfff33d4f83acc3cf6a542f42b9a2e3cc71b4454aa890"
+            },
+            "guide.tree": {
+              "bytes": 85,
+              "sha256": "cc41c5638a4acf5aeedc21a82b52871d22b69ab45b914dd6b47c6ed006fd8fe1"
+            },
+            "alignment.backbone": {
+              "bytes": 140,
+              "sha256": "2b2e16620f6709cdbfafe3199d5276eda0cfc32859689e3d04d9b74677c74059"
+            }
+          },
+          "cpu_seconds": 0.18000000000000002,
+          "average_cpu_cores": 0.7212753360130262
+        },
+        {
+          "repeat": 2,
+          "threads": 1,
+          "wall_ms": 257.49808293767273,
+          "peak_rss_bytes": 29245440,
+          "artifacts": {
+            "alignment.xmfa": {
+              "bytes": 81356,
+              "sha256": "41682de573224652bbecfff33d4f83acc3cf6a542f42b9a2e3cc71b4454aa890"
+            },
+            "guide.tree": {
+              "bytes": 85,
+              "sha256": "cc41c5638a4acf5aeedc21a82b52871d22b69ab45b914dd6b47c6ed006fd8fe1"
+            },
+            "alignment.backbone": {
+              "bytes": 140,
+              "sha256": "2b2e16620f6709cdbfafe3199d5276eda0cfc32859689e3d04d9b74677c74059"
+            }
+          },
+          "cpu_seconds": 0.18000000000000002,
+          "average_cpu_cores": 0.6990343304558462
+        },
+        {
+          "repeat": 2,
+          "threads": 8,
+          "wall_ms": 249.70425001811236,
+          "peak_rss_bytes": 33144832,
+          "artifacts": {
+            "alignment.xmfa": {
+              "bytes": 81356,
+              "sha256": "41682de573224652bbecfff33d4f83acc3cf6a542f42b9a2e3cc71b4454aa890"
+            },
+            "guide.tree": {
+              "bytes": 85,
+              "sha256": "cc41c5638a4acf5aeedc21a82b52871d22b69ab45b914dd6b47c6ed006fd8fe1"
+            },
+            "alignment.backbone": {
+              "bytes": 140,
+              "sha256": "2b2e16620f6709cdbfafe3199d5276eda0cfc32859689e3d04d9b74677c74059"
+            }
+          },
+          "cpu_seconds": 0.18000000000000002,
+          "average_cpu_cores": 0.7208527687732335
+        },
+        {
+          "repeat": 2,
+          "threads": 16,
+          "wall_ms": 247.82649998087436,
+          "peak_rss_bytes": 33243136,
+          "artifacts": {
+            "alignment.xmfa": {
+              "bytes": 81356,
+              "sha256": "41682de573224652bbecfff33d4f83acc3cf6a542f42b9a2e3cc71b4454aa890"
+            },
+            "guide.tree": {
+              "bytes": 85,
+              "sha256": "cc41c5638a4acf5aeedc21a82b52871d22b69ab45b914dd6b47c6ed006fd8fe1"
+            },
+            "alignment.backbone": {
+              "bytes": 140,
+              "sha256": "2b2e16620f6709cdbfafe3199d5276eda0cfc32859689e3d04d9b74677c74059"
+            }
+          },
+          "cpu_seconds": 0.18000000000000002,
+          "average_cpu_cores": 0.7263145790054383
+        }
+      ],
+      "median_ms": {
+        "1": 251.0490840068087,
+        "8": 248.597165918909,
+        "16": 244.97495801188052
+      },
+      "artifacts_identical": true,
+      "median_rss_mib": {
+        "1": 27.78125,
+        "8": 31.59375,
+        "16": 31.703125
+      }
+    }
+  ],
+  "cpu": "Apple M4 Max",
+  "power_source": "Battery Power",
+  "native_build": {
+    "target": "arm64-macos",
+    "compiler": "Apple clang version 17.0.0 (clang-1700.6.3.2)\nTarget: arm64-apple-darwin27.0.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+    "sources": {
+      "mauveAligner": "3e8293836119a8a6cc883b48f234947cf55387c5",
+      "libMems": "1f067601ae48f898dc3c9b92a3b7bf636d04fc70",
+      "libGenome": "41b5c8bc02048f41dbd0d1e116b3bca8b4a384db",
+      "muscle": "ec6ab52e7a667e9d2fa70e89b3d2d9adb81f074e"
+    },
+    "libomp": "/opt/homebrew/Cellar/libomp/23.1.2",
+    "max_threads": 16,
+    "default_threads": "min(8, available processors)",
+    "sdk": "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk",
+    "flags": [
+      "-isysroot",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk",
+      "-O3",
+      "-flto",
+      "-DNDEBUG",
+      "-D_LIB",
+      "-DUSE_LIBC",
+      "-DBOOST_NO_CXX11_SCOPED_ENUMS",
+      "-ffp-contract=off",
+      "-Xpreprocessor",
+      "-fopenmp",
+      "-I/opt/homebrew/Cellar/libomp/23.1.2/include",
+      "-I/Users/jzhang/code/mauve/web/native/include",
+      "-I/Users/jzhang/code/mauve/web/wasm/optimizations",
+      "-Wno-deprecated-declarations",
+      "-Wno-register",
+      "-Wno-inconsistent-missing-override",
+      "-Wno-c++11-narrowing",
+      "-DMAUVE_PROFILE_ROWS",
+      "-DMAUVE_FAST_TRANSLATE",
+      "-DMAUVE_SEED_LOOKUP",
+      "-DMAUVE_COMPACT_TRACE",
+      "-DMAUVE_LAZY_TRACE",
+      "-DMAUVE_ROW_GAPS",
+      "-DMAUVE_LOCAL_D_SCORE",
+      "-I/private/tmp/mauve-arm64-src/libGenome",
+      "-I/private/tmp/mauve-arm64-src/muscle",
+      "-I/private/tmp/mauve-arm64-src/libMems",
+      "-I/private/tmp/mauve-arm64-src/boost_1_65_1"
+    ],
+    "sanitizer": null,
+    "local_sources": {
+      "native/build.py": "eea79ac2661d31462a9fe4b47526905b11bb42607eed829ba9e8313799ef5a82",
+      "native/main.cpp": "e23b5f9d44c07a6db587744ea7bcab05c21c90356f5e23852747f87f868aa909",
+      "native/include/wasm_simd128.h": "3a895566501a3bfad26c883cd04355de2927f71c6434ce12e386cac0d51a4cca",
+      "wasm/build.py": "4a6b0f211b85bbeede7fd342ac610f2a6514e1e4dcacd6e3212a431e9b022471",
+      "wasm/optimizations/mauve_profile_row.h": "91be9e2ff41869ecb12ec8fc804444ecb1aced70d80b542e472bce499e29ed43",
+      "wasm/optimizations/mauve_seed.h": "550a1b368807a64f7fa9035912445a97ed96a86b7a37e82d6465daea38df314f",
+      "wasm/optimizations/profile_row.cpp": "06129c53a4e8a31c9c64cc3466b7a9da6c65e9b3f4a585fcf015eaa3fb92356e",
+      "wasm/optimizations/seed_lookup.cpp": "3f0e13ccef48ba96a5e77d21b0fe43313f7420d23b4bea53462504f136f05286"
+    },
+    "executable_sha256": "ea94e8701f87e477cf224d1f06970a06aca222519d7989a6f2e816e0c593565b"
+  }
+}

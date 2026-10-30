@@ -1,0 +1,518 @@
+{
+  "environment": {
+    "engine_sha256": {
+      "wasm": "d8b59472529bb7497e55f6f58e236933d74b33eb0b0668ed2e153b8bbb11742d",
+      "wasm-threaded": "22875a067c8683e0462dba4f7f761c7102e38d85cfa42ea354704d94f59cea9c"
+    },
+    "browser": "156.0.8078.76",
+    "platform": "macOS-27.0.1-arm64-arm-64bit",
+    "hardware_concurrency": 16
+  },
+  "results": [
+    {
+      "kind": "similar",
+      "genomes": 4,
+      "bases": 5000,
+      "repeat": 0,
+      "seed_family": false,
+      "collinear": false,
+      "threads": 1,
+      "alignmentMs": 106.5,
+      "totalMs": 118.875,
+      "wallMs": 125.44999992847443,
+      "hashes": {
+        "xmfa": "c279a4192b7840ebc4708a3498e6ec3eed352b13a2188e82dbe07e92bf10b770",
+        "tree": "b33f992ca36964b847aaece378b61910b4cb423eeff939051687fc09c8da6c6f",
+        "backbone": "751673fc2aae1e5c00dc9d0ac5a6ea3540ab29ef8b9359bae6fafc30ae303d0c"
+      }
+    },
+    {
+      "kind": "similar",
+      "genomes": 4,
+      "bases": 5000,
+      "repeat": 0,
+      "seed_family": false,
+      "collinear": false,
+      "threads": 8,
+      "alignmentMs": 127.85000002384186,
+      "totalMs": 146.58000004291534,
+      "wallMs": 149.70000004768372,
+      "hashes": {
+        "xmfa": "c279a4192b7840ebc4708a3498e6ec3eed352b13a2188e82dbe07e92bf10b770",
+        "tree": "b33f992ca36964b847aaece378b61910b4cb423eeff939051687fc09c8da6c6f",
+        "backbone": "751673fc2aae1e5c00dc9d0ac5a6ea3540ab29ef8b9359bae6fafc30ae303d0c"
+      },
+      "stages": {
+        "engine": {
+          "inclusive_ms": 126.240256,
+          "calls": 1
+        },
+        "backbone": {
+          "inclusive_ms": 8.939776,
+          "calls": 1
+        },
+        "progressive": {
+          "inclusive_ms": 62.56,
+          "calls": 1
+        },
+        "guide_distance": {
+          "inclusive_ms": 3.274752,
+          "calls": 1
+        },
+        "alignment_tree": {
+          "inclusive_ms": 53.380352,
+          "calls": 1
+        },
+        "profile_alignment": {
+          "inclusive_ms": 34.225664,
+          "calls": 3
+        },
+        "gapped_alignment": {
+          "inclusive_ms": 35.669504,
+          "calls": 4
+        },
+        "recursive_pairs": {
+          "inclusive_ms": 1.149696,
+          "calls": 3
+        },
+        "pairwise_hss": {
+          "inclusive_ms": 5.065216,
+          "calls": 2
+        },
+        "muscle_refine": {
+          "inclusive_ms": 0,
+          "calls": 0
+        },
+        "muscle_profile": {
+          "inclusive_ms": 0,
+          "calls": 0
+        },
+        "muscle_align": {
+          "inclusive_ms": 0,
+          "calls": 0
+        }
+      }
+    },
+    {
+      "kind": "divergent",
+      "genomes": 4,
+      "bases": 5000,
+      "repeat": 0,
+      "seed_family": false,
+      "collinear": false,
+      "threads": 1,
+      "alignmentMs": 244.37000000476837,
+      "totalMs": 253.6449999809265,
+      "wallMs": 256.85000002384186,
+      "hashes": {
+        "xmfa": "dcb99b1b623b578a8ded3664f0953e59d4b561403c44e4f0d9aa5692b690c41e",
+        "tree": "fa027a9bd9f15710366ca651ffbf5dbd2504f4f94eb0a8a7e29e19e95591ee19",
+        "backbone": "50fc7df20727993345b924c47ed27d461a02c177b08b465e1c38a0ec77ea97e7"
+      }
+    },
+    {
+      "kind": "divergent",
+      "genomes": 4,
+      "bases": 5000,
+      "repeat": 0,
+      "seed_family": false,
+      "collinear": false,
+      "threads": 8,
+      "alignmentMs": 297.625,
+      "totalMs": 314.3949999809265,
+      "wallMs": 317.6449999809265,
+      "hashes": {
+        "xmfa": "dcb99b1b623b578a8ded3664f0953e59d4b561403c44e4f0d9aa5692b690c41e",
+        "tree": "fa027a9bd9f15710366ca651ffbf5dbd2504f4f94eb0a8a7e29e19e95591ee19",
+        "backbone": "50fc7df20727993345b924c47ed27d461a02c177b08b465e1c38a0ec77ea97e7"
+      },
+      "stages": {
+        "engine": {
+          "inclusive_ms": 295.974656,
+          "calls": 1
+        },
+        "backbone": {
+          "inclusive_ms": 18.165248,
+          "calls": 1
+        },
+        "progressive": {
+          "inclusive_ms": 214.789888,
+          "calls": 1
+        },
+        "guide_distance": {
+          "inclusive_ms": 3.510016,
+          "calls": 1
+        },
+        "alignment_tree": {
+          "inclusive_ms": 205.574912,
+          "calls": 1
+        },
+        "profile_alignment": {
+          "inclusive_ms": 161.28,
+          "calls": 3
+        },
+        "gapped_alignment": {
+          "inclusive_ms": 77.204992,
+          "calls": 4
+        },
+        "recursive_pairs": {
+          "inclusive_ms": 33.10976,
+          "calls": 357
+        },
+        "pairwise_hss": {
+          "inclusive_ms": 6.655232,
+          "calls": 2
+        },
+        "muscle_refine": {
+          "inclusive_ms": 0,
+          "calls": 0
+        },
+        "muscle_profile": {
+          "inclusive_ms": 0,
+          "calls": 0
+        },
+        "muscle_align": {
+          "inclusive_ms": 0,
+          "calls": 0
+        }
+      }
+    },
+    {
+      "kind": "rearranged",
+      "genomes": 4,
+      "bases": 5000,
+      "repeat": 0,
+      "seed_family": false,
+      "collinear": false,
+      "threads": 1,
+      "alignmentMs": 101.52499997615814,
+      "totalMs": 110.89499998092651,
+      "wallMs": 114.30499994754791,
+      "hashes": {
+        "xmfa": "1eef959cb77f0c0f617609283360ea2b876d7f4ed95d21d18826165e4422688b",
+        "tree": "97ac82420a00167fbdf42be75b02af1fc0bb35aa77392f8ebfc0e0814c66eb9e",
+        "backbone": "18b77a3dd60fde9fca59fa84886ea50b7596dc73f69c5ce3e6b53013fb7dff6b"
+      }
+    },
+    {
+      "kind": "rearranged",
+      "genomes": 4,
+      "bases": 5000,
+      "repeat": 0,
+      "seed_family": false,
+      "collinear": false,
+      "threads": 8,
+      "alignmentMs": 127.06000006198883,
+      "totalMs": 142.6449999809265,
+      "wallMs": 145.96999990940094,
+      "hashes": {
+        "xmfa": "1eef959cb77f0c0f617609283360ea2b876d7f4ed95d21d18826165e4422688b",
+        "tree": "97ac82420a00167fbdf42be75b02af1fc0bb35aa77392f8ebfc0e0814c66eb9e",
+        "backbone": "18b77a3dd60fde9fca59fa84886ea50b7596dc73f69c5ce3e6b53013fb7dff6b"
+      },
+      "stages": {
+        "engine": {
+          "inclusive_ms": 125.539584,
+          "calls": 1
+        },
+        "backbone": {
+          "inclusive_ms": 7.79008,
+          "calls": 1
+        },
+        "progressive": {
+          "inclusive_ms": 64.145152,
+          "calls": 1
+        },
+        "guide_distance": {
+          "inclusive_ms": 3.065088,
+          "calls": 1
+        },
+        "alignment_tree": {
+          "inclusive_ms": 55.320064,
+          "calls": 1
+        },
+        "profile_alignment": {
+          "inclusive_ms": 35.97952,
+          "calls": 3
+        },
+        "gapped_alignment": {
+          "inclusive_ms": 36.285696,
+          "calls": 4
+        },
+        "recursive_pairs": {
+          "inclusive_ms": 1.914368,
+          "calls": 5
+        },
+        "pairwise_hss": {
+          "inclusive_ms": 4.294912,
+          "calls": 2
+        },
+        "muscle_refine": {
+          "inclusive_ms": 0,
+          "calls": 0
+        },
+        "muscle_profile": {
+          "inclusive_ms": 0,
+          "calls": 0
+        },
+        "muscle_align": {
+          "inclusive_ms": 0,
+          "calls": 0
+        }
+      }
+    },
+    {
+      "kind": "repeats",
+      "genomes": 4,
+      "bases": 5000,
+      "repeat": 0,
+      "seed_family": false,
+      "collinear": false,
+      "threads": 1,
+      "alignmentMs": 96.85500001907349,
+      "totalMs": 105.70499992370605,
+      "wallMs": 108.78000009059906,
+      "hashes": {
+        "xmfa": "dc431dc01d8bc4ae7d82680fbdc18dec190ac9131334e3bb28373bdd77925956",
+        "tree": "aa9ec3d25df62c37e85ef71820522c212c726981fd8de59a03a9bf921a0cc346",
+        "backbone": "751673fc2aae1e5c00dc9d0ac5a6ea3540ab29ef8b9359bae6fafc30ae303d0c"
+      }
+    },
+    {
+      "kind": "repeats",
+      "genomes": 4,
+      "bases": 5000,
+      "repeat": 0,
+      "seed_family": false,
+      "collinear": false,
+      "threads": 8,
+      "alignmentMs": 119.11500000953674,
+      "totalMs": 134.94000005722046,
+      "wallMs": 137.9450000524521,
+      "hashes": {
+        "xmfa": "dc431dc01d8bc4ae7d82680fbdc18dec190ac9131334e3bb28373bdd77925956",
+        "tree": "aa9ec3d25df62c37e85ef71820522c212c726981fd8de59a03a9bf921a0cc346",
+        "backbone": "751673fc2aae1e5c00dc9d0ac5a6ea3540ab29ef8b9359bae6fafc30ae303d0c"
+      },
+      "stages": {
+        "engine": {
+          "inclusive_ms": 117.645056,
+          "calls": 1
+        },
+        "backbone": {
+          "inclusive_ms": 8.199936,
+          "calls": 1
+        },
+        "progressive": {
+          "inclusive_ms": 61.945088,
+          "calls": 1
+        },
+        "guide_distance": {
+          "inclusive_ms": 3.039744,
+          "calls": 1
+        },
+        "alignment_tree": {
+          "inclusive_ms": 53.225216,
+          "calls": 1
+        },
+        "profile_alignment": {
+          "inclusive_ms": 34.419968,
+          "calls": 3
+        },
+        "gapped_alignment": {
+          "inclusive_ms": 36.089856,
+          "calls": 4
+        },
+        "recursive_pairs": {
+          "inclusive_ms": 1.084928,
+          "calls": 3
+        },
+        "pairwise_hss": {
+          "inclusive_ms": 4.819968,
+          "calls": 2
+        },
+        "muscle_refine": {
+          "inclusive_ms": 0,
+          "calls": 0
+        },
+        "muscle_profile": {
+          "inclusive_ms": 0,
+          "calls": 0
+        },
+        "muscle_align": {
+          "inclusive_ms": 0,
+          "calls": 0
+        }
+      }
+    },
+    {
+      "kind": "ambiguous",
+      "genomes": 4,
+      "bases": 5000,
+      "repeat": 0,
+      "seed_family": false,
+      "collinear": false,
+      "threads": 1,
+      "alignmentMs": 111.43999993801117,
+      "totalMs": 120.34500002861023,
+      "wallMs": 123.45000004768372,
+      "hashes": {
+        "xmfa": "a65598326483a68d9b24401fe1b5f5882e3f731c8568509cb74c743d8337071d",
+        "tree": "8fa6a027326441de51230b70e79edab2efc7b3927440d73a158e17c6d1133dd8",
+        "backbone": "751673fc2aae1e5c00dc9d0ac5a6ea3540ab29ef8b9359bae6fafc30ae303d0c"
+      }
+    },
+    {
+      "kind": "ambiguous",
+      "genomes": 4,
+      "bases": 5000,
+      "repeat": 0,
+      "seed_family": false,
+      "collinear": false,
+      "threads": 8,
+      "alignmentMs": 137.3049999475479,
+      "totalMs": 152.875,
+      "wallMs": 155.86000001430511,
+      "hashes": {
+        "xmfa": "a65598326483a68d9b24401fe1b5f5882e3f731c8568509cb74c743d8337071d",
+        "tree": "8fa6a027326441de51230b70e79edab2efc7b3927440d73a158e17c6d1133dd8",
+        "backbone": "751673fc2aae1e5c00dc9d0ac5a6ea3540ab29ef8b9359bae6fafc30ae303d0c"
+      },
+      "stages": {
+        "engine": {
+          "inclusive_ms": 135.824896,
+          "calls": 1
+        },
+        "backbone": {
+          "inclusive_ms": 7.819776,
+          "calls": 1
+        },
+        "progressive": {
+          "inclusive_ms": 71.465216,
+          "calls": 1
+        },
+        "guide_distance": {
+          "inclusive_ms": 3.424768,
+          "calls": 1
+        },
+        "alignment_tree": {
+          "inclusive_ms": 62.354944,
+          "calls": 1
+        },
+        "profile_alignment": {
+          "inclusive_ms": 43.630336,
+          "calls": 3
+        },
+        "gapped_alignment": {
+          "inclusive_ms": 37.82528,
+          "calls": 4
+        },
+        "recursive_pairs": {
+          "inclusive_ms": 3.42016,
+          "calls": 4
+        },
+        "pairwise_hss": {
+          "inclusive_ms": 4.714496,
+          "calls": 2
+        },
+        "muscle_refine": {
+          "inclusive_ms": 0,
+          "calls": 0
+        },
+        "muscle_profile": {
+          "inclusive_ms": 0,
+          "calls": 0
+        },
+        "muscle_align": {
+          "inclusive_ms": 0,
+          "calls": 0
+        }
+      }
+    },
+    {
+      "kind": "unrelated-first",
+      "genomes": 4,
+      "bases": 5000,
+      "repeat": 0,
+      "seed_family": false,
+      "collinear": false,
+      "threads": 1,
+      "alignmentMs": 520.1100000143051,
+      "totalMs": 528.9450000524521,
+      "wallMs": 531.9199999570847,
+      "hashes": {
+        "xmfa": "dffc6ad993dcb2903e2b84a1dd79d8f751794593ea45c3306ede6ce68965f29a",
+        "tree": "0f42a5aa7317186f003d384f3d1817fd9e6714d7afb51924c60ce18328dd7fad",
+        "backbone": "326bb8dc0f4ee0cd636ba36ad3cff028868a1a666c49df7841114d8dd33fa2a0"
+      }
+    },
+    {
+      "kind": "unrelated-first",
+      "genomes": 4,
+      "bases": 5000,
+      "repeat": 0,
+      "seed_family": false,
+      "collinear": false,
+      "threads": 8,
+      "alignmentMs": 505.0749999284744,
+      "totalMs": 519.960000038147,
+      "wallMs": 523.0149999856949,
+      "hashes": {
+        "xmfa": "dffc6ad993dcb2903e2b84a1dd79d8f751794593ea45c3306ede6ce68965f29a",
+        "tree": "0f42a5aa7317186f003d384f3d1817fd9e6714d7afb51924c60ce18328dd7fad",
+        "backbone": "326bb8dc0f4ee0cd636ba36ad3cff028868a1a666c49df7841114d8dd33fa2a0"
+      },
+      "stages": {
+        "engine": {
+          "inclusive_ms": 504.045312,
+          "calls": 1
+        },
+        "backbone": {
+          "inclusive_ms": 3.610368,
+          "calls": 1
+        },
+        "progressive": {
+          "inclusive_ms": 473.590016,
+          "calls": 1
+        },
+        "guide_distance": {
+          "inclusive_ms": 1.855232,
+          "calls": 1
+        },
+        "alignment_tree": {
+          "inclusive_ms": 468.54016,
+          "calls": 1
+        },
+        "profile_alignment": {
+          "inclusive_ms": 173.245184,
+          "calls": 3
+        },
+        "gapped_alignment": {
+          "inclusive_ms": 429.345024,
+          "calls": 4
+        },
+        "recursive_pairs": {
+          "inclusive_ms": 4.10496,
+          "calls": 4
+        },
+        "pairwise_hss": {
+          "inclusive_ms": 2.459904,
+          "calls": 2
+        },
+        "muscle_refine": {
+          "inclusive_ms": 0,
+          "calls": 0
+        },
+        "muscle_profile": {
+          "inclusive_ms": 0,
+          "calls": 0
+        },
+        "muscle_align": {
+          "inclusive_ms": 0,
+          "calls": 0
+        }
+      }
+    }
+  ],
+  "note": "Fresh workers and heaps per run. Wall time includes worker startup and input staging. Alternating thread order. Exact hashes, no normalization."
+}

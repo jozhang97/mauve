@@ -33,6 +33,13 @@ WebGPU is optional: the app checks availability and validates its integer
 kernel against CPU results, then falls back to CPU if unavailable or lost.
 Safari/Firefox behavior has not yet been validated end to end.
 
+The browser alignment engine uses up to eight CPU workers when cross-origin
+isolation and shared memory are available. Independent MUSCLE refinement windows,
+genome-pair searches, breakpoint distances, seed occurrence lists, and backbone
+pairs run concurrently. The static Pages build installs the isolation service
+worker automatically; unsupported browsers use the serial engine. The compute
+status and alignment log report the selected worker count.
+
 ### Publish
 
 1. Commit and push the changes, including the WebAssembly assets and licenses.
@@ -119,7 +126,10 @@ with WebGPU for suitable kernels. No LocalFold code or model weights are used.
 
 - The real progressiveMauve C++ engine is compiled with `-O3 -msimd128` and runs
   in a separate worker. WebAssembly SIMD uses the browser's native CPU support,
-  including Apple Silicon. Alignment currently uses one CPU worker, not the GPU.
+  including Apple Silicon. A separate pthread build uses up to eight CPU threads
+  for backbone pairs, recursive gap searches, breakpoint distances, and seed
+  construction when shared memory is available, with a serial
+  fallback. See [browser threading and deployment](wasm/README.md#browser-threads).
 - Identity scans use a packed-byte WebGPU kernel with exact integer reductions.
   This uses Apple GPUs when exposed by the browser, and also supports other
   vendors. Small blocks use CPU to avoid GPU overhead. GPU buffers are bounded
@@ -370,6 +380,13 @@ See [wasm/README.md](wasm/README.md) for pinned upstream sources, licensing,
 compatibility patches, build flags, and rebuild instructions.
 
 ## Python server mode
+
+Apple Silicon Macs can use the [native multicore engine](native/README.md) in
+local-server mode. Build it with `python3 web/native/build.py --work /tmp/mauve-native-build --output web/native/bin`,
+then restart the server with `MAUVE_THREADS=8 ./web/run.sh`. This enables native
+ARM64/NEON execution and bounded parallel genome-pair work. It does not enable
+threading in the standalone website, which has its own pthread build. The generated
+binary is local and is not included in Git.
 
 The sections below describe the original Python/native server mode. Its data
 location, eight-input limit, and background-job lifetime differ from the

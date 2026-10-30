@@ -145,6 +145,9 @@ class JobManager:
             configured = self.configured_executable if self.configured_executable is not None else os.environ.get('MAUVE_ALIGNER')
             repo = Path(__file__).resolve().parents[2]
             bundled = repo / ('osx/progressiveMauve' if platform.system() == 'Darwin' else 'linux-x64/progressiveMauve')
+            arm64 = repo / 'web/native/bin/progressiveMauve'
+            if platform.system() == 'Darwin' and platform.machine() == 'arm64' and arm64.is_file() and os.access(arm64, os.X_OK):
+                bundled = arm64
             candidate = configured or shutil.which('progressiveMauve') or str(bundled)
             path = Path(candidate).expanduser().resolve()
             info = {'available': False, 'path': str(path), 'version': None, 'reason': None}

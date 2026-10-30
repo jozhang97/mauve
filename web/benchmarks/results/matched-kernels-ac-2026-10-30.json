@@ -1,0 +1,227 @@
+{
+  "power": {
+    "native_before": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=35520611)\t70%; charging; 1:24 remaining present: true\n",
+    "native_after": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=35520611)\t70%; charging; 1:24 remaining present: true\n",
+    "browser_before": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=35520611)\t70%; charging; 1:24 remaining present: true\n",
+    "browser_after": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=35520611)\t70%; charging; 1:24 remaining present: true\n"
+  },
+  "browser": "156.0.8078.76",
+  "rows": [
+    {
+      "target": "native",
+      "kernel": "coverage_reference",
+      "repeat": 0,
+      "ms": 363.184666,
+      "checksum": "39.679999999999332"
+    },
+    {
+      "target": "native",
+      "kernel": "coverage_ranges",
+      "repeat": 0,
+      "ms": 1.958583,
+      "checksum": "39.679999999999332"
+    },
+    {
+      "target": "native",
+      "kernel": "coverage_ranges",
+      "repeat": 1,
+      "ms": 1.527958,
+      "checksum": "39.679999999999332"
+    },
+    {
+      "target": "native",
+      "kernel": "coverage_reference",
+      "repeat": 1,
+      "ms": 365.392292,
+      "checksum": "39.679999999999332"
+    },
+    {
+      "target": "native",
+      "kernel": "coverage_reference",
+      "repeat": 2,
+      "ms": 365.067667,
+      "checksum": "39.679999999999332"
+    },
+    {
+      "target": "native",
+      "kernel": "coverage_ranges",
+      "repeat": 2,
+      "ms": 2.373584,
+      "checksum": "39.679999999999332"
+    },
+    {
+      "target": "native",
+      "kernel": "nw_128",
+      "repeat": 0,
+      "ms": 0.864,
+      "checksum": "2493738450"
+    },
+    {
+      "target": "native",
+      "kernel": "nw_128",
+      "repeat": 1,
+      "ms": 0.802917,
+      "checksum": "2493738450"
+    },
+    {
+      "target": "native",
+      "kernel": "nw_128",
+      "repeat": 2,
+      "ms": 0.817417,
+      "checksum": "2493738450"
+    },
+    {
+      "target": "native",
+      "kernel": "nw_512",
+      "repeat": 0,
+      "ms": 12.920375,
+      "checksum": "3423526912"
+    },
+    {
+      "target": "native",
+      "kernel": "nw_512",
+      "repeat": 1,
+      "ms": 13.090208,
+      "checksum": "3423526912"
+    },
+    {
+      "target": "native",
+      "kernel": "nw_512",
+      "repeat": 2,
+      "ms": 13.392833,
+      "checksum": "3423526912"
+    },
+    {
+      "target": "native",
+      "kernel": "nw_1024",
+      "repeat": 0,
+      "ms": 49.344458,
+      "checksum": "2531137298"
+    },
+    {
+      "target": "native",
+      "kernel": "nw_1024",
+      "repeat": 1,
+      "ms": 49.169083,
+      "checksum": "2531137298"
+    },
+    {
+      "target": "native",
+      "kernel": "nw_1024",
+      "repeat": 2,
+      "ms": 53.639459,
+      "checksum": "2531137298"
+    },
+    {
+      "target": "browser",
+      "kernel": "coverage_reference",
+      "repeat": 0,
+      "ms": 333.669632,
+      "checksum": "39.679999999999332"
+    },
+    {
+      "target": "browser",
+      "kernel": "coverage_ranges",
+      "repeat": 0,
+      "ms": 3.214848,
+      "checksum": "39.679999999999332"
+    },
+    {
+      "target": "browser",
+      "kernel": "coverage_ranges",
+      "repeat": 1,
+      "ms": 2.679808,
+      "checksum": "39.679999999999332"
+    },
+    {
+      "target": "browser",
+      "kernel": "coverage_reference",
+      "repeat": 1,
+      "ms": 336.404992,
+      "checksum": "39.679999999999332"
+    },
+    {
+      "target": "browser",
+      "kernel": "coverage_reference",
+      "repeat": 2,
+      "ms": 334.704896,
+      "checksum": "39.679999999999332"
+    },
+    {
+      "target": "browser",
+      "kernel": "coverage_ranges",
+      "repeat": 2,
+      "ms": 2.87488,
+      "checksum": "39.679999999999332"
+    },
+    {
+      "target": "browser",
+      "kernel": "nw_128",
+      "repeat": 0,
+      "ms": 3.490048,
+      "checksum": "2493738450"
+    },
+    {
+      "target": "browser",
+      "kernel": "nw_128",
+      "repeat": 1,
+      "ms": 2.03008,
+      "checksum": "2493738450"
+    },
+    {
+      "target": "browser",
+      "kernel": "nw_128",
+      "repeat": 2,
+      "ms": 1.165056,
+      "checksum": "2493738450"
+    },
+    {
+      "target": "browser",
+      "kernel": "nw_512",
+      "repeat": 0,
+      "ms": 18.534912,
+      "checksum": "3423526912"
+    },
+    {
+      "target": "browser",
+      "kernel": "nw_512",
+      "repeat": 1,
+      "ms": 18.369792,
+      "checksum": "3423526912"
+    },
+    {
+      "target": "browser",
+      "kernel": "nw_512",
+      "repeat": 2,
+      "ms": 17.79968,
+      "checksum": "3423526912"
+    },
+    {
+      "target": "browser",
+      "kernel": "nw_1024",
+      "repeat": 0,
+      "ms": 68.8448,
+      "checksum": "2531137298"
+    },
+    {
+      "target": "browser",
+      "kernel": "nw_1024",
+      "repeat": 1,
+      "ms": 67.879936,
+      "checksum": "2531137298"
+    },
+    {
+      "target": "browser",
+      "kernel": "nw_1024",
+      "repeat": 2,
+      "ms": 69.499904,
+      "checksum": "2531137298"
+    }
+  ],
+  "all_checksums_match": true,
+  "validation": "100 randomized matrices plus exhaustive small range boundaries per target. Native and browser NW scores/path checksums match. Coverage timing uses 32x100000 bases with 20 overlapping ungapped matches; NW timings include 30 calls, after one warmup.",
+  "raw_logs": {
+    "native": "VALIDATION coverage 100 matrices and exhaustive range boundaries passed\nKERNEL coverage_reference 0 363.184666 39.679999999999332\nKERNEL coverage_ranges 0 1.958583 39.679999999999332\nKERNEL coverage_ranges 1 1.527958 39.679999999999332\nKERNEL coverage_reference 1 365.392292 39.679999999999332\nKERNEL coverage_reference 2 365.067667 39.679999999999332\nKERNEL coverage_ranges 2 2.373584 39.679999999999332\nKERNEL nw_128 0 0.864000 2493738450\nKERNEL nw_128 1 0.802917 2493738450\nKERNEL nw_128 2 0.817417 2493738450\nKERNEL nw_512 0 12.920375 3423526912\nKERNEL nw_512 1 13.090208 3423526912\nKERNEL nw_512 2 13.392833 3423526912\nKERNEL nw_1024 0 49.344458 2531137298\nKERNEL nw_1024 1 49.169083 2531137298\nKERNEL nw_1024 2 53.639459 2531137298\n",
+    "browser": "VALIDATION coverage 100 matrices and exhaustive range boundaries passed\nKERNEL coverage_reference 0 333.669632 39.679999999999332\nKERNEL coverage_ranges 0 3.214848 39.679999999999332\nKERNEL coverage_ranges 1 2.679808 39.679999999999332\nKERNEL coverage_reference 1 336.404992 39.679999999999332\nKERNEL coverage_reference 2 334.704896 39.679999999999332\nKERNEL coverage_ranges 2 2.874880 39.679999999999332\nKERNEL nw_128 0 3.490048 2493738450\nKERNEL nw_128 1 2.030080 2493738450\nKERNEL nw_128 2 1.165056 2493738450\nKERNEL nw_512 0 18.534912 3423526912\nKERNEL nw_512 1 18.369792 3423526912\nKERNEL nw_512 2 17.799680 3423526912\nKERNEL nw_1024 0 68.844800 2531137298\nKERNEL nw_1024 1 67.879936 2531137298\nKERNEL nw_1024 2 69.499904 2531137298\n"
+  }
+}

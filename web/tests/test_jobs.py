@@ -227,3 +227,31 @@ def test_retry_import_rejects_failed_aligner(tmp_path, fake_aligner):
         jid = client.post('/api/jobs', json={'input_ids': upload_pair(client)}).json()['id']
         assert not finished(client, jid)['can_import_result']
         assert client.post(f'/api/jobs/{jid}/import').status_code == 409
+
+
+@pytest.mark.parametrize('machine,present,override', [
+    ('arm64', True, False), ('arm64', False, False),
+    ('x86_64', True, False), ('arm64', True, True),
+])
+def test_local_arm64_engine_selection(tmp_path, fake_aligner, monkeypatch, machine, present, override):
+    import mauve_web.jobs as jobs
+    root = tmp_path / 'repo'
+    module = root / 'web/mauve_web/jobs.py'
+    module.parent.mkdir(parents=True)
+    monkeypatch.setattr(jobs, '__file__', str(module))
+    monkeypatch.setattr(jobs.platform, 'system', lambda: 'Darwin')
+    monkeypatch.setattr(jobs.platform, 'machine', lambda: machine)
+    monkeypatch.setattr(jobs.shutil, 'which', lambda _: None)
+    monkeypatch.delenv('MAUVE_ALIGNER', raising=False)
+    executable = Path(fake_aligner())
+    legacy = root / 'osx/progressiveMauve'
+    legacy.parent.mkdir(); legacy.symlink_to(executable)
+    native = root / 'web/native/bin/progressiveMauve'
+    if present:
+        native.parent.mkdir(parents=True); native.write_bytes(executable.read_bytes()); native.chmod(0o755)
+    configured = fake_aligner('configured') if override else None
+    with TestClient(create_app(tmp_path / 'data', configured)) as client:
+        info = client.get('/api/engine').json()
+        expected = Path(configured) if override else native if machine == 'arm64' and present else legacy
+        assert info['available']
+        assert Path(info['path']) == expected.resolve()

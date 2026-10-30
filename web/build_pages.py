@@ -15,17 +15,22 @@ def build(output, goatcounter_code=''):
     output = Path(output)
     output.mkdir(parents=True, exist_ok=False)
     source = ROOT / 'mauve_web/static'
-    for name in ('progressiveMauve.mjs', 'progressiveMauve.wasm'):
-        if not (source / 'wasm' / name).is_file():
-            raise RuntimeError('Build the WebAssembly engine first: see wasm/README.md')
+    for engine in ('wasm', 'wasm-threaded'):
+        for name in ('progressiveMauve.mjs', 'progressiveMauve.wasm'):
+            if not (source / engine / name).is_file():
+                raise RuntimeError('Build both WebAssembly engines first: see wasm/README.md')
     shutil.copytree(source, output / 'static', ignore=shutil.ignore_patterns('index.html'))
-    shutil.copyfile(ROOT / 'wasm/build.py', output / 'static/wasm/build.py')
-    shutil.copytree(ROOT / 'wasm/optimizations', output / 'static/wasm/optimizations')
+    shutil.copyfile(source / 'browser/isolation-sw.js', output / 'isolation-sw.js')
+    for engine in ('wasm', 'wasm-threaded'):
+        for name in ('build.py', 'pthread_build.py'):
+            shutil.copyfile(ROOT / 'wasm' / name, output / 'static' / engine / name)
+        shutil.copytree(ROOT / 'wasm/optimizations', output / 'static' / engine / 'optimizations')
     (output / 'static/analytics-config.js').write_text(
         'window.MAUVE_ANALYTICS = ' + json.dumps({'siteCode': goatcounter_code}) + ';\n')
     # The entrypoint is at the project root, so every resource respects /repo/.
     html = (source / 'index.html').read_text().replace(
         '    <script src="./static/app.js"',
+        '    <script src="./static/browser/isolation.js"></script>\n'
         '    <script src="./static/analytics-config.js"></script>\n'
         '    <script src="./static/analytics.js"></script>\n'
         '    <script src="./static/browser/client.js"></script>\n    <script src="./static/app.js"')

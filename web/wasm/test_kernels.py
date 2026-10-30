@@ -19,6 +19,12 @@ def test(root, cases=None):
     if not objects:
         raise RuntimeError('Run build.py with this --work directory first.')
     with tempfile.TemporaryDirectory(prefix='mauve-kernels-') as directory:
+        if cases is None or 'thread_pool' in cases:
+            output = Path(directory) / 'thread_pool.cjs'
+            subprocess.run(['em++', *flags, '-pthread', '-sPTHREAD_POOL_SIZE=4',
+                            '-sEXIT_RUNTIME=1', str(HERE / 'tests/thread_pool.cpp'),
+                            str(HERE / 'optimizations/thread_pool.cpp'), '-o', str(output)], check=True)
+            subprocess.run(['node', str(output)], check=True, timeout=30)
         traceback_objects = []
         # Compile both paths with test-only cell accessors. Compare every cell,
         # including cells that the final traceback path does not visit.
@@ -53,7 +59,7 @@ def test(root, cases=None):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--work', type=Path, required=True)
-    parser.add_argument('--case', action='append', choices=['profile_scores', 'seed_lookup', 'traceback', 'coordinates', 'homology_states'],
+    parser.add_argument('--case', action='append', choices=['thread_pool', 'profile_scores', 'seed_lookup', 'traceback', 'coordinates', 'homology_states'],
                         help='Run only the named kernel; repeat to select several. Defaults to all kernels.')
     args = parser.parse_args()
     test(args.work.resolve(), args.case)

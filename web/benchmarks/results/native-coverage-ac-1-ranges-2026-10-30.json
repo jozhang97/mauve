@@ -1,0 +1,130 @@
+{
+  "measured_at": "2026-10-30T17:03:03.105570+00:00",
+  "platform": "macOS-27.0.1-arm64-arm-64bit",
+  "engine": "/tmp/mauve-ranges-native/progressiveMauve",
+  "engine_sha256": "edf2f6495a77c05f7948ba1008cea8a0f771711f33506c231a49acd46a5dcb66",
+  "timing": "Whole native process wall time, including startup; each repetition reverses thread-count order.",
+  "threads": [
+    8
+  ],
+  "repeats": 1,
+  "cases": [
+    {
+      "kind": "similar",
+      "genomes": 32,
+      "bases": 100000,
+      "runs": [
+        {
+          "power_before": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=35520611)\t68%; charging; 1:14 remaining present: true",
+          "power_after": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=35520611)\t68%; charging; 1:14 remaining present: true",
+          "repeat": 0,
+          "threads": 8,
+          "wall_ms": 12627.855916973203,
+          "peak_rss_bytes": 234373120,
+          "artifacts": {
+            "alignment.xmfa": {
+              "bytes": 3242575,
+              "sha256": "0b5ea237e5ddb64664ae0d4626ddb6c40b32bcd613d1bfc9abd55d00f4dbd407"
+            },
+            "guide.tree": {
+              "bytes": 1011,
+              "sha256": "13425879a87254c42dd47409761ee228282a3db3f5ad742713ec87f8c733f952"
+            },
+            "alignment.backbone": {
+              "bytes": 1196,
+              "sha256": "f202af0de63294189a33741379f93a26cf0bafdc0ce970e7621557fb1d51b65c"
+            }
+          },
+          "stages": {
+            "engine": {
+              "inclusive_ms": 12584.583167,
+              "calls": 1
+            },
+            "backbone": {
+              "inclusive_ms": 853.5625,
+              "calls": 1
+            },
+            "progressive": {
+              "inclusive_ms": 9768.101833,
+              "calls": 1
+            },
+            "guide_distance": {
+              "inclusive_ms": 72.553083,
+              "calls": 1
+            },
+            "alignment_tree": {
+              "inclusive_ms": 9613.012125,
+              "calls": 1
+            },
+            "profile_alignment": {
+              "inclusive_ms": 7777.01804,
+              "calls": 31
+            },
+            "gapped_alignment": {
+              "inclusive_ms": 8185.432458,
+              "calls": 41
+            },
+            "recursive_pairs": {
+              "inclusive_ms": 28.546375,
+              "calls": 31
+            },
+            "pairwise_hss": {
+              "inclusive_ms": 839.625875,
+              "calls": 2
+            },
+            "muscle_refine": {
+              "inclusive_ms": 0.0,
+              "calls": 0
+            },
+            "muscle_profile": {
+              "inclusive_ms": 0.0,
+              "calls": 0
+            },
+            "muscle_align": {
+              "inclusive_ms": 0.0,
+              "calls": 0
+            },
+            "muscle_refine_fast": {
+              "inclusive_ms": 5873.301999,
+              "calls": 20
+            },
+            "muscle_profile_fast": {
+              "inclusive_ms": 2022.294457,
+              "calls": 62
+            },
+            "single_copy_distance": {
+              "inclusive_ms": 69.596625,
+              "calls": 1
+            },
+            "seed_occurrence": {
+              "inclusive_ms": 85.914205,
+              "calls": 32
+            },
+            "nw_small": {
+              "inclusive_ms": 4723.477599,
+              "calls": 85364
+            },
+            "muscle_tree": {
+              "inclusive_ms": 541.505872,
+              "calls": 64872
+            },
+            "refine_windows": {
+              "inclusive_ms": 5487.531917,
+              "calls": 20
+            },
+            "refine_horizontal": {
+              "inclusive_ms": 0.0,
+              "calls": 0
+            }
+          },
+          "cpu_seconds": 17.45,
+          "average_cpu_cores": 1.3818656242779357
+        }
+      ],
+      "median_ms": {
+        "8": 12627.855916973203
+      },
+      "artifacts_identical": true
+    }
+  ]
+}

@@ -3,7 +3,7 @@
 The checked-in `mauve_web/static/wasm/progressiveMauve.{mjs,wasm}` runs the actual
 progressiveMauve algorithm, including libMems, libGenome and MUSCLE. It is not a
 pairwise alignment substitute. Each job gets a new worker and Emscripten instance;
-terminating that worker cancels computation and releases its memory.
+terminating that worker cancels computation and its descendant pthread workers.
 
 ## Rebuild
 
@@ -13,12 +13,13 @@ in a separate directory, then run:
 ```sh
 source /path/to/emsdk/emsdk_env.sh
 python3 web/wasm/build.py --work /tmp/mauve-wasm-build --jobs 4
+python3 web/wasm/build.py --work /tmp/mauve-wasm-threaded-build --jobs 4 --threaded
 python3 web/wasm/test_kernels.py --work /tmp/mauve-wasm-build
 node --test web/browser-tests/wasm.test.mjs
 ```
 
 For a focused experiment, append `--case traceback` to the kernel command
-(or `profile_scores`, `seed_lookup`, `coordinates`, `homology_states`). Repeat
+(or `profile_scores`, `seed_lookup`, `coordinates`, `homology_states`, `thread_pool`). Repeat
 `--case` to select several kernels. Omitting it runs the complete suite.
 
 Python 3.11.8+ (tar extraction filters), Git, and the Emscripten SDK are build
@@ -38,8 +39,9 @@ The compatibility changes are intentionally small and applied by the script:
 No alignment/scoring heuristic was changed. The build uses `-O3 -msimd128 -flto`,
 native WebAssembly C++ exception support, an 8 MiB stack, and growable wasm32 memory capped at 2 GiB.
 It does not use fast-math or OpenMP. SIMD lets the browser use its native vector
-instructions, including on Apple Silicon. The current aligner runs on one CPU
-worker; WebGPU accelerates viewer identity scans, not progressiveMauve itself.
+instructions, including on Apple Silicon. The serial engine remains available as a fallback. A separate pthread build
+parallelizes backbone HMM pairs, recursive gap searches, pairwise breakpoint
+distances, and seed-occurrence construction; other alignment stages remain serial. WebGPU accelerates viewer identity scans, not progressiveMauve itself.
 The runtime must support WebAssembly exception handling as well as SIMD. The
 job form reports an unsupported exception runtime before starting a worker.
 
@@ -342,3 +344,232 @@ promise that every input below it will fit in the engine's heap.
 
 Broader biological validation and larger/divergent genome benchmarks are still
 needed before claiming general scientific parity or capacity at 64 genomes.
+
+## Browser threads
+
+The Pages app selects `static/wasm-threaded` when `crossOriginIsolated` and
+`SharedArrayBuffer` are available, with up to eight compute threads, capped by
+`navigator.hardwareConcurrency`. Otherwise it selects `static/wasm`. The engine
+version, job manifest and log record the selected thread count. This is an upper
+bound: short pair lists and the HMM memory heuristic can reduce active workers.
+
+Each threaded job initializes a pool before calling main. `PROXY_TO_PTHREAD`
+runs alignment on a pthread so the host worker can service filesystem requests;
+`EXIT_RUNTIME` and parent-worker termination release the pool. The safe native OpenMP loops are expressed as bounded C++ pthread jobs in this
+build. Independent pairs own their output vectors and TLS slots; recursive gap
+searches serialize shared sequence reads. Breakpoint coverage and progress logs
+are collected per pair and reduced in serial order. Nested jobs run serially
+within their parent team to preserve TLS identity and the worker-pool bound. Shared HMM tables are initialized before starting the team,
+including when the first genome pair has no alignment. The HMM team uses the
+native 512 MiB estimate; it is a concurrency heuristic, not a total memory cap.
+The shared Wasm heap remains capped at 2 GiB, with 8 MiB pthread stacks.
+
+For hosts with header configuration, serve the document and worker scripts with:
+
+```
+Cross-Origin-Opener-Policy: same-origin
+Cross-Origin-Embedder-Policy: credentialless
+```
+
+GitHub Pages uses the root-scoped `isolation-sw.js` included by `build_pages.py`.
+It adds these headers to same-origin responses without caching genome data or
+intercepting cross-origin API requests. The first visit reloads once after
+activation, before workspace initialization. If service workers or isolation
+are unavailable, the page continues with the serial engine. Hosts that already
+provide isolation headers skip service-worker registration. Use HTTPS or
+localhost. See [Emscripten pthread requirements](https://emscripten.org/docs/porting/pthreads.html).
+
+Validation and timing:
+
+```sh
+web/.venv/bin/python -m pytest web/browser-tests/test_threaded_browser.py -q
+web/.venv/bin/python web/benchmarks/browser-thread-scaling.py --output /tmp/browser-parity.json
+web/.venv/bin/python web/benchmarks/browser-thread-scaling.py --genomes 32 --bases 100000 --threads 1 4 8 12 16 --repeats 2 --output /tmp/browser-scaling.json
+```
+
+The benchmark launches real Chrome workers with fresh heaps and input files,
+checks all three artifact hashes exactly, and includes startup in wall time.
+It tests similar, divergent, rearranged, repetitive, ambiguous, and unrelated-first
+genomes; the larger mode uses the synthetic similar-genome workload. Browser
+tests also exercise the Pages service worker, blocked-service-worker fallback,
+and termination of the entire nested worker tree on cancellation.
+
+For a bounded native race check of the browser C++ path on Apple Silicon:
+
+```sh
+python3 web/wasm/build_pthread_tsan.py --work /tmp/mauve-wasm-threaded-build --output /tmp/mauve-pthread-tsan
+TSAN_OPTIONS=halt_on_error=1 node web/benchmarks/native-parity.mjs /tmp/mauve-pthread-tsan
+```
+
+This uses native pthreads and the NEON equivalent of the scoring SIMD operations.
+It checks the actual patched C++ pair loop and memory accesses; it does not
+instrument the browser's JavaScript runtime. The Playwright tests cover that
+integration separately.
+
+### Initial backbone-only result (2026-10-30)
+
+Real Chrome on Apple M4 Max, battery power, 32 synthetic genomes × 100,000 bases,
+two alternating runs per configuration, including worker startup and input staging:
+
+| Browser engine | Median wall time |
+| --- | ---: |
+| Serial | 33.89 s |
+| Eight threads | 30.41 s |
+
+The initial backbone-only build reduced runtime by 10.3% (1.11× speedup) on this case.
+All XMFA, tree and backbone bytes match. Short workloads gain little and may be
+slower from threading overhead. Peak browser memory was not measured. The
+[final timing report](../benchmarks/results/browser-threaded-32-scaling-2026-10-30.json)
+records binary hashes and individual runs; the
+[validation report](../benchmarks/results/browser-threaded-validation-2026-10-30.json)
+records the checks and their limits. An initial 1/4/8/12/16-thread sweep found
+little improvement above eight threads, so automatic selection stays capped at eight.
+
+The scheduler contract can be tested separately in actual pthread WebAssembly:
+
+```sh
+python3 web/wasm/test_kernels.py --work /tmp/mauve-wasm-build --case thread_pool
+```
+
+This checks exact iteration coverage, nested thread identity, empty ranges,
+exception propagation, and caller TLS restoration. The normal kernel suite
+also includes this test. The browser parity harness accepts `--seed-family`
+and `--collinear` to exercise alternative alignment modes.
+
+### Additional parallel stages (2026-10-30)
+
+The browser now also parallelizes recursive gap searches, pairwise breakpoint
+distances, and seed-occurrence construction. On the same 32 × 100,000-base
+synthetic workload in Chrome on Apple M4 Max (battery power), two runs per setting:
+
+| Browser engine | Median wall time |
+| --- | ---: |
+| Serial | 34.22 s |
+| Earlier backbone-only, eight threads | 30.06 s |
+| All four stages, eight threads | 29.39 s |
+
+That is 2.2% less time than the earlier threaded build and
+14.1% less than serial (1.16× speedup). The reference was rerun
+separately after the alternating serial/candidate runs; this is a small timing
+sample. All three artifacts match byte for byte across the runs. These gains do
+not reproduce the native ARM64 speedup; native-versus-Wasm also changes execution
+efficiency, independently of how much work is parallelized.
+
+See the [timing report](../benchmarks/results/browser-full-stages-32-scaling-2026-10-30.json)
+and [validation report](../benchmarks/results/browser-full-stages-validation-2026-10-30.json).
+The new checks include seed-family and collinear modes, larger native sanitizer
+fixtures, and the pthread scheduler contract in both native TSan and WebAssembly.
+
+### Matched stage profiling
+
+`web/benchmarks/profiling/build.py` builds isolated native or threaded browser
+engines with identical C++ scope timers. Use the existing prepared native and
+threaded checkouts, and separate output directories:
+
+```sh
+python3 web/benchmarks/profiling/build.py --target native --work /tmp/mauve-arm64-src --output /tmp/mauve-profile-native
+python3 web/benchmarks/profiling/build.py --target browser --work /tmp/mauve-browser-threads --output /tmp/mauve-profile-browser
+```
+
+The browser command requires the pinned Emscripten toolchain on PATH. Add
+`--mimalloc` for the experimental browser allocator comparison. These builds
+must not run concurrently with other builds against the same source checkout.
+The wrapper restores instrumented source bytes in a `finally` block and does
+not replace production assets. Diagnostic builds are marked with
+`STAGE_PROFILE.json`; their normal build manifest alone does not describe the
+additional instrumentation or experimental allocator.
+
+Both benchmark harnesses capture `MAUVE_STAGE` records into their JSON reports.
+Times are accumulated **inclusive wall milliseconds**, not CPU time. Nested
+scopes overlap and must not be summed. For a disjoint top-level breakdown use
+`engine - progressive - backbone`, `progressive - alignment_tree`,
+`alignment_tree`, and `backbone`. The legacy MUSCLE entry-point counters may be
+zero: the Fast variants are included in `gapped_alignment`. The newer function-level
+reports also time `RefineFast`, `ProfileAlignFast`, `NWSmall`, `TreeFromMSA`,
+`RefineW`, seed occurrence construction, and `SingleCopyDistanceMatrix` separately. Run compilation and timing
+sequentially to avoid CPU contention. Exact output hashes must match the
+uninstrumented reference before using a profile to guide changes.
+
+The October 30 matched profile (`benchmarks/results/stage-profile-summary-2026-10-30.json`)
+uses 32 similar genomes of 100,000 bases at eight threads. Native median process
+wall time was 21.60 s (two runs); the default browser allocator took 29.13 s
+(four runs). The experimental mimalloc build took 27.76 s median (four runs,
+25.26–28.12 s range), a 4.7% runtime reduction. Preparation and alignment/refinement
+accounted for about 90% of the native/browser stage gap. Breakpoint-distance time
+fell from roughly 0.90 s to 0.19 s with mimalloc. All large-run artifacts match
+the existing engine; six small cases also match serial output at eight threads.
+This allocator remains diagnostic-only until peak browser memory is evaluated.
+
+
+### Function profiles and coverage prototype
+
+The detailed results are in
+`benchmarks/results/function-profile-findings-2026-10-30.json`. Sampled CPU
+profiles were collected in separate runs, using macOS `sample` and Chrome's
+worker Profiler via `benchmarks/profiling/browser_cpu.py`. The raw captures are
+stored compressed alongside `cpu-profile-summary-2026-10-30.json`; LTO can
+attribute an inlined function's samples to its caller. Chrome's first 23 seconds
+show the serial main alignment thread busy while most team workers are idle.
+This capture covers preparation/refinement rather than the whole job.
+
+`SingleCopyDistanceMatrix` repeatedly sets coverage bits one base at a time.
+The diagnostic `--coverage-ranges` build flag uses word-wise range updates when
+both aligned rows are entirely ungapped and equally long, retaining the original
+column loop for gapped rows. This prototype is confined to the profiling build
+wrapper; production build defaults and assets have not been changed.
+
+A power-source change was detected during testing. The final comparison reruns
+both variants on AC in baseline/candidate/candidate/baseline order, two runs each,
+using 32 similar genomes of 100,000 bases and eight threads:
+
+| Target | Baseline | Coverage prototype | Runtime reduction |
+| --- | ---: | ---: | ---: |
+| Native ARM64 | 14.76 s | 12.63 s | 14.5% |
+| Chrome Wasm | 21.12 s | 17.08 s | 19.1% |
+
+Do not compare these absolute times against earlier battery runs. The harnesses
+now record power source before and after each run. No compilation or sampling
+ran concurrently with these timing runs. Exact output artifacts match.
+
+`build_kernels.py` and `run_kernels.py` compare isolated native/browser coverage
+and dynamic-programming kernels. The AC report is
+`benchmarks/results/matched-kernels-ac-2026-10-30.json`. It validates 100 randomized
+distance matrices, exhaustive small range boundaries, and exact score/path
+checksums. The coverage prototype improves its ungapped microbenchmark by over
+100x; that is not an end-to-end speedup. Larger NWSmall matrices take about 1.4x
+as long in Chrome. The original isolated coverage microbenchmark is slightly
+faster in Chrome, illustrating why a universal Wasm slowdown cannot explain
+all full-stage timings. Specific instruction-level attribution remains open.
+
+
+### Parallel browser refinement windows (2026-10-30)
+
+The production threaded engine now runs independent MUSCLE `RefineW` windows
+concurrently. Parameters are copied into worker-local TLS slots without copying
+scratch buffers. Each job owns its output MSA; the caller merges windows in
+original order, in batches bounded to twice the worker count. The final window
+runs on the caller to retain its final MUSCLE state. Progress bookkeeping is
+thread-local. Tiny, nested, non-DNA, custom-matrix, and standalone/debug cases
+retain the serial path. `MAUVE_PARALLEL_REFINEMENT=0` disables this stage for
+native diagnostic runs; the website enables it automatically.
+
+On 32 similar genomes of 100,000 bases, fresh real-Chrome workers on AC power,
+two repeats per setting gave:
+
+| Workers | Median wall time |
+| --- | ---: |
+| 1 (serial engine) | 23.98 s |
+| 4 | 15.90 s |
+| 8 | 15.34 s |
+| 16 | 15.83 s |
+
+Eight workers reduce runtime by 36.0% versus serial and 25.5% versus a fresh
+20.60 s control using the preceding threaded engine. The final production binary
+also completed in 15.39 s. These are one-workload measurements, not a promise for
+all inputs; automatic selection remains capped at eight. All XMFA, tree, and
+backbone hashes match. The coverage-range and mimalloc profiling prototypes are
+not included in this comparison or production change.
+
+See `benchmarks/results/browser-window-scaling-2026-10-30.json`,
+`browser-pre-window-control-2026-10-30.json`, and
+`browser-window-validation-2026-10-30.json` for timing and validation details.

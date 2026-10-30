@@ -11,7 +11,7 @@ builder = importlib.util.module_from_spec(spec); spec.loader.exec_module(builder
 def test_pages_artifact_is_static_and_engine_matches_manifest(tmp_path):
     output = tmp_path / 'site'
     builder.build(output)
-    assert {p.name for p in output.iterdir()} == {'index.html', '.nojekyll', 'static'}
+    assert {p.name for p in output.iterdir()} == {'index.html', '.nojekyll', 'static', 'isolation-sw.js'}
     html = (output / 'index.html').read_text()
     assert 'src="/static/' not in html
     assert 'href="/"' not in html
@@ -21,10 +21,14 @@ def test_pages_artifact_is_static_and_engine_matches_manifest(tmp_path):
     assert not list(output.rglob('*.sqlite3'))
     assert not list(output.rglob('*.fa'))
     assert (output / 'static/wasm/build.py').is_file()
-    manifest = json.loads((output / 'static/wasm/SOURCES.json').read_text())
-    assert hashlib.sha256((output / 'static/wasm/progressiveMauve.wasm').read_bytes()).hexdigest() == manifest['wasm_sha256']
-    for name, digest in manifest['local_sources'].items():
-        assert hashlib.sha256((output / 'static/wasm' / name).read_bytes()).hexdigest() == digest
+    for engine in ('wasm', 'wasm-threaded'):
+        folder = output / 'static' / engine
+        manifest = json.loads((folder / 'SOURCES.json').read_text())
+        assert manifest['configuration']['threaded'] == (engine == 'wasm-threaded')
+        assert hashlib.sha256((folder / 'progressiveMauve.wasm').read_bytes()).hexdigest() == manifest['wasm_sha256']
+        for name, digest in manifest['local_sources'].items():
+            assert hashlib.sha256((folder / name).read_bytes()).hexdigest() == digest
+
 
 
 def test_analytics_configuration_is_explicit_and_validated(tmp_path):

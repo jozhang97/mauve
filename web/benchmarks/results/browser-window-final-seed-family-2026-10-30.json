@@ -1,0 +1,242 @@
+{
+  "environment": {
+    "engine_sha256": {
+      "wasm": "fd925cd33c9ccee588ef59e961e21886eac8581a456766bb40a27f7b271c6beb",
+      "wasm-threaded": "3d7a11830bf8c87d18e238edd08bfa6ba34b957f67a2f43417cf04c406b63fdf"
+    },
+    "browser": "156.0.8078.76",
+    "platform": "macOS-27.0.1-arm64-arm-64bit",
+    "hardware_concurrency": 16
+  },
+  "results": [
+    {
+      "kind": "similar",
+      "genomes": 4,
+      "bases": 5000,
+      "repeat": 0,
+      "seed_family": true,
+      "collinear": false,
+      "threads": 1,
+      "alignmentMs": 76.58000004291534,
+      "totalMs": 85.08000004291534,
+      "wallMs": 89.15499997138977,
+      "hashes": {
+        "xmfa": "c279a4192b7840ebc4708a3498e6ec3eed352b13a2188e82dbe07e92bf10b770",
+        "tree": "70159fd8724b76930319659e6df9eb0a8b124adedcc0f351e2f12b97d18a0ca2",
+        "backbone": "751673fc2aae1e5c00dc9d0ac5a6ea3540ab29ef8b9359bae6fafc30ae303d0c"
+      },
+      "power_before": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=35520611)\t100%; finishing charge; 0:00 remaining present: true",
+      "power_after": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=35520611)\t100%; finishing charge; 0:00 remaining present: true"
+    },
+    {
+      "kind": "similar",
+      "genomes": 4,
+      "bases": 5000,
+      "repeat": 0,
+      "seed_family": true,
+      "collinear": false,
+      "threads": 8,
+      "alignmentMs": 87.36500000953674,
+      "totalMs": 100.99500000476837,
+      "wallMs": 103.58500003814697,
+      "hashes": {
+        "xmfa": "c279a4192b7840ebc4708a3498e6ec3eed352b13a2188e82dbe07e92bf10b770",
+        "tree": "70159fd8724b76930319659e6df9eb0a8b124adedcc0f351e2f12b97d18a0ca2",
+        "backbone": "751673fc2aae1e5c00dc9d0ac5a6ea3540ab29ef8b9359bae6fafc30ae303d0c"
+      },
+      "power_before": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=35520611)\t100%; finishing charge; 0:00 remaining present: true",
+      "power_after": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=35520611)\t100%; finishing charge; 0:00 remaining present: true"
+    },
+    {
+      "kind": "divergent",
+      "genomes": 4,
+      "bases": 5000,
+      "repeat": 0,
+      "seed_family": true,
+      "collinear": false,
+      "threads": 1,
+      "alignmentMs": 106.89499998092651,
+      "totalMs": 113.35000002384186,
+      "wallMs": 115.92500007152557,
+      "hashes": {
+        "xmfa": "5bc0b4eeb5a019b8efad1c49191587623389a7fe9e85f7e970deb1515c640f97",
+        "tree": "4cceb866ac94fc29300367c482f238c02ff7804daa03f358b60b60713ac45d6d",
+        "backbone": "751673fc2aae1e5c00dc9d0ac5a6ea3540ab29ef8b9359bae6fafc30ae303d0c"
+      },
+      "power_before": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=35520611)\t100%; finishing charge; 0:00 remaining present: true",
+      "power_after": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=35520611)\t100%; finishing charge; 0:00 remaining present: true"
+    },
+    {
+      "kind": "divergent",
+      "genomes": 4,
+      "bases": 5000,
+      "repeat": 0,
+      "seed_family": true,
+      "collinear": false,
+      "threads": 8,
+      "alignmentMs": 122.8199999332428,
+      "totalMs": 134.29500007629395,
+      "wallMs": 136.96000003814697,
+      "hashes": {
+        "xmfa": "5bc0b4eeb5a019b8efad1c49191587623389a7fe9e85f7e970deb1515c640f97",
+        "tree": "4cceb866ac94fc29300367c482f238c02ff7804daa03f358b60b60713ac45d6d",
+        "backbone": "751673fc2aae1e5c00dc9d0ac5a6ea3540ab29ef8b9359bae6fafc30ae303d0c"
+      },
+      "power_before": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=35520611)\t100%; finishing charge; 0:00 remaining present: true",
+      "power_after": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=35520611)\t100%; finishing charge; 0:00 remaining present: true"
+    },
+    {
+      "kind": "rearranged",
+      "genomes": 4,
+      "bases": 5000,
+      "repeat": 0,
+      "seed_family": true,
+      "collinear": false,
+      "threads": 1,
+      "alignmentMs": 76.45000004768372,
+      "totalMs": 82.99000000953674,
+      "wallMs": 85.51499998569489,
+      "hashes": {
+        "xmfa": "1eef959cb77f0c0f617609283360ea2b876d7f4ed95d21d18826165e4422688b",
+        "tree": "795874aa737a13e1bb8587d2856e1c0463199a968470f1504c74ec0753019d90",
+        "backbone": "18b77a3dd60fde9fca59fa84886ea50b7596dc73f69c5ce3e6b53013fb7dff6b"
+      },
+      "power_before": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=35520611)\t100%; finishing charge; 0:00 remaining present: true",
+      "power_after": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=35520611)\t100%; finishing charge; 0:00 remaining present: true"
+    },
+    {
+      "kind": "rearranged",
+      "genomes": 4,
+      "bases": 5000,
+      "repeat": 0,
+      "seed_family": true,
+      "collinear": false,
+      "threads": 8,
+      "alignmentMs": 90.02499997615814,
+      "totalMs": 101.42499995231628,
+      "wallMs": 103.95000004768372,
+      "hashes": {
+        "xmfa": "1eef959cb77f0c0f617609283360ea2b876d7f4ed95d21d18826165e4422688b",
+        "tree": "795874aa737a13e1bb8587d2856e1c0463199a968470f1504c74ec0753019d90",
+        "backbone": "18b77a3dd60fde9fca59fa84886ea50b7596dc73f69c5ce3e6b53013fb7dff6b"
+      },
+      "power_before": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=35520611)\t100%; finishing charge; 0:00 remaining present: true",
+      "power_after": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=35520611)\t100%; finishing charge; 0:00 remaining present: true"
+    },
+    {
+      "kind": "repeats",
+      "genomes": 4,
+      "bases": 5000,
+      "repeat": 0,
+      "seed_family": true,
+      "collinear": false,
+      "threads": 1,
+      "alignmentMs": 72.5550000667572,
+      "totalMs": 79.33499991893768,
+      "wallMs": 82.08000004291534,
+      "hashes": {
+        "xmfa": "dc431dc01d8bc4ae7d82680fbdc18dec190ac9131334e3bb28373bdd77925956",
+        "tree": "70159fd8724b76930319659e6df9eb0a8b124adedcc0f351e2f12b97d18a0ca2",
+        "backbone": "751673fc2aae1e5c00dc9d0ac5a6ea3540ab29ef8b9359bae6fafc30ae303d0c"
+      },
+      "power_before": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=35520611)\t100%; finishing charge; 0:00 remaining present: true",
+      "power_after": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=35520611)\t100%; finishing charge; 0:00 remaining present: true"
+    },
+    {
+      "kind": "repeats",
+      "genomes": 4,
+      "bases": 5000,
+      "repeat": 0,
+      "seed_family": true,
+      "collinear": false,
+      "threads": 8,
+      "alignmentMs": 85.1800000667572,
+      "totalMs": 96.57499992847443,
+      "wallMs": 99.17500007152557,
+      "hashes": {
+        "xmfa": "dc431dc01d8bc4ae7d82680fbdc18dec190ac9131334e3bb28373bdd77925956",
+        "tree": "70159fd8724b76930319659e6df9eb0a8b124adedcc0f351e2f12b97d18a0ca2",
+        "backbone": "751673fc2aae1e5c00dc9d0ac5a6ea3540ab29ef8b9359bae6fafc30ae303d0c"
+      },
+      "power_before": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=35520611)\t100%; finishing charge; 0:00 remaining present: true",
+      "power_after": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=35520611)\t100%; finishing charge; 0:00 remaining present: true"
+    },
+    {
+      "kind": "ambiguous",
+      "genomes": 4,
+      "bases": 5000,
+      "repeat": 0,
+      "seed_family": true,
+      "collinear": false,
+      "threads": 1,
+      "alignmentMs": 79.27499997615814,
+      "totalMs": 85.625,
+      "wallMs": 88.27499997615814,
+      "hashes": {
+        "xmfa": "a65598326483a68d9b24401fe1b5f5882e3f731c8568509cb74c743d8337071d",
+        "tree": "70159fd8724b76930319659e6df9eb0a8b124adedcc0f351e2f12b97d18a0ca2",
+        "backbone": "751673fc2aae1e5c00dc9d0ac5a6ea3540ab29ef8b9359bae6fafc30ae303d0c"
+      },
+      "power_before": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=35520611)\t100%; finishing charge; 0:00 remaining present: true",
+      "power_after": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=35520611)\t100%; finishing charge; 0:00 remaining present: true"
+    },
+    {
+      "kind": "ambiguous",
+      "genomes": 4,
+      "bases": 5000,
+      "repeat": 0,
+      "seed_family": true,
+      "collinear": false,
+      "threads": 8,
+      "alignmentMs": 90.99000000953674,
+      "totalMs": 102.60500001907349,
+      "wallMs": 105.25499999523163,
+      "hashes": {
+        "xmfa": "a65598326483a68d9b24401fe1b5f5882e3f731c8568509cb74c743d8337071d",
+        "tree": "70159fd8724b76930319659e6df9eb0a8b124adedcc0f351e2f12b97d18a0ca2",
+        "backbone": "751673fc2aae1e5c00dc9d0ac5a6ea3540ab29ef8b9359bae6fafc30ae303d0c"
+      },
+      "power_before": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=35520611)\t100%; finishing charge; 0:00 remaining present: true",
+      "power_after": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=35520611)\t100%; finishing charge; 0:00 remaining present: true"
+    },
+    {
+      "kind": "unrelated-first",
+      "genomes": 4,
+      "bases": 5000,
+      "repeat": 0,
+      "seed_family": true,
+      "collinear": false,
+      "threads": 1,
+      "alignmentMs": 548.6449999809265,
+      "totalMs": 554.9800000190735,
+      "wallMs": 557.6299999952316,
+      "hashes": {
+        "xmfa": "dffc6ad993dcb2903e2b84a1dd79d8f751794593ea45c3306ede6ce68965f29a",
+        "tree": "5ab653428cc6b6c54e78203511c197576eef53369961fe862c652ac248ebc264",
+        "backbone": "326bb8dc0f4ee0cd636ba36ad3cff028868a1a666c49df7841114d8dd33fa2a0"
+      },
+      "power_before": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=35520611)\t100%; finishing charge; 0:00 remaining present: true",
+      "power_after": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=35520611)\t100%; finishing charge; 0:00 remaining present: true"
+    },
+    {
+      "kind": "unrelated-first",
+      "genomes": 4,
+      "bases": 5000,
+      "repeat": 0,
+      "seed_family": true,
+      "collinear": false,
+      "threads": 8,
+      "alignmentMs": 613.1150000095367,
+      "totalMs": 625.1200000047684,
+      "wallMs": 627.7699999809265,
+      "hashes": {
+        "xmfa": "dffc6ad993dcb2903e2b84a1dd79d8f751794593ea45c3306ede6ce68965f29a",
+        "tree": "5ab653428cc6b6c54e78203511c197576eef53369961fe862c652ac248ebc264",
+        "backbone": "326bb8dc0f4ee0cd636ba36ad3cff028868a1a666c49df7841114d8dd33fa2a0"
+      },
+      "power_before": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=35520611)\t100%; finishing charge; 0:00 remaining present: true",
+      "power_after": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=35520611)\t100%; finishing charge; 0:00 remaining present: true"
+    }
+  ],
+  "note": "Fresh workers and heaps per run. Wall time includes worker startup and input staging. Alternating thread order. Exact hashes, no normalization."
+}

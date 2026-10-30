@@ -1,0 +1,79 @@
+{
+  "date": "2026-10-30",
+  "engine_sha256": {
+    "wasm": "60b8f29f4d7792b4cf692310d564d7fa4389595a78ea0a0744502a8809619f95",
+    "wasm-threaded": "40dd62ef4476d20778cd806939b224be53920bb2e496d1b9938d234bd1946ace"
+  },
+  "tests": {
+    "node": {
+      "passed": 41
+    },
+    "server": {
+      "passed": 65,
+      "skipped": 9
+    },
+    "browser": {
+      "passed": 15,
+      "skipped": 1
+    },
+    "browser_parity": {
+      "cases": [
+        "similar",
+        "divergent",
+        "rearranged",
+        "repeats",
+        "ambiguous",
+        "unrelated-first"
+      ],
+      "genomes": 4,
+      "bases": 20000,
+      "thread_counts": [
+        1,
+        4,
+        8
+      ],
+      "runs": 18,
+      "all_three_artifacts_exact": true
+    },
+    "browser_scaling": {
+      "genomes": 32,
+      "bases": 100000,
+      "threads": [
+        1,
+        8
+      ],
+      "repeats": 2,
+      "all_three_artifacts_exact": true
+    },
+    "native_cpp_pthread_tsan": {
+      "small_cases": 5,
+      "small_genomes": 4,
+      "small_bases": 5000,
+      "medium_genomes": 12,
+      "medium_bases": 20000,
+      "threads": 8,
+      "reports": 0,
+      "artifact_parity": true,
+      "scope": "Native TSan build of the same browser-patched C++ with NEON scoring. Does not instrument browser JavaScript."
+    }
+  },
+  "integration": [
+    "Pages service-worker isolation under /mauve/",
+    "blocked-service-worker serial fallback",
+    "nested worker tree removed on cancellation",
+    "nonzero engine exit reported without hanging",
+    "first-visit UI waits for isolation reload",
+    "old job manifests without thread metadata use serial engine"
+  ],
+  "limitations": [
+    "Only backbone HMM genome-pair work is parallel; other alignment stages remain serial.",
+    "Synthetic timings are workload-specific, with two repeats per configuration.",
+    "Chrome tested; other browsers select threads only when isolation and shared memory are available.",
+    "Browser peak memory was not measured."
+  ],
+  "allocator_experiment": {
+    "promoted": false,
+    "note": "One mimalloc trial completed in 29.88 s at eight threads, approximately 1% faster than the initial default-allocator median; no compelling measured improvement."
+  },
+  "deployment": "Local implementation and assets prepared; not committed, pushed, or deployed."
+}

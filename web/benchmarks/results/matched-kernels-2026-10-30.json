@@ -1,0 +1,221 @@
+{
+  "browser": "156.0.8078.76",
+  "rows": [
+    {
+      "target": "native",
+      "kernel": "coverage_reference",
+      "repeat": 0,
+      "ms": 351.022916,
+      "checksum": "39.679999999999332"
+    },
+    {
+      "target": "native",
+      "kernel": "coverage_ranges",
+      "repeat": 0,
+      "ms": 1.536042,
+      "checksum": "39.679999999999332"
+    },
+    {
+      "target": "native",
+      "kernel": "coverage_ranges",
+      "repeat": 1,
+      "ms": 1.418,
+      "checksum": "39.679999999999332"
+    },
+    {
+      "target": "native",
+      "kernel": "coverage_reference",
+      "repeat": 1,
+      "ms": 345.329875,
+      "checksum": "39.679999999999332"
+    },
+    {
+      "target": "native",
+      "kernel": "coverage_reference",
+      "repeat": 2,
+      "ms": 342.34775,
+      "checksum": "39.679999999999332"
+    },
+    {
+      "target": "native",
+      "kernel": "coverage_ranges",
+      "repeat": 2,
+      "ms": 1.499625,
+      "checksum": "39.679999999999332"
+    },
+    {
+      "target": "native",
+      "kernel": "nw_128",
+      "repeat": 0,
+      "ms": 0.732458,
+      "checksum": "2493738450"
+    },
+    {
+      "target": "native",
+      "kernel": "nw_128",
+      "repeat": 1,
+      "ms": 0.71425,
+      "checksum": "2493738450"
+    },
+    {
+      "target": "native",
+      "kernel": "nw_128",
+      "repeat": 2,
+      "ms": 0.734791,
+      "checksum": "2493738450"
+    },
+    {
+      "target": "native",
+      "kernel": "nw_512",
+      "repeat": 0,
+      "ms": 11.895167,
+      "checksum": "3423526912"
+    },
+    {
+      "target": "native",
+      "kernel": "nw_512",
+      "repeat": 1,
+      "ms": 11.913875,
+      "checksum": "3423526912"
+    },
+    {
+      "target": "native",
+      "kernel": "nw_512",
+      "repeat": 2,
+      "ms": 11.949209,
+      "checksum": "3423526912"
+    },
+    {
+      "target": "native",
+      "kernel": "nw_1024",
+      "repeat": 0,
+      "ms": 46.388542,
+      "checksum": "2531137298"
+    },
+    {
+      "target": "native",
+      "kernel": "nw_1024",
+      "repeat": 1,
+      "ms": 45.912792,
+      "checksum": "2531137298"
+    },
+    {
+      "target": "native",
+      "kernel": "nw_1024",
+      "repeat": 2,
+      "ms": 46.611791,
+      "checksum": "2531137298"
+    },
+    {
+      "target": "browser",
+      "kernel": "coverage_reference",
+      "repeat": 0,
+      "ms": 333.060096,
+      "checksum": "39.679999999999332"
+    },
+    {
+      "target": "browser",
+      "kernel": "coverage_ranges",
+      "repeat": 0,
+      "ms": 2.654976,
+      "checksum": "39.679999999999332"
+    },
+    {
+      "target": "browser",
+      "kernel": "coverage_ranges",
+      "repeat": 1,
+      "ms": 2.38976,
+      "checksum": "39.679999999999332"
+    },
+    {
+      "target": "browser",
+      "kernel": "coverage_reference",
+      "repeat": 1,
+      "ms": 323.494912,
+      "checksum": "39.679999999999332"
+    },
+    {
+      "target": "browser",
+      "kernel": "coverage_reference",
+      "repeat": 2,
+      "ms": 322.034944,
+      "checksum": "39.679999999999332"
+    },
+    {
+      "target": "browser",
+      "kernel": "coverage_ranges",
+      "repeat": 2,
+      "ms": 2.444544,
+      "checksum": "39.679999999999332"
+    },
+    {
+      "target": "browser",
+      "kernel": "nw_128",
+      "repeat": 0,
+      "ms": 3.350016,
+      "checksum": "2493738450"
+    },
+    {
+      "target": "browser",
+      "kernel": "nw_128",
+      "repeat": 1,
+      "ms": 1.85984,
+      "checksum": "2493738450"
+    },
+    {
+      "target": "browser",
+      "kernel": "nw_128",
+      "repeat": 2,
+      "ms": 1.029888,
+      "checksum": "2493738450"
+    },
+    {
+      "target": "browser",
+      "kernel": "nw_512",
+      "repeat": 0,
+      "ms": 17.174528,
+      "checksum": "3423526912"
+    },
+    {
+      "target": "browser",
+      "kernel": "nw_512",
+      "repeat": 1,
+      "ms": 17.34016,
+      "checksum": "3423526912"
+    },
+    {
+      "target": "browser",
+      "kernel": "nw_512",
+      "repeat": 2,
+      "ms": 17.18528,
+      "checksum": "3423526912"
+    },
+    {
+      "target": "browser",
+      "kernel": "nw_1024",
+      "repeat": 0,
+      "ms": 67.339776,
+      "checksum": "2531137298"
+    },
+    {
+      "target": "browser",
+      "kernel": "nw_1024",
+      "repeat": 1,
+      "ms": 67.270144,
+      "checksum": "2531137298"
+    },
+    {
+      "target": "browser",
+      "kernel": "nw_1024",
+      "repeat": 2,
+      "ms": 67.045376,
+      "checksum": "2531137298"
+    }
+  ],
+  "all_checksums_match": true,
+  "validation": "100 randomized matrices plus exhaustive small range boundaries per target. Native and browser NW scores/path checksums match. Coverage timing uses 32x100000 bases with 20 overlapping ungapped matches; NW timings include 30 calls, after one warmup.",
+  "raw_logs": {
+    "native": "VALIDATION coverage 100 matrices and exhaustive range boundaries passed\nKERNEL coverage_reference 0 351.022916 39.679999999999332\nKERNEL coverage_ranges 0 1.536042 39.679999999999332\nKERNEL coverage_ranges 1 1.418000 39.679999999999332\nKERNEL coverage_reference 1 345.329875 39.679999999999332\nKERNEL coverage_reference 2 342.347750 39.679999999999332\nKERNEL coverage_ranges 2 1.499625 39.679999999999332\nKERNEL nw_128 0 0.732458 2493738450\nKERNEL nw_128 1 0.714250 2493738450\nKERNEL nw_128 2 0.734791 2493738450\nKERNEL nw_512 0 11.895167 3423526912\nKERNEL nw_512 1 11.913875 3423526912\nKERNEL nw_512 2 11.949209 3423526912\nKERNEL nw_1024 0 46.388542 2531137298\nKERNEL nw_1024 1 45.912792 2531137298\nKERNEL nw_1024 2 46.611791 2531137298\n",
+    "browser": "VALIDATION coverage 100 matrices and exhaustive range boundaries passed\nKERNEL coverage_reference 0 333.060096 39.679999999999332\nKERNEL coverage_ranges 0 2.654976 39.679999999999332\nKERNEL coverage_ranges 1 2.389760 39.679999999999332\nKERNEL coverage_reference 1 323.494912 39.679999999999332\nKERNEL coverage_reference 2 322.034944 39.679999999999332\nKERNEL coverage_ranges 2 2.444544 39.679999999999332\nKERNEL nw_128 0 3.350016 2493738450\nKERNEL nw_128 1 1.859840 2493738450\nKERNEL nw_128 2 1.029888 2493738450\nKERNEL nw_512 0 17.174528 3423526912\nKERNEL nw_512 1 17.340160 3423526912\nKERNEL nw_512 2 17.185280 3423526912\nKERNEL nw_1024 0 67.339776 2531137298\nKERNEL nw_1024 1 67.270144 2531137298\nKERNEL nw_1024 2 67.045376 2531137298\n"
+  }
+}

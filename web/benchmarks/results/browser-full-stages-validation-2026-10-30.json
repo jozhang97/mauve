@@ -1,0 +1,78 @@
+{
+  "date": "2026-10-30",
+  "engine_sha256": {
+    "wasm": "60b8f29f4d7792b4cf692310d564d7fa4389595a78ea0a0744502a8809619f95",
+    "wasm-threaded": "204380afc9a890a51217e1049128d156f678ce825acaed4a6498a14eee6751af"
+  },
+  "parallel_stages": [
+    "backbone_hmm",
+    "recursive_gap_search",
+    "pairwise_breakpoint_distance",
+    "seed_occurrence_construction"
+  ],
+  "checks": {
+    "node": {
+      "passed": 41
+    },
+    "browser": {
+      "passed": 15,
+      "skipped": 1
+    },
+    "real_browser_default_parity": {
+      "runs": 18,
+      "cases": 6,
+      "bases": 20000,
+      "genomes": 4,
+      "threads": [
+        1,
+        4,
+        8
+      ]
+    },
+    "real_browser_mode_parity": {
+      "runs": 24,
+      "cases": 6,
+      "bases": 5000,
+      "genomes": 4,
+      "threads": [
+        1,
+        8
+      ],
+      "modes": [
+        "seed-family",
+        "collinear"
+      ]
+    },
+    "real_browser_32_genomes": {
+      "runs": 6,
+      "three_artifacts_exact": true
+    },
+    "native_thread_sanitizer": {
+      "small_cases": 5,
+      "medium_cases": 5,
+      "threads": 8,
+      "largest_genome_count": 12,
+      "largest_bases": 20000,
+      "reports": 0,
+      "scope": "Same patched C++ built natively with NEON; does not instrument browser runtime."
+    },
+    "scheduler_contract": [
+      "WebAssembly pthread execution in Node",
+      "native ThreadSanitizer execution",
+      "exact coverage",
+      "empty and single-element ranges",
+      "nested TLS identity",
+      "exception propagation",
+      "caller TLS restored"
+    ],
+    "pinned_source_preparation_idempotent": true,
+    "binary_and_source_hashes_match": true
+  },
+  "limitations": [
+    "Two timing repetitions per configuration; synthetic workload.",
+    "Small jobs may be slower due to threading overhead.",
+    "Browser peak memory was not measured.",
+    "Other alignment stages remain serial."
+  ],
+  "deployment": "Local only; not committed, pushed, or deployed."
+}
