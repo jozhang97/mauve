@@ -733,6 +733,7 @@ function blockIntersectsViewport(block, padding = 0) {
 }
 function render() {
   if (!state.alignment) return;
+  window.mauveRankCorrelations?.refresh();
   const width = Math.max(660, $("tracks").clientWidth - 24),
     left = 180,
     right = width - 26,

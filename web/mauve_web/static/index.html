@@ -10,6 +10,7 @@
     <script src="./static/track-geometry.js" defer></script>
     <script src="./static/app.js" defer></script>
     <script src="./static/gene-analysis.js" defer></script>
+    <script src="./static/rank-view.mjs" type="module"></script>
     <script src="./static/jobs.js" defer></script>
     <script src="./static/ncbi.js" defer></script>
   </head>
@@ -387,8 +388,10 @@
               <p>Every record is a separate circular chromosome; there are no cross-record adjacencies. Known linear records are rejected; records without topology are assumed circular. Circular-origin genes are ordered across the origin, and overlapping genes are ordered by forward start coordinate. Rotating or reverse-complementing a whole chromosome does not change the metrics.</p>
             </details>
             <div id="gene-analysis-results" hidden>
-              <div class="gene-analysis-controls"><label>Heatmap metric <select id="gene-metric"><option value="content_jaccard">Gene content Jaccard</option><option value="adjacency_jaccard">Actual adjacency Jaccard</option><option value="conservation">Shared-gene adjacency conservation</option><option value="dcj">Shared-gene DCJ distance</option><option value="shared">Shared gene families</option></select></label>
+              <div class="gene-analysis-controls"><label>Heatmap metric <select id="gene-metric"><option value="content_jaccard">Gene content Jaccard</option><option value="adjacency_jaccard">Actual adjacency Jaccard</option><option value="conservation">Shared-gene adjacency conservation</option><option value="dcj">Shared-gene DCJ distance</option><option value="shared">Shared gene families</option><option value="kendall">Core-gene Kendall τ</option><option value="spearman">Core-gene Spearman ρ</option></select></label>
                 <button id="export-gene-pairs">Export pair table</button><button id="export-gene-families">Export families</button><button id="export-gene-json">Export full analysis</button></div>
+              <p id="core-rank-status" class="small" role="status" hidden></p>
+              <button id="export-core-ranks" hidden>Export rank correlations</button>
               <p id="gene-heatmap-legend" class="small"></p><div id="gene-heatmap" class="gene-table-scroll"></div>
               <details><summary>All pair counts and distances</summary><div id="gene-pair-table" class="gene-table-scroll"></div></details>
               <h3>Core / pan genome</h3><div id="gene-pan-summary" class="gene-pan-summary"></div>

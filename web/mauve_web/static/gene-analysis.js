@@ -55,9 +55,14 @@
   function renderHeatmap() {
     if (!result) return;
     const metric = el('gene-metric').value, fractional = ['content_jaccard', 'adjacency_jaccard', 'conservation'].includes(metric);
-    const display = fractional ? percent : number;
+    const rankMetric = ['kendall', 'spearman'].includes(metric);
+    const ranks = window.mauveRankCorrelations?.result;
+    el('core-rank-status').hidden = !rankMetric;
+    el('core-rank-status').textContent = window.mauveRankCorrelations?.status || 'Select a block and enable “Orient tracks to selected block” to compute core-gene correlations.';
+    el('export-core-ranks').hidden = !rankMetric || !ranks;
+    const display = rankMetric ? value => value == null ? 'N/A' : value.toFixed(4) : fractional ? percent : number;
     const max = fractional ? 1 : Math.max(1, ...result.pairs.map(p => p[metric] ?? 0));
-    const pairs = new Map(result.pairs.map(p => [[p.a, p.b].sort((a, b) => a - b).join('/'), p]));
+    const pairs = new Map((rankMetric ? ranks?.pairs || [] : result.pairs).map(p => [[p.a, p.b].sort((a, b) => a - b).join('/'), p]));
     const matrix = table(['Genome', ...result.genomes.map((g, i) => `${i + 1}. ${g.name}`)], []), body = matrix.tBodies[0];
     for (const [i, a] of result.genomes.entries()) {
       const row = document.createElement('tr'), label = text('th', `${i + 1}. ${a.name}`); label.scope = 'row'; row.append(label);
@@ -65,17 +70,21 @@
         const td = document.createElement('td');
         if (a.id === b.id) { td.textContent = '—'; td.title = 'Same genome'; }
         else {
-          const pair = pairs.get([a.id, b.id].sort((a, b) => a - b).join('/')), value = pair[metric];
+          const pair = pairs.get([a.id, b.id].sort((a, b) => a - b).join('/')), value = pair?.[metric] ?? null;
           td.textContent = display(value);
-          td.title = `${a.name} / ${b.name}: ${display(value)}; ${pair.shared} shared / ${pair.union} distinct families; ${pair.order_genes} unique shared genes used for order; ${pair.excluded_shared} shared families excluded as duplicated`;
-          if (value !== null) td.style.background = `rgba(155, 122, 188, ${0.08 + 0.55 * value / max})`;
+          td.title = rankMetric ? `${a.name} / ${b.name}: ${display(value)}; ${pair?.n || 0} single-copy core families; anchor ${ranks?.anchor || 'unavailable'}; block ${ranks?.block || 'unavailable'}` : `${a.name} / ${b.name}: ${display(value)}; ${pair.shared} shared / ${pair.union} distinct families; ${pair.order_genes} unique shared genes used for order; ${pair.excluded_shared} shared families excluded as duplicated`;
+          if (value !== null) td.style.background = rankMetric
+            ? `rgba(${value < 0 ? '205, 105, 65' : '65, 135, 190'}, ${0.08 + 0.55 * Math.abs(value)})`
+            : `rgba(155, 122, 188, ${0.08 + 0.55 * value / max})`;
         }
         row.append(td);
       }
       body.append(row);
     }
     el('gene-heatmap').replaceChildren(matrix);
-    el('gene-heatmap-legend').textContent = `Darker cells indicate ${metric === 'dcj' ? 'greater distance (less conserved order)' : 'higher values'}. Scale: 0–${fractional ? '100%' : number(max)}. N/A means no eligible denominator. Hover for pair counts.`;
+    el('gene-heatmap-legend').textContent = rankMetric
+      ? 'Scale: −1 to +1. Orange = negative correlation; blue = positive correlation; pale = near zero. N/A means the anchor, orientation, or eligible gene ranks are unavailable. Hover for family count and anchor.'
+      : `Darker cells indicate ${metric === 'dcj' ? 'greater distance (less conserved order)' : 'higher values'}. Scale: 0–${fractional ? '100%' : number(max)}. N/A means no eligible denominator. Hover for pair counts.`;
   }
   function renderFamilies() {
     if (!result) return;
@@ -106,7 +115,8 @@
     });
     renderHeatmap(); renderFamilies();
   }
-  el('gene-metric').onchange = renderHeatmap;
+  el('gene-metric').onchange = () => { window.mauveRankCorrelations?.refresh(); renderHeatmap(); };
+  window.addEventListener('mauve-rank-correlations', renderHeatmap);
   el('gene-family-search').oninput = () => { page = 0; renderFamilies(); };
   el('gene-family-prev').onclick = () => { page--; renderFamilies(); };
   el('gene-family-next').onclick = () => { page++; renderFamilies(); };
