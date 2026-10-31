@@ -7,6 +7,7 @@
     <title>Mauve · Genome explorer</title>
     <script src="./static/theme.js"></script>
     <link rel="stylesheet" href="./static/style.css" />
+    <script src="./static/track-geometry.js" defer></script>
     <script src="./static/app.js" defer></script>
     <script src="./static/gene-analysis.js" defer></script>
     <script src="./static/jobs.js" defer></script>
@@ -326,7 +327,9 @@
               <div class="settings-content">
                 <label class="check"><input type="checkbox" id="links" checked /> Block connections</label>
                 <label class="check" title="Shift tracks to line up corresponding positions in the clicked block, keeping chromosome orientation and zoom. Annotated circular chromosomes wrap at their origin."><input type="checkbox" id="align-tracks" /> Align tracks on block click</label>
+                <label class="check" title="Align and reverse tracks where necessary so the selected block follows the reference direction."><input type="checkbox" id="orient-tracks" /> Orient tracks to selected block</label>
                 <label class="check"><input type="checkbox" id="show-annotations" checked /> Selected block annotations</label>
+                <label class="check" title="Show only genes in families present in every loaded genome, including hidden tracks, and blocks overlapping those genes. Includes all copies of core families."><input type="checkbox" id="core-genes-only" /> Core family genes only</label>
                 <label class="check"><input type="checkbox" id="show-identity" checked /> Selected block identity</label>
                 <label class="check"><input type="checkbox" id="isolate-block" /> Selected block only</label>
                 <label>Minimum block columns <input id="min-columns" type="number" min="0" step="1" value="0" /></label>
@@ -343,6 +346,7 @@
             <span id="selection-feedback-text"></span><button id="reveal-selected">Reveal selected block</button>
           </div>
           <div id="tracks"></div>
+          <p id="core-genes-status" class="small" role="status" hidden></p>
           <p id="feature-limit" class="small feature-status" hidden></p>
           <div class="plot-footer">
             <span

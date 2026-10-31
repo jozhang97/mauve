@@ -6,21 +6,23 @@
   const text = (tag, value) => { const node = document.createElement(tag); node.textContent = value; return node; };
   const percent = value => value === null ? 'N/A' : `${(100 * value).toFixed(1)}%`;
   const number = value => value === null ? 'N/A' : value.toLocaleString();
-  const status = message => { el('gene-analysis-status').textContent = message; };
+  const status = message => { el('gene-analysis-status').textContent = message; window.dispatchEvent(new Event('mauve-gene-analysis-status')); };
   const busy = active => { el('run-gene-analysis').disabled = active; el('cancel-gene-analysis').hidden = !active; };
   function stop() { worker?.terminate(); worker = null; busy(false); }
   function reset() {
     stop(); result = null; page = 0;
     el('gene-analysis-results').hidden = true;
+    window.dispatchEvent(new Event("mauve-gene-analysis"));
     const genomes = state.alignment?.genomes || [];
     const missing = genomes.filter(g => !state.sources.some(s => s.genome_id === g.id));
     status(missing.length ? `Import GenBank annotations for ${missing.map(g => g.name).join(', ')} to compute all pairs.` : 'Ready to compare all genomes. Recompute after changing matching rules.');
   }
-  window.mauveGeneAnalysis = {reset};
+  window.mauveGeneAnalysis = {reset, get result() { return result; }, get status() { return el('gene-analysis-status').textContent; }};
   for (const id of ['gene-coverage', 'gene-identity', 'gene-rna']) el(id).onchange = reset;
   el('cancel-gene-analysis').onclick = () => { stop(); status('Analysis canceled.'); };
   el('run-gene-analysis').onclick = () => {
     stop(); result = null; el('gene-analysis-results').hidden = true;
+    window.dispatchEvent(new Event('mauve-gene-analysis'));
     if (!state.alignment) return;
     for (const id of ['gene-coverage', 'gene-identity']) if (!el(id).reportValidity()) return;
     const options = {coverage: Number(el('gene-coverage').value) / 100, identity: Number(el('gene-identity').value) / 100, rna: el('gene-rna').value};
@@ -32,6 +34,7 @@
       if (data.error) { stop(); status(data.error); }
       if (data.result) {
         result = data.result; stop(); page = 0;
+        window.dispatchEvent(new Event("mauve-gene-analysis"));
         el('gene-family-search').value = '';
         render();
         const assumed = result.genomes.reduce((n, g) => n + g.assumed_circular, 0);

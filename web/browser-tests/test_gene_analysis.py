@@ -48,6 +48,19 @@ def test_all_pairs_core_pan_and_exports(analysis_site, browser, tmp_path):
     assert page.locator('#gene-heatmap tbody tr').count() == 3
     assert page.locator('#gene-pan-summary strong').all_text_contents() == ['5', '3', '3', '2', '2', '0']
     assert page.locator('#gene-family-table tbody tr').count() == 5
+    page.evaluate('selectBlock(1)')
+    page.wait_for_function('state.features.length === 11')
+    unfiltered = page.locator('.feature').count()
+    page.locator('#display-settings summary').click()
+    page.locator('#core-genes-only').check()
+    assert page.locator('.feature').count() == 9
+    assert unfiltered > 9
+    assert page.evaluate("""() => [...document.querySelectorAll('.feature')].every(node =>
+      coreGeneKeys.has(`${node.dataset.genome}:${node.dataset.featureId}`))""")
+    assert 'all 3 genomes' in page.locator('#core-genes-status').inner_text()
+    page.locator('#core-genes-only').uncheck()
+    assert page.locator('.feature').count() == unfiltered
+    page.locator('#core-genes-only').check()
     page.locator('#gene-metric').select_option('dcj')
     assert page.locator('#gene-heatmap tbody tr').first.locator('td').all_text_contents() == ['—', '0', '0']
     for control, filename in [('#export-gene-pairs', 'pairs.tsv'), ('#export-gene-families', 'families.tsv'), ('#export-gene-json', 'analysis.json')]:
@@ -68,6 +81,10 @@ def test_all_pairs_core_pan_and_exports(analysis_site, browser, tmp_path):
     assert page.evaluate('document.documentElement.scrollWidth <= window.innerWidth')
     page.locator('#gene-rna').select_option('experimental')
     assert page.locator('#gene-analysis-results').is_hidden()
+    assert page.locator('.feature').count() == 0
+    assert 'hidden until comparisons' in page.locator('#core-genes-status').inner_text()
+    assert page.evaluate('visibleBlocks().length') == 1
+    assert 'filter pending' in page.locator('#map-feedback-text').inner_text()
     page.evaluate('document.querySelector("#run-gene-analysis").click(); document.querySelector("#cancel-gene-analysis").click()')
     assert page.locator('#gene-analysis-status').inner_text() == 'Analysis canceled.'
     page.locator('#run-gene-analysis').click()
