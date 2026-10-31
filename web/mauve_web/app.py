@@ -5,6 +5,8 @@ import os
 import sqlite3
 import uuid
 import tempfile
+import gzip
+import threading
 from contextlib import closing, asynccontextmanager
 from pathlib import Path
 from typing import Literal
@@ -39,6 +41,7 @@ def create_app(data_dir=None, aligner_path=None):
     storage.mkdir(parents=True, exist_ok=True)
     database = storage / 'alignments.sqlite3'
     block_cache = BlockCache()
+    demo_lock = threading.Lock()
     with closing(sqlite3.connect(database, timeout=30)) as db:
         db.executescript('''
             CREATE TABLE IF NOT EXISTS alignments (
@@ -118,6 +121,7 @@ def create_app(data_dir=None, aligner_path=None):
             raise HTTPException(422, str(exc)) from exc
         metadata = {k: v for k, v in parsed.items() if k != 'features'}
         metadata['feature_count'] = len(parsed['features'])
+        metadata['analysis_version'] = 1
         # A complete validated import replaces annotations atomically for this genome.
         with closing(sqlite3.connect(database, timeout=30)) as db, db:
             db.execute('DELETE FROM features WHERE alignment_id=? AND genome_id=?', (aid, gid))
@@ -134,7 +138,7 @@ def create_app(data_dir=None, aligner_path=None):
         genomes = {}
         count = 0
         # Native jobs and uploads use disk streams. Bytes remain supported for
-        # the small bundled demo and internal callers.
+        # bundled demos and internal callers.
         stream = (raw.open('r', encoding='utf-8-sig') if isinstance(raw, Path)
                   else io.TextIOWrapper(io.BytesIO(raw), encoding='utf-8-sig'))
         try:
@@ -227,11 +231,32 @@ def create_app(data_dir=None, aligner_path=None):
 
     @app.post('/api/demo')
     def demo():
-        existing = query("SELECT id FROM alignments WHERE name='Yeast demo' LIMIT 1")
-        alignment = get_alignment(existing[0]['id']) if existing else save((ROOT / 'demo.alignment').read_bytes(), 'Yeast demo')
-        if not query('SELECT genome_id FROM annotation_sources WHERE alignment_id=? AND genome_id=2', (alignment['id'],)):
-            save_annotations(alignment['id'], 2, (ROOT / 'demo.gbk').read_bytes(), 'Yeast demo annotations', True)
-        return alignment
+        folder = ROOT / 'demo/ecoli'
+        manifest = json.loads((folder / 'manifest.json').read_text())
+        with demo_lock:
+            existing = query('SELECT id FROM alignments WHERE name=? LIMIT 1', (manifest['name'],))
+            alignment = get_alignment(existing[0]['id']) if existing else None
+            try:
+                if alignment is None:
+                    # Decompress to disk so importing the full demo remains streamed.
+                    with tempfile.TemporaryDirectory(prefix='mauve-demo-') as temporary:
+                        path = Path(temporary) / 'alignment.xmfa'
+                        with gzip.open(folder / manifest['alignment']['file'], 'rb') as source, path.open('wb') as target:
+                            while chunk := source.read(1024 * 1024):
+                                target.write(chunk)
+                        alignment = save(path, manifest['name'], manifest['genomes'])
+                for genome in manifest['genomes']:
+                    if not query('SELECT genome_id FROM annotation_sources WHERE alignment_id=? AND genome_id=?', (alignment['id'], genome['id'])):
+                        with gzip.open(folder / genome['annotations'], 'rb') as source:
+                            save_annotations(alignment['id'], genome['id'], source.read(), f"{genome['chromosome']}.gbk", False)
+                return alignment
+            except Exception:
+                if not existing and alignment is not None:
+                    with closing(sqlite3.connect(database, timeout=30)) as db, db:
+                        for table in ('alignments', 'blocks', 'block_overviews', 'annotation_sources', 'features'):
+                            column = 'id' if table == 'alignments' else 'alignment_id'
+                            db.execute(f'DELETE FROM {table} WHERE {column}=?', (alignment['id'],))
+                raise
 
     @app.get('/api/alignments/{aid}')
     def alignment(aid: str):
@@ -309,6 +334,23 @@ def create_app(data_dir=None, aligner_path=None):
                      [*args, limit, offset])
         return {'total': total, 'items': [{'id': r['id'], 'genome_id': r['genome_id'], **json.loads(r['data'])} for r in rows]}
 
+    @app.get('/api/alignments/{aid}/gene-input')
+    def gene_input(aid: str):
+        alignment = get_alignment(aid)
+        sources = annotation_sources(aid)
+        rows = query('SELECT id,genome_id,data FROM features WHERE alignment_id=? ORDER BY genome_id,start,id', (aid,))
+        for source in sources:
+            source['features'] = [{'id': r['id'], 'genome_id': r['genome_id'], **json.loads(r['data'])}
+                                  for r in rows if r['genome_id'] == source['genome_id']]
+        return {'genomes': alignment['genomes'], 'sources': sources, 'blocks': blocks(aid)}
+
+    @app.get('/api/alignments/{aid}/blocks/{bid}/gene-member/{gid}')
+    def gene_member(aid: str, bid: int, gid: int):
+        member = next((m for m in get_block(aid, bid)['members'] if m['genome_id'] == gid), None)
+        if member is None:
+            raise HTTPException(404, 'Block member not found.')
+        return {k: member[k] for k in ('genome_id', 'start', 'end', 'strand', 'sequence')}
+
     @app.get('/api/alignments/{aid}/blocks/{bid}/fasta')
     def export_fasta(aid: str, bid: int):
         b = get_block(aid, bid)
@@ -335,5 +377,6 @@ def create_app(data_dir=None, aligner_path=None):
     def index():
         return FileResponse(ROOT / 'mauve_web/static/index.html')
 
+    app.mount('/static/demo/ecoli', StaticFiles(directory=ROOT / 'demo/ecoli'), name='demo-assets')
     app.mount('/static', StaticFiles(directory=ROOT / 'mauve_web/static'), name='static')
     return app

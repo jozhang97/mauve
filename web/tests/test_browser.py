@@ -9,6 +9,7 @@ import xml.etree.ElementTree as ET
 
 import httpx
 import pytest
+from browser_fixture import open_small_fixture
 
 pytestmark = pytest.mark.skipif(os.environ.get('MAUVE_BROWSER_TESTS') != '1', reason='Set MAUVE_BROWSER_TESTS=1 to run browser checks')
 ROOT = Path(__file__).resolve().parents[1]
@@ -51,7 +52,7 @@ def test_annotations_exports_and_existing_viewer(browser_app, tmp_path):
         page.on('pageerror', lambda error: errors.append(str(error)))
         try:
             page.goto(browser_app)
-            page.locator('#welcome-demo').click()
+            open_small_fixture(page)
             page.wait_for_selector('svg .feature')
             assert page.locator('#genome-count').inner_text() == '2'
             assert '2,000 canonical aligned bases' in page.locator('#annotation-status').inner_text()
@@ -97,6 +98,9 @@ def test_annotations_exports_and_existing_viewer(browser_app, tmp_path):
             page.wait_for_selector('#notice.error')
             assert 'does not match' in page.locator('#notice').inner_text()
             page.reload()
+            page.wait_for_selector('svg .block')
+            assert page.locator('svg .feature').count() == 0
+            page.evaluate('selectBlock(1)')
             page.wait_for_selector('svg .feature')
             page.locator('#display-settings summary').click()
             page.locator('#show-annotations').uncheck()
@@ -172,7 +176,7 @@ def test_theme_preference_and_svg_export(browser_app, tmp_path):
         try:
             page.goto(browser_app)
             assert page.locator('html').get_attribute('data-theme') == 'dark'
-            page.locator('#welcome-demo').click()
+            open_small_fixture(page)
             page.wait_for_selector('svg .feature')
             page.locator('#block-list button').first.click()
             page.wait_for_selector('.base-row')
@@ -293,7 +297,7 @@ def test_richer_viewer(browser_app, tmp_path):
         page.on('pageerror', lambda e: errors.append(str(e)))
         try:
             page.goto(browser_app)
-            page.locator('#welcome-demo').click()
+            open_small_fixture(page)
             page.wait_for_selector('svg .feature')
             page.locator('#block-list button').first.click()
             page.wait_for_selector('.identity-window')
@@ -394,7 +398,10 @@ def test_review_fixes_linked_navigation_filters_and_mobile(browser_app, tmp_path
             assert page.evaluate('state.detail.members[0].positions[0]') == 600
             page.locator('#jump-sequence').click()
             assert page.locator('#columns').inner_text() == '601–700'
-            assert page.locator('.page-window').count() == 3
+            # Only genome 1's current page intersects 600–650; the other
+            # members' native coordinates are outside this overview window.
+            assert page.locator('.page-window').count() == 1
+            assert '600–699 bp' in page.locator('.page-window title').text_content()
             page.locator('#sequence-location-kind').select_option('genomic')
             page.locator('#sequence-genome').select_option('2')
             page.locator('#sequence-position').fill('650')

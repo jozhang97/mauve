@@ -8,6 +8,7 @@
     <script src="./static/theme.js"></script>
     <link rel="stylesheet" href="./static/style.css" />
     <script src="./static/app.js" defer></script>
+    <script src="./static/gene-analysis.js" defer></script>
     <script src="./static/jobs.js" defer></script>
     <script src="./static/ncbi.js" defer></script>
   </head>
@@ -23,7 +24,7 @@
       <button id="browse-ncbi" class="new-alignment">Find NCBI genomes</button>
       <div class="section-label">YOUR ALIGNMENTS</div>
       <nav id="library" aria-label="Saved alignments"></nav>
-      <button id="demo" class="demo">↗ Open yeast demo</button>
+      <button id="demo" class="demo">↗ Open E. coli demo</button>
       <div class="section-label">ALIGNMENT JOBS</div>
       <nav id="job-library" aria-label="Alignment jobs"></nav>
       <div class="sidebar-footer">
@@ -256,13 +257,15 @@
           the bases behind each block.
         </p>
         <button id="welcome-demo" class="primary">
-          Explore the yeast demo →
+          Explore 8 E. coli strains →
         </button>
+        <p class="small">Eight randomly sampled complete chromosomes, with gene annotations.<br />The first load may take a moment. <a href="./static/demo/ecoli/manifest.json" target="_blank" rel="noopener">Sample provenance</a></p>
         <p class="small">Or import an existing XMFA alignment, up to 256 MiB.</p>
       </section>
       <div id="explorer" hidden>
         <nav class="explorer-nav" aria-label="Alignment sections">
           <button data-section="overview-panel" class="current" aria-current="location">Overview</button>
+          <button data-section="gene-analysis-panel">Gene comparisons</button>
           <button data-section="sequence-panel">Sequence</button>
           <button data-section="annotations-panel">Genes &amp; features</button>
           <span id="selection-status">No block selected</span>
@@ -301,6 +304,7 @@
               ><button id="pan-right" title="Pan right" aria-label="Pan right">
                 →</button
               ><button id="reset">Fit all</button>
+              <button id="zoom-selected" disabled>Zoom to selected block</button>
             </div>
             <form id="region-form">
               <label for="region">Region</label
@@ -321,7 +325,8 @@
             <details id="display-settings"><summary>Display &amp; filters</summary>
               <div class="settings-content">
                 <label class="check"><input type="checkbox" id="links" checked /> Block connections</label>
-                <label class="check"><input type="checkbox" id="show-annotations" checked /> Annotations</label>
+                <label class="check" title="Shift tracks to line up corresponding positions in the clicked block, keeping chromosome orientation and zoom. Annotated circular chromosomes wrap at their origin."><input type="checkbox" id="align-tracks" /> Align tracks on block click</label>
+                <label class="check"><input type="checkbox" id="show-annotations" checked /> Selected block annotations</label>
                 <label class="check"><input type="checkbox" id="show-identity" checked /> Selected block identity</label>
                 <label class="check"><input type="checkbox" id="isolate-block" /> Selected block only</label>
                 <label>Minimum block columns <input id="min-columns" type="number" min="0" step="1" value="0" /></label>
@@ -330,7 +335,6 @@
             </details>
             <details class="track-settings"><summary>Arrange tracks</summary><div id="track-controls"></div></details>
           </div>
-          <p id="identity-status" class="small feature-status" aria-live="polite">Select a block to compare identity with the reference.</p>
           <div id="map-feedback" class="map-feedback" hidden role="status">
             <span id="map-feedback-text"></span>
             <button id="clear-map-filters">Clear filters</button>
@@ -354,6 +358,39 @@
               <span id="block-results-count" class="small" aria-live="polite"></span>
             </div>
             <div id="block-list"></div>
+          </div>
+          <p id="identity-status" class="small feature-status" aria-live="polite">Select a block to compare identity with the reference.</p>
+        </section>
+        <section class="panel" id="gene-analysis-panel">
+          <div class="panel-heading"><div><div class="eyebrow">ALL GENOMES</div><h2>Gene comparisons &amp; core/pan genome</h2></div></div>
+          <div class="gene-analysis-body">
+            <p>Compare complete circular chromosomes using gene families inferred from the Mauve alignment. Includes every loaded genome, regardless of track visibility or zoom.</p>
+            <div class="gene-analysis-controls">
+              <label>Minimum gene coverage (%) <input id="gene-coverage" type="number" min="1" max="100" value="70" required /></label>
+              <label>Minimum nucleotide identity (%) <input id="gene-identity" type="number" min="1" max="100" value="60" required /></label>
+              <label>RNA evidence <select id="gene-rna"><option value="annotated">Annotated rRNA/tRNA; experimental evidence for other RNA</option><option value="experimental">Experimental evidence for all RNA</option></select></label>
+              <button id="run-gene-analysis">Compute all pairs</button><button id="cancel-gene-analysis" hidden>Cancel</button>
+            </div>
+            <p id="gene-analysis-status" class="small" role="status">Import GenBank annotations for every genome to begin.</p>
+            <details class="gene-methods"><summary>Definitions and matching rules</summary>
+              <p>Protein-coding CDS loci and RNA genes meeting the selected evidence policy are counted once per locus. Pseudogenes, fuzzy locations, and features without known orientation are excluded. Experimental RNA evidence means a nonempty GenBank /experiment qualifier. Reimport older annotations to retain evidence and chromosome topology.</p>
+              <p>Gene matches require the same feature type, compatible orientation in the alignment, the selected fraction of both genes covered by aligned non-gap bases, and the selected identity among aligned A/C/G/T pairs. Matches are grouped transitively into families; unmatched loci form individual families. These are alignment-derived families, not an independent protein-clustering analysis. Missing annotations or missed alignments can inflate the pan genome and reduce the core. The defaults follow the original Mauve exporter's thresholds, but this implementation uses XMFA columns rather than its backbone filtering.</p>
+              <p>Content Jaccard is shared families / distinct families in the pair. Actual adjacency Jaccard compares distinct strand-aware family-end neighbor pairs before removing unshared genes; duplicated pair types count once. Shared-gene conservation is 2 × preserved pairs / (neighbor pairs in A + neighbor pairs in B), after removing unshared families and families with multiple copies in either genome. DCJ uses the same unique shared genes and equals genes minus cycles in the circular breakpoint graph. Empty denominators are unavailable, not zero.</p>
+              <p>Every record is a separate circular chromosome; there are no cross-record adjacencies. Known linear records are rejected; records without topology are assumed circular. Circular-origin genes are ordered across the origin, and overlapping genes are ordered by forward start coordinate. Rotating or reverse-complementing a whole chromosome does not change the metrics.</p>
+            </details>
+            <div id="gene-analysis-results" hidden>
+              <div class="gene-analysis-controls"><label>Heatmap metric <select id="gene-metric"><option value="content_jaccard">Gene content Jaccard</option><option value="adjacency_jaccard">Actual adjacency Jaccard</option><option value="conservation">Shared-gene adjacency conservation</option><option value="dcj">Shared-gene DCJ distance</option><option value="shared">Shared gene families</option></select></label>
+                <button id="export-gene-pairs">Export pair table</button><button id="export-gene-families">Export families</button><button id="export-gene-json">Export full analysis</button></div>
+              <p id="gene-heatmap-legend" class="small"></p><div id="gene-heatmap" class="gene-table-scroll"></div>
+              <details><summary>All pair counts and distances</summary><div id="gene-pair-table" class="gene-table-scroll"></div></details>
+              <h3>Core / pan genome</h3><div id="gene-pan-summary" class="gene-pan-summary"></div>
+              <p class="small">Core: present in every genome. Accessory: present in fewer than all genomes. Genome-specific families are part of the accessory genome. Counts depend on matching thresholds and annotation coverage.</p>
+              <div id="gene-genome-counts" class="gene-table-scroll"></div>
+              <h4>Family occupancy</h4><div id="gene-occupancy" class="gene-occupancy"></div>
+              <h4>Family presence / copy counts</h4>
+              <div class="gene-analysis-controls"><label>Find family or gene <input type="search" id="gene-family-search" /></label><button id="gene-family-prev">Previous</button><button id="gene-family-next">Next</button><span id="gene-family-page" class="small"></span></div>
+              <div id="gene-family-table" class="gene-table-scroll"></div>
+            </div>
           </div>
         </section>
         <section class="panel inspector" id="sequence-panel">

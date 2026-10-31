@@ -16,6 +16,7 @@ const state = {
   hidden: new Set(),
   reference: null,
   profile: null,
+  profileError: null,
   profileEpoch: 0,
   detail: null,
   mapRevision: 0,
@@ -24,6 +25,7 @@ const state = {
   pageSize: window.matchMedia("(max-width: 650px)").matches ? 25 : 100,
   blocks: [],
   selected: null,
+  trackOffsets: new Map(),
   start: 1,
   end: 1,
   max: 1,
@@ -91,6 +93,7 @@ async function library() {
 async function openAlignment(id) {
   const epoch = ++state.epoch;
   ++state.detailEpoch;
+  state.trackOffsets.clear();
   ++state.featureEpoch;
   ++state.searchEpoch;
   notice("Loading alignment…");
@@ -106,6 +109,7 @@ async function openAlignment(id) {
     hidden: new Set(),
     reference: alignment.genomes[0].id,
     profile: null,
+    profileError: null,
     detail: null,
     mapRevision: 0,
     linkedRevision: -1,
@@ -114,6 +118,7 @@ async function openAlignment(id) {
     features: [],
     selectedFeature: null,
     selected: null,
+    trackOffsets: new Map(),
     offset: 0,
     start: 1,
     max: Math.max(
@@ -122,6 +127,7 @@ async function openAlignment(id) {
     ),
   });
   state.end = state.max;
+  window.mauveGeneAnalysis?.reset();
   ++state.profileEpoch;
   $("reference-genome").replaceChildren();
   for (const g of alignment.genomes) {
@@ -133,11 +139,12 @@ async function openAlignment(id) {
   $("block-search").value = "";
   $("selection-status").textContent = "No block selected";
   $("jump-sequence").disabled = true;
+  $("zoom-selected").disabled = true;
   $("min-columns").value = 0;
   $("isolate-block").checked = false;
   $("shared-only").checked = false;
   $("focus-reference").disabled = true;
-  $("identity-status").textContent = "Select a block to compare identity with the reference. Coordinates remain native to each genome.";
+  $("identity-status").textContent = "Select a block to compare identity with the reference. Coordinate labels remain native to each genome.";
   renderTrackControls();
   $("welcome").hidden = true;
   $("explorer").hidden = false;
@@ -248,6 +255,7 @@ function renderTrackControls() {
 async function loadProfile() {
   const token = ++state.profileEpoch;
   state.profile = null;
+  state.profileError = null;
   $("comparison-summary").textContent = "";
   renderBases();
   render();
@@ -262,12 +270,35 @@ async function loadProfile() {
     renderComparisonSummary();
     renderBases();
     $("identity-status").textContent = result.present
-      ? `Block ${block.id} · Identity to reference, 0–100% per window. Only A/C/G/T pairs count; gaps and ambiguous bases excluded. Gray = no comparable bases. Native genomic coordinates.`
+      ? `Block ${block.id} · Whole-block nucleotide identity vs ${state.alignment.genomes.find(g => g.id === state.reference).name} is shown beside each track; bars show identity per window. Only A/C/G/T pairs count; gaps and ambiguous bases excluded. Gray = no comparable bases.`
       : `Block ${block.id} is absent from the reference; no identity comparison is available.`;
     render();
   } catch (e) {
-    if (token === state.profileEpoch) $("identity-status").textContent = `Identity unavailable: ${e.message}`;
+    if (token === state.profileEpoch) {
+      state.profileError = e.message;
+      $("identity-status").textContent = `Identity unavailable: ${e.message}`;
+      render();
+    }
   }
+}
+function selectedBlockIdentity(genomeId) {
+  const block = state.blocks.find(b => b.id === state.selected);
+  if (!block) return null;
+  const reference = state.alignment.genomes.find(g => g.id === state.reference);
+  const context = `Block ${block.id} · Compared with ${reference.name}`;
+  const unavailable = value => ({value, detail: `Block ${block.id}`, title: `${context} · ${value}`});
+  if (!block.members.some(m => m.genome_id === genomeId)) return unavailable('Absent from block');
+  if (!block.members.some(m => m.genome_id === state.reference)) return unavailable('N/A · reference absent');
+  if (genomeId === state.reference) return unavailable('Reference');
+  if (state.profileError) return {...unavailable('Identity unavailable'), title: `${context} · ${state.profileError}`};
+  if (!state.profile) return unavailable('Calculating identity…');
+  const member = state.profile.members.find(m => m.genome_id === genomeId);
+  if (!member) return unavailable('Identity unavailable');
+  const compared = member.matches + member.substitutions;
+  if (!compared) return unavailable('N/A · no comparable bases');
+  const value = `${(100 * member.matches / compared).toFixed(2)}% block identity`;
+  return {value, detail: `Block ${block.id} · ${fmt(compared)} pairs`,
+    title: `${context} · ${value} · ${fmt(member.matches)} matches / ${fmt(compared)} comparable A/C/G/T pairs. ${fmt(member.gap_columns)} gap columns and ${fmt(member.ambiguous_columns)} ambiguous columns excluded. Whole highlighted block, independent of zoom or sequence page.`};
 }
 function renderComparisonSummary() {
   const target = $("comparison-summary");
@@ -429,7 +460,8 @@ function selectColumn(index) {
       focus.setAttribute("aria-label", `View ${name} at ${position}`);
       focus.onclick = () => {
         state.hidden.delete(m.genome_id); renderTrackControls();
-        setRange(position - 100, position + 100, false);
+        const view = nearestTrackPosition(position, m.genome_id);
+        setRange(view - 100, view + 100, false);
         $("tracks").scrollIntoView({behavior: "smooth", block: "center"});
       };
       row.append(focus);
@@ -438,7 +470,107 @@ function selectColumn(index) {
   }
   detail.append(records);
 }
-function drawIdentity(svg, x, ys, blocks) {
+function trackOffset(gid) {
+  return $("align-tracks").checked ? (state.trackOffsets.get(gid) || 0) : 0;
+}
+// Only a single annotated circular chromosome has a trustworthy wrap length.
+// Alignment extent alone may omit terminal unaligned sequence.
+function circularLength(gid) {
+  if (!$("align-tracks").checked) return 0;
+  const records = state.sources.find(source => source.genome_id === gid)?.metadata.records;
+  return records?.length === 1 && records[0].topology === "circular" && records[0].start === 1
+    ? records[0].end : 0;
+}
+function nativePosition(position, gid) {
+  const length = circularLength(gid);
+  return length ? ((position - 1) % length + length) % length + 1 : position;
+}
+function trackEnd(gid) {
+  const length = circularLength(gid);
+  return length ? Math.min(state.end, state.start + length - 1) : state.end;
+}
+function genomeClip(gid) { return `url(#genome-clip-${gid})`; }
+function trackCopies(start, end, gid) {
+  const shift = trackOffset(gid), length = circularLength(gid);
+  if (!length) return end >= state.start + shift && start <= trackEnd(gid) + shift ? [0] : [];
+  const first = Math.ceil((state.start + shift - end) / length);
+  const last = Math.floor((trackEnd(gid) + shift - start) / length);
+  return Array.from({length: Math.max(0, last - first + 1)}, (_, i) => (first + i) * length);
+}
+function trackVisible(start, end, gid) {
+  return trackCopies(start, end, gid).length > 0;
+}
+function nearestTrackPosition(position, gid) {
+  const length = circularLength(gid), base = position - trackOffset(gid);
+  return length ? base + Math.round(((state.start + trackEnd(gid)) / 2 - base) / length) * length : base;
+}
+async function alignTracks(detail, location) {
+  const aid = state.alignment.id, token = state.detailEpoch, revision = state.mapRevision;
+  const current = () => aid === state.alignment?.id && token === state.detailEpoch
+    && revision === state.mapRevision && $("align-tracks").checked;
+  const candidates = detail.members.filter(m => m.positions.some(p => p !== null));
+  const anchor = candidates.find(m => m.genome_id === location?.genome_id)
+    || candidates.find(m => m.genome_id === state.reference) || candidates[0];
+  if (!anchor) return current();
+  const column = anchor.positions.findIndex(p => p !== null);
+  if (column < 0) return current();
+  const anchorPosition = anchor.positions[column];
+  const screenPosition = location?.viewPosition ?? nearestTrackPosition(anchorPosition, anchor.genome_id);
+  const offsets = new Map(), unresolved = new Set(detail.members.map(m => m.genome_id));
+  const resolve = page => {
+    const ref = page.members.find(m => m.genome_id === anchor.genome_id);
+    if (!ref) return;
+    const columns = ref.positions.map((p, i) => i).filter(i => ref.positions[i] !== null)
+      .sort((a,b) => Math.abs(page.offset + a - detail.offset - column) - Math.abs(page.offset + b - detail.offset - column));
+    for (const member of page.members) {
+      if (!unresolved.has(member.genome_id)) continue;
+      const index = columns.find(i => member.positions[i] !== null);
+      if (index === undefined) continue;
+      offsets.set(member.genome_id, member.positions[index] - (screenPosition + ref.positions[index] - anchorPosition));
+      unresolved.delete(member.genome_id);
+    }
+  };
+  resolve(detail);
+  // A clicked insertion can span an entire sequence page. Search outward for
+  // actual shared columns; never infer correspondence from block lengths.
+  let left = detail.offset, right = detail.offset + anchor.positions.length;
+  while (unresolved.size && (left > 0 || right < detail.columns)) {
+    const requests = [];
+    if (left > 0) {
+      const limit = Math.min(500, left); left -= limit;
+      requests.push(api(`/api/alignments/${aid}/blocks/${detail.id}?offset=${left}&limit=${limit}`));
+    }
+    if (right < detail.columns) {
+      const limit = Math.min(500, detail.columns - right);
+      requests.push(api(`/api/alignments/${aid}/blocks/${detail.id}?offset=${right}&limit=${limit}`)); right += limit;
+    }
+    const pages = await Promise.all(requests);
+    if (!current()) return false;
+    for (const page of pages) resolve(page);
+  }
+  if (!current()) return false;
+  for (const [gid, offset] of offsets) state.trackOffsets.set(gid, offset);
+  return true;
+}
+function selectOverviewBlock(event, member, id, svg, copy = null) {
+  if (!$("align-tracks").checked) return selectBlock(id);
+  const point = svg.createSVGPoint(); point.x = event.clientX || 0; point.y = event.clientY || 0;
+  const local = event.type === "keydown" ? null : point.matrixTransform(svg.getScreenCTM().inverse());
+  const left = 180, right = svg.viewBox.baseVal.width - 26;
+  const viewPosition = local ? state.start + (local.x - left) / (right - left) * (state.end - state.start + 1)
+    : copy === null ? nearestTrackPosition(member.start, member.genome_id)
+      : Math.max(state.start, member.start + copy - trackOffset(member.genome_id));
+  const raw = viewPosition + trackOffset(member.genome_id);
+  if (copy === null) {
+    const length = circularLength(member.genome_id);
+    copy = length ? Math.round((raw - (member.start + member.end) / 2) / length) * length : 0;
+  }
+  // Pixels represent base intervals [p, p + 1), not rounded base centers.
+  const position = Math.max(member.start, Math.min(member.end, Math.floor(raw - copy + 1e-7)));
+  return selectBlock(id, 0, {genome_id: member.genome_id, position,
+    viewPosition: position + copy - trackOffset(member.genome_id)}, false, true);
+}
+function drawIdentity(svg, project, ys, blocks) {
   if (!state.profile || !$("show-identity").checked || !blocks.some(b => b.id === state.selected)) return;
   const layer = svgNode("g", {"clip-path": "url(#track-clip)", class: "identity-layer"});
   svg.append(layer);
@@ -446,8 +578,8 @@ function drawIdentity(svg, x, ys, blocks) {
   for (const m of state.profile.members) {
     if (!ys.has(m.genome_id)) continue;
     const baseline = ys.get(m.genome_id) + 18;
-    for (const w of m.windows) {
-      if (w.end < state.start || w.start > state.end) continue;
+    for (const w of m.windows) for (const copy of trackCopies(w.start, w.end, m.genome_id)) {
+      const x = p => project(p + copy, m.genome_id);
       const rect = svgNode("rect", {
         x: x(w.start), y: baseline - (w.identity === null ? 18 : w.identity * 18),
         width: Math.max(.5, x(w.end + 1) - x(w.start)),
@@ -455,9 +587,15 @@ function drawIdentity(svg, x, ys, blocks) {
         fill: w.identity === null ? "var(--muted)" : "var(--text)",
         opacity: w.identity === null ? .35 : .65,
         class: "identity-window",
+        "clip-path": genomeClip(m.genome_id),
+        "data-genome": m.genome_id,
+        "data-block-id": state.selected,
       });
       rect.append(svgNode("title", {}, `${fmt(w.start)}–${fmt(w.end)} · ${w.identity === null ? "No comparable bases" : (w.identity * 100).toFixed(1) + "% identity"} · ${w.compared}/${w.columns} comparable columns`));
-      rect.onclick = selectCurrent;
+      rect.onclick = safely(event => {
+        const member = state.blocks.find(b => b.id === state.selected)?.members.find(item => item.genome_id === m.genome_id);
+        return $("align-tracks").checked && member ? selectOverviewBlock(event, member, state.selected, svg, copy) : selectCurrent();
+      });
       layer.append(rect);
     }
   }
@@ -466,6 +604,7 @@ function drawIdentity(svg, x, ys, blocks) {
 // bounds when an alignment is discarded; replacing the members array refreshes it.
 const blockBounds = new WeakMap();
 function blockIntersectsViewport(block, padding = 0) {
+  if ($("align-tracks").checked) return true;
   let bounds = blockBounds.get(block.members);
   if (!bounds) {
     let start = Infinity, end = -Infinity;
@@ -518,9 +657,15 @@ function render() {
   defs.append(pattern);
   svg.append(defs);
   const span = state.end - state.start + 1,
-    x = (p) => left + ((p - state.start) / span) * (right - left),
+    x = (p, gid) => left + ((p - trackOffset(gid) - state.start) / span) * (right - left),
     ys = new Map();
   genomes.forEach((g, i) => ys.set(g.id, top + i * gap));
+  for (const g of genomes) {
+    const clip = svgNode("clipPath", {id: `genome-clip-${g.id}`});
+    clip.append(svgNode("rect", {x: left, y: 0,
+      width: (trackEnd(g.id) - state.start + 1) / span * (right - left), height}));
+    defs.append(clip);
+  }
   const connections = svgNode("g", { "clip-path": "url(#track-clip)", class: "alignment-links" });
   svg.append(connections);
   if (showLinks)
@@ -531,20 +676,41 @@ function render() {
       for (let i = 1; i < ms.length; i++) {
         const a = ms[i - 1],
           c = ms[i];
-        // Keep links crossing the viewport even when both endpoint blocks are
-        // outside it. Only polygons wholly on the same side can be omitted.
-        if (Math.max(a.end + 1, c.end + 1) < state.start ||
-            Math.min(a.start, c.start) > state.end + 1) continue;
-        const ends = (m) =>
-          m.strand === "+"
-            ? [x(m.start), x(m.end + 1)]
-            : [x(m.end + 1), x(m.start)];
-        const [a1, a2] = ends(a),
-          [c1, c2] = ends(c),
+        const pairs = new Map();
+        const addPair = (ac, cc) => pairs.set(`${ac}:${cc}`, [ac, cc]);
+        if (!circularLength(a.genome_id) && !circularLength(c.genome_id)) addPair(0, 0);
+        else {
+          // Both sides of the viewing cut may match the same unsplit member.
+          // Intersect their alignment fractions below instead of picking only
+          // the geometrically nearest copy.
+          for (const ac of trackCopies(a.start, a.end, a.genome_id))
+            for (const cc of trackCopies(c.start, c.end, c.genome_id)) addPair(ac, cc);
+        }
+        for (const [ac, cc] of pairs.values()) {
+        if (Math.max(a.end + ac + 1 - trackOffset(a.genome_id), c.end + cc + 1 - trackOffset(c.genome_id)) < state.start ||
+            Math.min(a.start + ac - trackOffset(a.genome_id), c.start + cc - trackOffset(c.genome_id)) > state.end + 1) continue;
+        const interval = (m, copy) => {
+          const start = m.start + copy - trackOffset(m.genome_id), size = m.end - m.start + 1;
+          const low = Math.max(0, (state.start - start) / size);
+          const high = Math.min(1, (trackEnd(m.genome_id) + 1 - start) / size);
+          return m.strand === "+" ? [low, high] : [1 - high, 1 - low];
+        };
+        const circular = circularLength(a.genome_id) || circularLength(c.genome_id);
+        const ai = interval(a, ac), ci = interval(c, cc);
+        const low = circular ? Math.max(ai[0], ci[0]) : 0;
+        const high = circular ? Math.min(ai[1], ci[1]) : 1;
+        if (low >= high) continue;
+        const ends = (m, copy) => {
+          const at = fraction => x(m.start + copy + (m.strand === "+" ? fraction : 1 - fraction) * (m.end - m.start + 1), m.genome_id);
+          return [at(low), at(high)];
+        };
+        const [a1, a2] = ends(a, ac),
+          [c1, c2] = ends(c, cc),
           y1 = ys.get(a.genome_id) + 18,
           y2 = ys.get(c.genome_id);
         connections.append(
           svgNode("path", {
+            "data-block-id": b.id,
             d: `M${a1},${y1} L${a2},${y1} L${c2},${y2} L${c1},${y2} Z`,
             fill: color(b.id),
             opacity:
@@ -553,6 +719,7 @@ function render() {
                 : "var(--link-opacity)",
           }),
         );
+        }
       }
     }
   for (const g of genomes) {
@@ -572,29 +739,45 @@ function render() {
         `#${g.id}${g.id === state.reference ? " · REF" : ""} · ${fmt(g.extent)} bp extent`,
       ),
     );
+    if ($("show-identity").checked && blocks.some(b => b.id === state.selected)) {
+      const identity = selectedBlockIdentity(g.id);
+      const metric = svgNode("g", {class: "block-identity", "data-genome": g.id, "aria-label": identity.title});
+      metric.append(svgNode("title", {}, identity.title),
+        svgNode("text", {x: 10, y: y + 43, class: "block-identity-value"}, identity.value),
+        svgNode("text", {x: 10, y: y + 57, class: "tick"}, identity.detail));
+      svg.append(metric);
+    }
     svg.append(
       svgNode("line", {
         x1: left,
-        x2: right,
+        x2: x(trackEnd(g.id) + trackOffset(g.id) + 1, g.id),
         y1: y + 9,
         y2: y + 9,
         stroke: "var(--track-line)",
         "stroke-width": 2,
       }),
     );
+    if (circularLength(g.id)) for (const copy of trackCopies(1, 1, g.id)) {
+      const origin = svgNode("line", {x1: x(1 + copy, g.id), x2: x(1 + copy, g.id),
+        y1: y - 8, y2: y + 22, stroke: "var(--text)", "stroke-dasharray": "3 3",
+        class: "chromosome-origin", "data-genome": g.id});
+      origin.append(svgNode("title", {}, "Circular chromosome origin: last base → base 1"));
+      svg.append(origin, svgNode("text", {x: x(1 + copy, g.id) + 3, y: y - 10, class: "tick origin-label"}, "1 ↻"));
+    }
     for (let t = 0; t <= 4; t++) {
-      const p = Math.round(state.start + ((span - 1) * t) / 4),
-        tx = x(p);
+      const p = Math.round(state.start + trackOffset(g.id) + ((trackEnd(g.id) - state.start) * t) / 4),
+        tx = x(p, g.id);
       svg.append(
         svgNode(
           "text",
           {
             x: tx,
             y: y + 41,
-            class: "tick",
+            class: "tick genome-coordinate",
+            "data-genome": g.id,
             "text-anchor": t === 4 ? "end" : "start",
           },
-          fmt(p),
+          fmt(nativePosition(p, g.id)),
         ),
       );
     }
@@ -605,31 +788,32 @@ function render() {
     const target = event.target.closest(".block");
     if (!target) return;
     if (event.type === "keydown") event.preventDefault();
-    return selectBlock(target.mauveBlockId);
+    return selectOverviewBlock(event, target.mauveMember, target.mauveBlockId, svg, target.mauveCopy);
   });
   rectangles.ondblclick = event => {
     const target = event.target.closest(".block");
     if (!target) return;
     const m = target.mauveMember;
-    setRange(m.start - (m.end - m.start) * 0.12, m.end + (m.end - m.start) * 0.12);
+    setRange(m.start + target.mauveCopy - trackOffset(m.genome_id) - (m.end - m.start) * 0.12, m.end + target.mauveCopy - trackOffset(m.genome_id) + (m.end - m.start) * 0.12);
   };
   svg.append(rectangles);
   for (const b of viewportBlocks)
-    for (const m of b.members) {
+    for (const m of b.members) for (const copy of trackCopies(m.start, m.end, m.genome_id)) {
       if (!ys.has(m.genome_id)) continue;
-      if (m.end < state.start || m.start > state.end) continue;
       const y = ys.get(m.genome_id),
         attrs = {
-          x: x(m.start),
+          x: x(m.start + copy, m.genome_id),
           y,
-          width: Math.max(2, x(m.end + 1) - x(m.start)),
+          width: Math.max(2, x(m.end + 1, m.genome_id) - x(m.start, m.genome_id)),
           height: 18,
+          "clip-path": genomeClip(m.genome_id),
           rx: 3,
         };
       const r = svgNode("rect", {
         ...attrs,
         fill: color(b.id),
         class: "block",
+        "data-block-id": b.id,
         tabindex: 0,
         role: "button",
         "aria-label": `Block ${b.id}, sequence ${m.genome_id}, ${m.start} to ${m.end}, ${m.strand === "+" ? "forward" : "reverse"} strand`,
@@ -640,11 +824,11 @@ function render() {
         svgNode(
           "title",
           {},
-          `Block ${b.id} · ${fmt(m.start)}–${fmt(m.end)} · ${m.strand}`,
+          `Block ${b.id} · ${fmt(m.start)}–${fmt(m.end)} · ${m.strand}${b.id === state.selected ? ` · ${selectedBlockIdentity(m.genome_id).title}` : ''}`,
         ),
       );
       // JS-only metadata keeps exported SVG markup unchanged.
-      r.mauveBlockId = b.id; r.mauveMember = m;
+      r.mauveBlockId = b.id; r.mauveMember = m; r.mauveCopy = copy;
       rectangles.append(r);
       if (m.strand === "-")
         rectangles.append(
@@ -662,27 +846,47 @@ function render() {
       const positions = member.positions.filter(p => p !== null);
       if (!positions.length || !ys.has(member.genome_id)) continue;
       const start = Math.min(...positions), end = Math.max(...positions);
-      const marker = svgNode("rect", {x: x(start), y: ys.get(member.genome_id) + 23,
-        width: Math.max(3, x(end + 1) - x(start)), height: 4, fill: "var(--purple)", class: "page-window"});
+      for (const copy of trackCopies(start, end, member.genome_id)) {
+      const marker = svgNode("rect", {x: x(start + copy, member.genome_id), y: ys.get(member.genome_id) + 23,
+        width: Math.max(3, x(end + 1, member.genome_id) - x(start, member.genome_id)), height: 4, fill: "var(--purple)", class: "page-window", "clip-path": genomeClip(member.genome_id)});
       marker.append(svgNode("title", {}, `Sequence page: ${fmt(start)}–${fmt(end)} bp · alignment columns ${fmt(state.offset + 1)}–${fmt(state.offset + member.bases.length)}`));
       layer.append(marker);
+      }
     }
     svg.append(layer);
   }
   drawAnnotations(svg, x, ys);
+  // Highlight corresponding members without changing selection or re-rendering
+  // the SVG under the pointer. Identity overlays share their block's hover target.
+  const blockId = node => node?.closest?.("[data-block-id]")?.dataset.blockId;
+  const highlight = id => {
+    for (const node of svg.querySelectorAll("[data-block-id]"))
+      node.classList.toggle("block-match-hover", Boolean(id) && node.dataset.blockId === id);
+  };
+  let hoveredId = null, focusedId = null;
+  svg.onpointerover = event => { hoveredId = blockId(event.target); highlight(hoveredId || focusedId); };
+  svg.onpointerout = event => { hoveredId = blockId(event.relatedTarget); highlight(hoveredId || focusedId); };
+  svg.onpointerleave = () => { hoveredId = null; highlight(focusedId); };
+  svg.addEventListener("focusin", event => { focusedId = blockId(event.target); highlight(focusedId || hoveredId); });
+  svg.addEventListener("focusout", event => { focusedId = blockId(event.relatedTarget); highlight(hoveredId || focusedId); });
   $("tracks").replaceChildren(svg);
-  $("range").textContent = `${fmt(state.start)}–${fmt(state.end)} bp`;
-  $("region").value = `${state.start}-${state.end}`;
+  const aligned = $("align-tracks").checked, gid = state.reference;
+  const rangeStart = aligned ? nativePosition(state.start + trackOffset(gid), gid) : state.start;
+  const rangeEnd = aligned ? nativePosition(trackEnd(gid) + trackOffset(gid), gid) : state.end;
+  const length = circularLength(gid), windowSpan = state.end - state.start + 1;
+  const crossesOrigin = length && Math.floor((state.start + trackOffset(gid) - 1) / length) !== Math.floor((trackEnd(gid) + trackOffset(gid) - 1) / length);
+  $("range").textContent = `${aligned ? `REF #${gid} · ` : ''}${fmt(rangeStart)}–${fmt(rangeEnd)} bp${crossesOrigin ? ' · crosses origin' : ''}${length && windowSpan > length ? ` · one complete turn` : ''}`;
+  $("region").value = `${rangeStart}-${rangeEnd}`;
+  $("region").title = aligned ? `Native coordinates in reference genome #${gid}. For circular chromosomes, an end smaller than the start crosses the origin.` : "Genomic coordinate range";
   updateMapFeedback();
 }
 function setRange(start, end, sync = true) {
   ++state.mapRevision;
   const span = Math.min(state.max, Math.max(1, Math.round(end - start + 1)));
-  state.start = Math.max(1, Math.min(state.max - span + 1, Math.round(start)));
+  const wraps = state.alignment.genomes.some(g => circularLength(g.id));
+  state.start = wraps ? Math.round(start) : Math.max(1, Math.min(state.max - span + 1, Math.round(start)));
   state.end = state.start + span - 1;
-  state.features = [];
   render();
-  safely(loadFeatures)();
   if (sync && state.selected) safely(inspectVisibleRegion)();
   else state.linkedRevision = state.mapRevision;
 }
@@ -718,7 +922,7 @@ function renderList() {
     $("block-list").append(button);
   }
 }
-async function selectBlock(id, offset = null, location = null, followPage = false) {
+async function selectBlock(id, offset = null, location = null, followPage = false, alignClick = false) {
   if (offset === null) {
     const block = state.blocks.find(b => b.id === id);
     location = state.start === 1 && state.end === state.max ? null : mapLocation(block);
@@ -738,13 +942,16 @@ async function selectBlock(id, offset = null, location = null, followPage = fals
     $("sequence-context").textContent = "The previous sequence page is retained. Genomic navigation is waiting for the server update.";
     throw Error("Genomic-position navigation requires a server restart. Let running alignment jobs finish before restarting the app.");
   }
+  const changedBlock = state.selected !== id;
+  if ($("align-tracks").checked && (changedBlock || alignClick) && !await alignTracks(b, location)) return;
+  if (token !== state.detailEpoch || aid !== state.alignment?.id) return;
+  state.selected = id;
   $("export-fasta").hidden = false;
   $("export-fasta").href = `/api/alignments/${aid}/blocks/${id}/fasta`;
-  const changedBlock = state.selected !== id;
-  state.selected = id;
   $("selection-status").textContent = `Block ${id} · ${fmt(b.columns)} columns`;
   $("jump-sequence").disabled = false;
-  if (changedBlock) loadProfile();
+  $("zoom-selected").disabled = false;
+  if (changedBlock) { loadProfile(); safely(loadFeatures)(); }
   offset = b.offset;
   state.offset = offset;
   render();
@@ -796,9 +1003,12 @@ $("next-difference").onclick = safely(async () => {
 });
 
 const demo = safely(async () => {
-  notice("Opening demo…");
-  const a = await api("/api/demo", { method: "POST" });
-  await openAlignment(a.id);
+  notice("Opening the eight-strain E. coli demo and its annotations…");
+  $("demo").disabled = $("welcome-demo").disabled = true;
+  try {
+    const a = await api("/api/demo", { method: "POST" });
+    await openAlignment(a.id);
+  } finally { $("demo").disabled = $("welcome-demo").disabled = false; }
 });
 $("demo").onclick = demo;
 $("welcome-demo").onclick = demo;
@@ -827,9 +1037,13 @@ $("file").onchange = safely(async () => {
 });
 function mapLocation(block) {
   if (!block) return null;
-  const members = block.members.filter(m => !state.hidden.has(m.genome_id) && m.end >= state.start && m.start <= state.end);
+  const members = block.members.filter(m => !state.hidden.has(m.genome_id) && trackVisible(m.start, m.end, m.genome_id));
   const member = members.find(m => m.genome_id === state.reference) || members[0];
-  return member ? {genome_id: member.genome_id, position: member.strand === "+" ? Math.max(member.start, state.start) : Math.min(member.end, state.end)} : null;
+  if (!member) return null;
+  const copy = trackCopies(member.start, member.end, member.genome_id)[0];
+  return {genome_id: member.genome_id, position: member.strand === "+"
+    ? Math.max(member.start, state.start + trackOffset(member.genome_id) - copy)
+    : Math.min(member.end, trackEnd(member.genome_id) + trackOffset(member.genome_id) - copy)};
 }
 async function inspectVisibleRegion() {
   if (!state.selected || state.linkedRevision === state.mapRevision) return;
@@ -849,7 +1063,8 @@ function focusSequencePage(preferredId = state.reference) {
   if (!member) return;
   const positions = member.positions.filter(p => p !== null);
   const start = Math.min(...positions), end = Math.max(...positions);
-  setRange(start - 20, end + 20, false);
+  const view = nearestTrackPosition(start, member.genome_id);
+  setRange(view - 20, view + end - start + 20, false);
 }
 function clearBlockFilters() {
   $("min-columns").value = 0;
@@ -862,14 +1077,14 @@ function revealSelected() {
   clearBlockFilters();
   for (const member of block.members) state.hidden.delete(member.genome_id);
   refreshTracks(); renderList();
-  const start = Math.min(...block.members.map(m => m.start));
-  const end = Math.max(...block.members.map(m => m.end));
+  const start = Math.min(...block.members.map(m => nearestTrackPosition(m.start, m.genome_id)));
+  const end = Math.max(...block.members.map(m => nearestTrackPosition(m.start, m.genome_id) + m.end - m.start));
   setRange(start, end);
 }
 function updateMapFeedback() {
   const blocks = visibleBlocks();
   const hasMembers = blocks.some(b => b.members.some(m => !state.hidden.has(m.genome_id)));
-  const inRegion = blocks.some(b => b.members.some(m => !state.hidden.has(m.genome_id) && m.end >= state.start && m.start <= state.end));
+  const inRegion = blocks.some(b => b.members.some(m => !state.hidden.has(m.genome_id) && trackVisible(m.start, m.end, m.genome_id)));
   $("map-feedback").hidden = inRegion;
   $("map-feedback-text").textContent = !blocks.length ? "No blocks match these filters. Fit all changes the coordinate range, not filters."
     : !hasMembers ? "All genomes containing these blocks are hidden." : "No blocks are visible in this coordinate range.";
@@ -890,7 +1105,7 @@ $("clear-map-filters").onclick = () => {
   const action = $("clear-map-filters").dataset.action;
   if (action === "filters") { clearBlockFilters(); render(); renderList(); }
   else if (action === "tracks") { state.hidden.clear(); refreshTracks(); }
-  else setRange(1, state.max);
+  else fitAllTracks();
 };
 $("reveal-selected").onclick = revealSelected;
 $("sequence-location-kind").onchange = () => {
@@ -932,6 +1147,8 @@ document.querySelectorAll("[data-section]").forEach(button => {
 $("jump-sequence").onclick = safely(async () => { await inspectVisibleRegion(); goToSection("sequence-panel"); });
 $("block-search").oninput = renderList;
 $("reset-display").onclick = () => {
+  $("align-tracks").checked = false;
+  state.trackOffsets.clear();
   for (const id of ["links", "show-annotations", "show-identity"]) $(id).checked = true;
   $("isolate-block").checked = $("shared-only").checked = false;
   $("min-columns").value = 0;
@@ -944,7 +1161,7 @@ let navigationFrame = null;
 function updateSectionNavigation() {
   navigationFrame = null;
   if (!state.alignment) return;
-  const sections = ["overview-panel", "sequence-panel", "annotations-panel"];
+  const sections = ["overview-panel", "gene-analysis-panel", "sequence-panel", "annotations-panel"];
   const activeId = sections.filter(id => $(id).getBoundingClientRect().top <= 150).at(-1) || sections[0];
   document.querySelectorAll("[data-section]").forEach(button => {
     const active = button.dataset.section === activeId;
@@ -970,11 +1187,35 @@ $("focus-reference").onclick = () => {
   state.hidden.delete(state.reference);
   renderTrackControls();
   const margin = Math.max(10, (member.end - member.start) * .1);
-  setRange(member.start - margin, member.end + margin);
+  const view = nearestTrackPosition(member.start, member.genome_id);
+  setRange(view - margin, view + member.end - member.start + margin);
 };
 $("zoom-in").onclick = () => zoom(0.5);
 $("zoom-out").onclick = () => zoom(2);
-$("reset").onclick = () => setRange(1, state.max);
+function fitAllTracks() {
+  state.trackOffsets.clear();
+  setRange(1, state.max, false);
+}
+$("zoom-selected").onclick = () => {
+  const block = state.blocks.find(b => b.id === state.selected);
+  if (!block) return;
+  clearBlockFilters();
+  const aligned = $("align-tracks").checked;
+  const reference = block.members.find(m => m.genome_id === state.reference) || block.members[0];
+  const members = aligned ? block.members : [reference];
+  for (const member of members) state.hidden.delete(member.genome_id);
+  renderTrackControls(); renderList();
+  const intervals = members.map(m => {
+    const midpoint = (m.start + m.end) / 2;
+    const center = nearestTrackPosition(midpoint, m.genome_id);
+    return [center - (midpoint - m.start), center + (m.end - midpoint)];
+  });
+  const start = Math.min(...intervals.map(p => p[0]));
+  const end = Math.max(...intervals.map(p => p[1]));
+  const margin = Math.max(10, (end - start + 1) * .08);
+  setRange(start - margin, end + margin);
+};
+$("reset").onclick = fitAllTracks;
 $("pan-left").onclick = () => {
   const d = (state.end - state.start + 1) * 0.3;
   setRange(state.start - d, state.end - d);
@@ -987,16 +1228,19 @@ $("region-form").onsubmit = (e) => {
   e.preventDefault();
   const m = $("region")
     .value.replaceAll(",", "")
-    .match(/^\s*(\d+)\s*[-–:]\s*(\d+)\s*$/);
-  if (!m || +m[1] < 1 || +m[2] < +m[1] || +m[2] > state.max) {
-    notice(
-      `Enter a range between 1 and ${fmt(state.max)}, such as 1-${Math.min(1000, state.max)}.`,
-      true,
-    );
+    .match(/^\s*(-?\d+)\s*[-–:]\s*(-?\d+)\s*$/);
+  const aligned = $("align-tracks").checked, gid = state.reference;
+  const length = circularLength(gid);
+  const limit = aligned ? (length || state.alignment.genomes.find(g => g.id === gid).extent) : state.max;
+  if (!m || +m[1] < 1 || +m[2] < 1 || +m[1] > limit || +m[2] > limit || (!length && +m[2] < +m[1])) {
+    notice(`Enter native coordinates between 1 and ${fmt(limit)}${length ? '; an end smaller than the start crosses the origin' : ''}.`, true);
     return;
   }
   notice("");
-  setRange(+m[1], +m[2]);
+  const start = +m[1], end = +m[2];
+  const viewStart = aligned ? nearestTrackPosition(start, gid) : start;
+  const distance = end >= start ? end - start : length - start + end;
+  setRange(viewStart, viewStart + distance);
 };
 $("previous").onclick = safely(() =>
   selectBlock(state.selected, Math.max(0, state.offset - state.pageSize), null, true),
@@ -1015,26 +1259,53 @@ async function loadFeatures() {
   if (!state.alignment) return;
   const token = ++state.featureEpoch,
     aid = state.alignment.id;
-  const result = await api(
-    `/api/alignments/${aid}/features?start=${state.start}&end=${state.end}&limit=500`,
-  );
-  if (token !== state.featureEpoch || aid !== state.alignment.id) return;
-  state.features = result.items;
-  $("feature-limit").hidden = result.total <= 500;
-  $("feature-limit").textContent =
-    `Showing 500 of ${fmt(result.total)} features in this region. Zoom in or search to find additional features.`;
+  const block = state.blocks.find(b => b.id === state.selected);
+  state.features = [];
+  $("feature-limit").hidden = false;
+  $("feature-limit").textContent = block ? `Loading annotations for block ${block.id}…` : "Select a block to show its gene annotations.";
   render();
+  if (!block) return;
+  const current = () => token === state.featureEpoch && aid === state.alignment?.id && block.id === state.selected;
+  const members = block.members.filter(m => state.sources.some(s => s.genome_id === m.genome_id));
+  try {
+    const results = await Promise.all(members.map(async member => {
+      const features = [];
+      for (let offset = 0; current(); offset += 500) {
+        const params = new URLSearchParams({genome_id: member.genome_id, start: member.start, end: member.end, limit: 500, offset});
+        const result = await api(`/api/alignments/${aid}/features?${params}`);
+        if (!current()) return [];
+        // A compound feature's bounding span can overlap a block even when
+        // none of its annotated segments does (e.g. an origin-spanning gene).
+        features.push(...result.items.filter(f => f.parts.some(p => p.start <= member.end && p.end >= member.start)));
+        if (offset + result.items.length >= result.total || !result.items.length) break;
+      }
+      return features;
+    }));
+    if (!current()) return;
+    state.features = results.flat();
+    const missing = block.members.length - members.length;
+    $("feature-limit").textContent = `Block ${block.id} · ${fmt(state.features.length)} overlapping annotation features across ${members.length} annotated genome(s). Arrows are clipped to each genome’s block interval.${missing ? ` ${missing} block member(s) have no imported annotations.` : ''}`;
+    render();
+  } catch (error) {
+    if (!current()) return;
+    $("feature-limit").textContent = `Block ${block.id} annotations unavailable: ${error.message}`;
+    throw error;
+  }
 }
-function drawAnnotations(svg, x, ys) {
+function drawAnnotations(svg, project, ys) {
   if (!$("show-annotations").checked) return;
+  const block = visibleBlocks().find(b => b.id === state.selected);
+  if (!block) return;
+  const members = new Map(block.members.map(m => [m.genome_id, m]));
   const layer = svgNode("g", { "clip-path": "url(#track-clip)" });
   svg.append(layer);
   for (const source of state.sources) {
     if (!ys.has(source.genome_id)) continue;
     const y = ys.get(source.genome_id);
-    for (const record of source.metadata.records) {
-      if (record.start > state.end || record.end < state.start) continue;
+    for (const record of source.metadata.records) for (const copy of trackCopies(record.start, record.start, source.genome_id)) {
+      const x = p => project(p + copy, source.genome_id);
       const boundary = svgNode("line", {
+        "clip-path": genomeClip(source.genome_id),
         x1: x(record.start),
         x2: x(record.start),
         y1: y + 21,
@@ -1054,34 +1325,45 @@ function drawAnnotations(svg, x, ys) {
   }
   const lanes = new Map();
   for (const f of state.features) {
-    if (!ys.has(f.genome_id)) continue;
+    const member = members.get(f.genome_id);
+    if (!ys.has(f.genome_id) || !member) continue;
+    const parts = f.parts.filter(p => p.start <= member.end && p.end >= member.start);
+    if (!parts.some(p => trackVisible(Math.max(p.start, member.start), Math.min(p.end, member.end), f.genome_id))) continue;
+    const start = Math.max(f.start, member.start), end = Math.min(f.end, member.end);
     if (!lanes.has(f.genome_id)) lanes.set(f.genome_id, [0, 0, 0]);
     const occupied = lanes.get(f.genome_id);
-    let lane = occupied.findIndex((end) => end < f.start);
+    let lane = occupied.findIndex(previousEnd => previousEnd < start);
     // Dense features share the last lane; searchable details remain available.
     if (lane < 0) lane = 2;
-    occupied[lane] = Math.max(occupied[lane], f.end);
+    occupied[lane] = Math.max(occupied[lane], end);
     const y = ys.get(f.genome_id) + 55 + lane * 17;
-    if (f.parts.length > 1)
+    for (const copy of trackCopies(start, end, f.genome_id)) {
+    const x = p => project(p + copy, f.genome_id);
+    const length = circularLength(f.genome_id);
+    const spansOrigin = length && parts.some(p => p.start === 1) && parts.some(p => p.end === length);
+    if (parts.length > 1 && !spansOrigin)
       layer.append(
         svgNode("line", {
-          x1: x(f.start),
-          x2: x(f.end + 1),
+          "clip-path": genomeClip(f.genome_id),
+          x1: x(start),
+          x2: x(end + 1),
           y1: y + 5,
           y2: y + 5,
           stroke: "var(--feature-line)",
           "stroke-dasharray": "2 2",
         }),
       );
-    for (const part of f.parts) {
-      if (part.end < state.start || part.start > state.end) continue;
-      const a = x(part.start),
-        b = Math.max(a + 3, x(part.end + 1)),
+    for (const part of parts) {
+      const partStart = Math.max(part.start, member.start, state.start + trackOffset(f.genome_id) - copy);
+      const partEnd = Math.min(part.end, member.end, trackEnd(f.genome_id) + trackOffset(f.genome_id) - copy);
+      if (partEnd < partStart) continue;
+      const a = x(partStart),
+        b = Math.min(x(member.end + 1), Math.max(a + 3, x(partEnd + 1))),
         tip = Math.min(6, (b - a) / 2);
       const points =
-        part.strand === "+"
+        part.strand === "+" && part.end <= partEnd
           ? `${a},${y} ${b - tip},${y} ${b},${y + 5} ${b - tip},${y + 10} ${a},${y + 10}`
-          : part.strand === "-"
+          : part.strand === "-" && part.start >= partStart
             ? `${a + tip},${y} ${b},${y} ${b},${y + 10} ${a + tip},${y + 10} ${a},${y + 5}`
             : `${a},${y} ${b},${y} ${b},${y + 10} ${a},${y + 10}`;
       const node = svgNode("polygon", {
@@ -1093,6 +1375,12 @@ function drawAnnotations(svg, x, ys) {
         stroke: part.fuzzy ? "var(--feature-line)" : "none",
         "stroke-dasharray": part.fuzzy ? "2 2" : "none",
         class: "feature",
+        "clip-path": genomeClip(f.genome_id),
+        "data-genome": f.genome_id,
+        "data-feature-id": f.id,
+        "data-part-index": f.parts.indexOf(part),
+        "data-visible-start": partStart,
+        "data-visible-end": partEnd,
         role: "button",
         tabindex: 0,
         "aria-label": `${f.name}, ${f.type}, ${f.start} to ${f.end}`,
@@ -1101,7 +1389,7 @@ function drawAnnotations(svg, x, ys) {
         svgNode(
           "title",
           {},
-          `${f.name} · ${f.type} · ${fmt(part.start)}–${fmt(part.end)} (${part.strand})${part.fuzzy ? " · approximate boundary" : ""}`,
+          `${f.name} · ${f.type} · ${fmt(part.start)}–${fmt(part.end)} (${part.strand})${part.fuzzy ? " · approximate boundary" : ""}${part.start < member.start || part.end > member.end ? ` · clipped to block ${block.id}` : ''}${partStart > Math.max(part.start, member.start) || partEnd < Math.min(part.end, member.end) ? ` · visible bases ${fmt(partStart)}–${fmt(partEnd)} (continues beyond this edge)` : ''}`,
         ),
       );
       node.onclick = () => showFeature(f);
@@ -1112,6 +1400,7 @@ function drawAnnotations(svg, x, ys) {
         }
       };
       layer.append(node);
+    }
     }
   }
 }
@@ -1149,7 +1438,19 @@ function showFeature(f, focus = false) {
     state.hidden.delete(f.genome_id);
     renderTrackControls();
     const margin = Math.max(20, (f.end - f.start) * 0.15);
-    setRange(f.start - margin, f.end + margin);
+    const view = nearestTrackPosition(f.start, f.genome_id);
+    setRange(view - margin, view + f.end - f.start + margin, false);
+    const candidates = state.blocks.map(block => {
+      const member = block.members.find(m => m.genome_id === f.genome_id);
+      const overlap = member ? f.parts.reduce((n, p) => n + Math.max(0, Math.min(p.end, member.end) - Math.max(p.start, member.start) + 1), 0) : 0;
+      return {block, overlap};
+    }).filter(candidate => candidate.overlap > 0);
+    const target = candidates.find(c => c.block.id === state.selected) || candidates.sort((a, b) => b.overlap - a.overlap)[0];
+    if (target) {
+      const member = target.block.members.find(m => m.genome_id === f.genome_id);
+      const part = f.parts.find(p => p.start <= member.end && p.end >= member.start);
+      safely(() => selectBlock(target.block.id, 0, {genome_id: f.genome_id, position: Math.max(part.start, member.start)}))();
+    } else detail.append(document.createTextNode("This feature is outside the aligned blocks."));
   } else render();
 }
 async function searchFeatures(offset = 0) {
@@ -1202,6 +1503,12 @@ $("feature-search").onsubmit = safely((e) => {
   return searchFeatures();
 });
 $("show-annotations").onchange = render;
+$("align-tracks").onchange = safely(async () => {
+  ++state.detailEpoch;
+  state.trackOffsets.clear();
+  if ($("align-tracks").checked && state.detail && !await alignTracks(state.detail)) return;
+  setRange(state.start, state.end, false);
+});
 $("import-annotations").onclick = () => $("annotation-file").click();
 $("annotation-file").onchange = safely(async () => {
   const file = $("annotation-file").files[0];
@@ -1229,6 +1536,7 @@ $("annotation-file").onchange = safely(async () => {
     const sources = await api(`/api/alignments/${aid}/annotations`);
     if (aid !== state.alignment?.id) return;
     state.sources = sources;
+    window.mauveGeneAnalysis?.reset();
     state.max = Math.max(
       ...state.alignment.genomes.map((g) => g.extent),
       ...state.sources.map((s) => s.metadata.length),
@@ -1296,7 +1604,7 @@ $("export-svg").onclick = () => {
     svgNode(
       "desc",
       {},
-      "Genomic coordinates are 1-based inclusive. Colors denote alignment blocks; hatching denotes reverse strands. Green arrows are GenBank features; selected features are purple. Dark bars within the selected block show canonical-pair identity to the chosen reference (0–100%); gaps and ambiguous bases are excluded. Gray windows have no comparable bases. Purple marks below tracks indicate the current sequence page. Coordinates remain native to each genome. This export captures the current visible overview.",
+      `Genomic coordinates are 1-based inclusive. Colors denote alignment blocks; hatching denotes reverse strands. Green arrows are GenBank features; selected features are purple. Track percentages show whole-block nucleotide identity for selected block ${state.selected ?? 'none'} versus ${state.alignment.genomes.find(g => g.id === state.reference)?.name}. Dark bars show identity per window (0–100%); gaps and ambiguous bases are excluded. Gray windows have no comparable bases. Purple marks below tracks indicate the current sequence page. Coordinate labels remain native to each genome. ${$("align-tracks").checked ? "Tracks are shifted to align corresponding positions in the selected block; annotated circular chromosomes wrap at their origin." : "Tracks share a coordinate origin."} This export captures the current visible overview.`,
     ),
     clone.firstChild,
   );

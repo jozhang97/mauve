@@ -20,6 +20,13 @@ def test_pages_artifact_is_static_and_engine_matches_manifest(tmp_path):
     assert not (output / 'static/index.html').exists()
     assert not list(output.rglob('*.sqlite3'))
     assert not list(output.rglob('*.fa'))
+    demo = output / 'static/demo/ecoli'
+    manifest = json.loads((demo / 'manifest.json').read_text())
+    assert len(manifest['genomes']) == 8
+    assert (demo / manifest['alignment']['file']).is_file()
+    assert all((demo / g['annotations']).is_file() for g in manifest['genomes'])
+    assert not (output / 'static/demo.alignment').exists()
+    assert 'Open E. coli demo' in html and 'Explore 8 E. coli strains' in html
     assert (output / 'static/wasm/build.py').is_file()
     for engine in ('wasm', 'wasm-threaded'):
         folder = output / 'static' / engine

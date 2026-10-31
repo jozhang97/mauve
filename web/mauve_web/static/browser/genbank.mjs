@@ -8,7 +8,7 @@ export async function parseRecords(blob) {
     if (line.startsWith('LOCUS')) {
       if (record) throw Error('GenBank record missing // terminator.');
       const fields = line.trim().split(/\s+/);
-      record = {name: fields[1], declared: Number(fields[2]), parts: [], features: []}; origin = features = false;
+      record = {name: fields[1], declared: Number(fields[2]), topology: fields.includes('circular') ? 'circular' : fields.includes('linear') ? 'linear' : 'unknown', parts: [], features: []}; origin = features = false;
     } else if (line.startsWith('>')) {
       throw Error('Expected GenBank data.');
     } else if (record && /^(VERSION|ACCESSION)\s/.test(line)) {
@@ -65,13 +65,15 @@ export function annotationData(records, concatenate) {
   if (records.length > 1 && !concatenate) throw Error('This file contains multiple records. Enable concatenation only if the alignment uses these records in file order.');
   const features = [], contigs = []; let offset = 0;
   for (const r of records) {
-    contigs.push({name: r.name, start: offset + 1, end: offset + r.sequence.length});
+    contigs.push({name: r.name, start: offset + 1, end: offset + r.sequence.length, topology: r.topology});
     for (const f of r.features) {
       if (f.type === 'source') continue;
       const parts = locationParts(f.location, r.sequence.length, offset);
       const value = k => (f.qualifiers[k] || []).map(s => s.replace(/^"|"$/g, '').replaceAll('""', '"')).join('; ');
       features.push({name: value('gene') || value('locus_tag') || value('label') || f.type, type: f.type,
         locus_tag: value('locus_tag'), product: value('product'), note: value('note'), record: r.name,
+        pseudo: 'pseudo' in f.qualifiers || 'pseudogene' in f.qualifiers,
+        experiment: value('experiment'), inference: value('inference'),
         start: Math.min(...parts.map(p => p.start)), end: Math.max(...parts.map(p => p.end)),
         strand: parts.every(p => p.strand === parts[0].strand) ? parts[0].strand : '.', location: f.location, parts});
     }

@@ -9,6 +9,7 @@ import socketserver
 import time
 
 import pytest
+from browser_fixture import open_small_fixture
 from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -46,7 +47,7 @@ def test_static_viewer_import_persistence_exports_and_job(site, browser, tmp_pat
     page.on('pageerror', lambda e: errors.append(str(e)))
     page.goto(site)
     page.wait_for_function("window.mauveReady === true")
-    page.locator('#welcome-demo').click()
+    open_small_fixture(page)
     page.wait_for_selector('svg .feature')
     assert page.locator('#genome-count').inner_text() == '2'
     assert '2,000 canonical aligned bases' in page.locator('#annotation-status').inner_text()
@@ -59,7 +60,10 @@ def test_static_viewer_import_persistence_exports_and_job(site, browser, tmp_pat
         with page.expect_download() as download: page.locator(control).click()
         download.value.save_as(tmp_path / name)
         assert (tmp_path / name).stat().st_size > 50
-    page.reload(); page.wait_for_selector('svg .feature')
+    page.reload(); page.wait_for_selector('svg .block')
+    assert page.locator('svg .feature').count() == 0
+    page.evaluate('selectBlock(1)')
+    page.wait_for_selector('svg .feature')
     assert page.locator('#library button').count() == 1
     # Real native engine in a nested browser worker, with no HTTP API.
     page.locator('#new-alignment').click()

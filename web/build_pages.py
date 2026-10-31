@@ -41,8 +41,7 @@ def build(output, goatcounter_code=''):
     html = html.replace('id="alignment-form">', 'id="alignment-form"><p class="small">Runs on this device. Keep this tab open until the job finishes. Saved results belong to this browser; export important work. Larger genome counts are experimental.</p>')
     html = html.replace('workspace. Closing the browser does not stop a job.', 'browser. Closing this tab interrupts unfinished jobs; saved results remain available.')
     (output / 'index.html').write_text(html)
-    for name in ('demo.alignment', 'demo.gbk'):
-        shutil.copyfile(ROOT / name, output / 'static' / name)
+    shutil.copytree(ROOT / 'demo/ecoli', output / 'static/demo/ecoli')
     (output / '.nojekyll').touch()
 
 if __name__ == '__main__':

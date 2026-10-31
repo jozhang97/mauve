@@ -289,6 +289,7 @@ input[type="checkbox"] {
 }
 .button-group {
   display: flex;
+  flex-wrap: wrap;
   gap: 4px;
 }
 form {
@@ -328,6 +329,7 @@ svg {
   font-size: 9px;
   fill: var(--subtle);
 }
+.block-identity-value { font-size: 10px; font-weight: 600; fill: var(--purple); }
 .block {
   cursor: pointer;
   outline: none;
@@ -336,6 +338,13 @@ svg {
 .block:focus {
   stroke: var(--selection-outline);
   stroke-width: 2;
+}
+.block.block-match-hover {
+  stroke: var(--selection-outline);
+  stroke-width: 3;
+}
+.alignment-links .block-match-hover {
+  opacity: 0.55;
 }
 .plot-footer {
   border-top: 1px solid var(--border);
@@ -1065,7 +1074,7 @@ aside { overflow-y: auto; }
 .settings-content { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 22px; padding: 8px 0 14px; }
 .settings-content > label { display: flex; align-items: center; gap: 8px; }
 .settings-content button { font-size: 11px; }
-#identity-status { margin-top: 10px; margin-bottom: 0; max-width: 1000px; }
+#identity-status { margin-top: 10px; margin-bottom: 16px; max-width: 1000px; }
 .block-browser { border-top: 1px solid var(--border); padding-top: 14px; background: var(--surface); }
 .block-browser-heading { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 0 24px 12px; font-size: 12px; }
 .block-browser-heading > label:first-child { font-weight: 600; }
@@ -1123,3 +1132,26 @@ select:focus-visible, summary:focus-visible { outline: 3px solid var(--focus); o
   .bases.full-labels .base-label { width: 160px; }
   .bases.full-labels .base-label small { white-space: normal; overflow-wrap: anywhere; }
 }
+
+.gene-analysis-body { padding: 0 24px 24px; }
+.gene-analysis-body > p, .gene-methods { font-size: 12px; line-height: 1.6; color: var(--muted); }
+.gene-analysis-controls { display: flex; flex-wrap: wrap; gap: 12px; align-items: end; margin: 16px 0; }
+.gene-analysis-controls label { display: flex; flex-direction: column; gap: 6px; font-size: 11px; max-width: 100%; }
+.gene-analysis-controls input[type=number] { width: 100px; }
+.gene-analysis-controls select { max-width: 100%; }
+.gene-methods { margin: 16px 0; }
+.gene-table-scroll { overflow: auto; max-height: 560px; margin: 12px 0 24px; }
+.gene-table-scroll table { border-collapse: collapse; font-size: 11px; min-width: 100%; }
+.gene-table-scroll th, .gene-table-scroll td { border: 1px solid var(--border); padding: 9px 12px; text-align: right; white-space: nowrap; }
+.gene-table-scroll th { background: var(--surface); }
+.gene-table-scroll th:first-child, .gene-table-scroll td:first-child { text-align: left; }
+.gene-table-scroll thead th { position: sticky; top: 0; z-index: 1; max-width: 220px; white-space: normal; min-width: 90px; }
+.gene-table-scroll tbody th { position: sticky; left: 0; max-width: 240px; overflow: hidden; text-overflow: ellipsis; }
+.gene-pan-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
+.gene-pan-summary > div { border: 1px solid var(--border); padding: 16px; border-radius: 8px; }
+.gene-pan-summary strong { display: block; font-size: 24px; color: var(--purple); }
+.gene-pan-summary span { font-size: 11px; color: var(--muted); }
+.gene-occupancy { max-height: 300px; overflow: auto; }
+.gene-occupancy-row { display: grid; grid-template-columns: 90px 1fr 100px; gap: 12px; align-items: center; font-size: 11px; margin: 9px 0; }
+.gene-occupancy-bar { display: block; height: 12px; background: var(--purple); border-radius: 2px; }
+@media (max-width: 650px) { .gene-analysis-body { padding: 0 15px 15px; } .gene-occupancy-row { grid-template-columns: 70px 1fr 85px; gap: 6px; } }

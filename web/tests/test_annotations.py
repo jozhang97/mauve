@@ -95,7 +95,8 @@ def test_annotation_api_search_persistence_and_atomic_replace(tmp_path):
 
 def test_pagination_and_alignment_isolation(tmp_path):
     client = TestClient(create_app(tmp_path))
-    aid = client.post('/api/demo').json()['id']
+    aid = client.post('/api/alignments', content=(ROOT / 'demo.alignment').read_bytes()).json()['id']
+    client.post(f'/api/alignments/{aid}/genomes/2/annotations?concatenate=true', content=(ROOT / 'demo.gbk').read_bytes())
     base = f'/api/alignments/{aid}/features'
     first = client.get(base, params={'limit': 1}).json()
     second = client.get(base, params={'limit': 1, 'offset': 1}).json()
@@ -120,3 +121,28 @@ def test_downloads_preserve_alignment_orientation_and_gaps(tmp_path):
     assert 'start_1based' in table.text
     assert client.get(f'/api/alignments/{aid}/blocks/999/fasta').status_code == 404
     assert client.get('/api/alignments/missing/blocks.tsv').status_code == 404
+
+
+def test_gene_analysis_inputs_retain_evidence_and_isolate_alignment(tmp_path):
+    client = TestClient(create_app(tmp_path))
+    aid = client.post('/api/alignments', content=XMFA).json()['id']
+    record = SeqRecord(Seq('ACGT'), id='chr', annotations={'molecule_type': 'DNA', 'topology': 'circular'})
+    record.features = [SeqFeature(SimpleLocation(0, 4, strand=1), type='ncRNA', qualifiers={
+        'experiment': ['Northern blot'], 'inference': ['profile match'], 'pseudo': ['']})]
+    output = StringIO(); SeqIO.write(record, output, 'genbank')
+    path = f'/api/alignments/{aid}'
+    response = client.post(f'{path}/genomes/1/annotations', content=output.getvalue())
+    assert response.status_code == 200
+    data = client.get(f'{path}/gene-input').json()
+    source = data['sources'][0]
+    assert source['metadata']['analysis_version'] == 1
+    assert source['metadata']['records'][0]['topology'] == 'circular'
+    assert source['features'][0]['experiment'] == 'Northern blot'
+    assert source['features'][0]['pseudo'] is True
+    assert 'sequence' not in data['blocks'][0]['members'][0]
+    member = client.get(f'{path}/blocks/1/gene-member/2').json()
+    assert member['sequence'] == 'ACGT' and member['strand'] == '-'
+    assert client.get(f'{path}/blocks/1/gene-member/99').status_code == 404
+    assert client.get('/api/alignments/missing/gene-input').status_code == 404
+    other = client.post('/api/alignments', content=XMFA).json()['id']
+    assert client.get(f'/api/alignments/{other}/gene-input').json()['sources'] == []

@@ -98,7 +98,7 @@ redeploy to disable tracking. For another host, build with
 
 Tests stub the tracker without contacting GoatCounter:
 `node --test web/browser-tests/analytics.test.mjs`. After deployment, open the
-site, open the yeast demo, export a view, and check the dashboard for `/mauve/`,
+site, open the E. coli demo, export a view, and check the dashboard for `/mauve/`,
 `mauve-demo-opened`, and `mauve-svg-downloaded`.
 
 ### Local storage and job lifetime
@@ -404,10 +404,15 @@ Open http://127.0.0.1:8765. The first launch creates `web/.venv` and installs de
 
 Use the header **Theme** selector to choose System, Light, or Dark. The preference is saved in your browser, follows operating-system changes in System mode, and applies to dialogs, tracks, and SVG exports.
 
-Choose **Open yeast demo**, or **Import alignment** to select an `.xmfa` or Mauve `.alignment` file. Imports persist in `web/.data/alignments.sqlite3`. The demo alignment and GenBank annotations are copied from `testdata/small.alignment` and `testdata/S_cerevisiae_small.gbk`.
+Choose **Open E. coli demo** to load eight randomly sampled complete circular E. coli chromosomes with annotations for every strain, or **Import alignment** to select an `.xmfa` or Mauve `.alignment` file. Server imports persist in `web/.data/alignments.sqlite3`; the standalone app uses browser storage. The demo is prealigned, so no alignment job runs when it opens. The first load downloads compressed assets; subsequent opens reuse the saved alignment and annotations. Existing saved yeast alignments remain in your library.
+
+The frozen sample contains MG-phbCAB-3-6, 104, E138, M-17, A16, MUD-KCA19, BH212, and A12. Sampling uses named strains with one complete annotated chromosome from current NCBI RefSeq E. coli assemblies; plasmids are excluded. One representative assembly per named strain enters the random pool. The [manifest](demo/ecoli/manifest.json) records the seed, pool size, accession versions, chromosomes, annotation dates, checksums, and alignment command. The compressed eligible pool is included for replay. This is a random sample of that eligible pool, not a phylogenetically balanced panel.
+
+To reproduce the selected sample, run `web/.venv/bin/python web/demo/build_ecoli.py`, then `web/.venv/bin/python web/demo/build_ecoli.py --align`. Use `--sample` only to draw a new sample. The builder uses the native progressiveMauve executable and full default gapped alignment/refinement. Versioned sequence accessions and checksums identify the frozen data; NCBI annotation updates may change newly downloaded GenBank files. The original tiny yeast files remain regression-test fixtures, not the public demo.
 
 - Click a block to inspect coordinates and aligned bases; double-click to focus its region.
-- Use the sticky Overview / Sequence / Genes & features navigation to move around the alignment. **Inspect sequence** jumps from the selected block to its bases.
+- Highlighting a block shows its whole-block nucleotide identity beside each genome track, relative to **Compare with**, with the number of comparable base pairs. Block tooltips and SVG exports include the same identity. These percentages summarize the entire selected block regardless of zoom or sequence page; they are block identity, not a genome-wide ANI estimate. Gaps and ambiguous bases are excluded, and absent/no-comparable cases are labeled explicitly. **Selected block identity** toggles both track percentages and window profiles.
+- Use the sticky Overview / Gene comparisons / Sequence / Genes & features navigation to move around the alignment. **Inspect sequence** jumps from the selected block to its bases.
 - The block browser beneath the map shows block lengths and genome counts. Search by block ID or genome name; search filters the list without hiding map regions. Active map filters are indicated in the Display & filters heading.
 - Use zoom, pan, Fit all, or a coordinate range such as `100-1000`.
 - Track coordinates share an absolute scale. Blocks are not reference-normalized. Choose a **Comparison reference** for identity calculations; **Focus selected block in reference** navigates to that member’s native genomic range.
@@ -468,11 +473,69 @@ Run **one server process/worker per data directory**. A process lock prevents co
 
 Select a genome in **Genome annotations**, then **Import GenBank**. The file must include its DNA sequence. The importer checks canonical A/C/G/T bases against every aligned region (reverse-complementing reverse-strand regions) and rejects mismatches or a source shorter than the alignment coordinates. Ambiguous bases are excluded from this check; the reported count is aligned base observations, not necessarily unique genomic positions. Matching aligned regions does not independently validate unaligned regions or annotation biology.
 
-For a multi-record file, enable **Concatenate records in file order** only when that is the coordinate convention used to generate the alignment. Record lengths determine offsets; record boundaries appear as dashed lines. Single-record files need no option. The yeast demo demonstrates two concatenated chromosomes.
+For a multi-record file, enable **Concatenate records in file order** only when that is the coordinate convention used to generate the alignment. Record lengths determine offsets; record boundaries appear as dashed lines. Single-record files need no option. Each E. coli demo strain has one complete circular chromosome; the legacy yeast test fixture exercises concatenated records.
 
-Green arrows show feature segments and strand. Click one for its gene name, locus tag, product, notes, and coordinates. Compound locations retain their separate segments; fuzzy boundaries are marked as approximate. Search gene names, locus tags, products, notes, types, or record names within the selected genome, then select a result to focus the viewer. Search results are paginated. The overview shows up to 500 features per region and warns when truncated; dense overlaps share a display lane.
+Green arrows show annotation segments overlapping the selected alignment block, using each genome’s own block coordinates. No arrows are shown before selecting a block or for genomes absent from that block. Arrows are clipped to block boundaries; their direction reflects the native annotation strand. Click one for its gene name, locus tag, product, notes, and coordinates. Compound locations retain their separate segments; fuzzy boundaries are marked as approximate. Search gene names, locus tags, products, notes, types, or record names within the selected genome, then select a result to focus the viewer. Search results are paginated. The overview loads all matching annotation pages separately for each block member, so the first genome cannot consume a shared 500-feature allowance. Compound features must have an actual segment overlapping the block. Zooming changes visibility without changing the selected-block annotation set; dense overlaps share a display lane. Focusing a search result selects an overlapping block. These remain GenBank annotation features, including separate gene/CDS records.
 
 Annotations persist and are replaced atomically per genome on a successful reimport. Invalid imports preserve existing annotations. Remote, unknown, and zero-length feature locations are rejected. This version supports GenBank, not GFF.
+
+## All-pairs gene comparisons and core/pan genome
+
+Open **Gene comparisons**, import GenBank annotations for every genome, and choose
+**Compute all pairs**. This compares whole genomes, independent of zoom, reference,
+and track visibility. Computation runs in a cancelable browser worker in both the
+standalone app and Python-server viewer. Results are invalidated when annotations,
+alignment, or matching settings change.
+
+The gene universe includes non-pseudogene CDS loci, annotated rRNA/tRNA, and other
+RNA types with an explicit `/experiment` qualifier. A stricter experimental-only
+RNA option is available. Gene/CDS records are not double-counted; fuzzy locations,
+unknown strands, and repeated annotations of the same locus are excluded.
+Older saved annotations must be reimported to retain evidence and topology.
+
+Gene families are inferred from Mauve XMFA alignment columns, using default
+70% reciprocal gene coverage and 60% nucleotide identity. These thresholds follow
+the original Java ortholog exporter's defaults, but this implementation does not
+use its backbone filtering and is not an exact port of that exporter. Coverage
+counts aligned non-gap base pairs over each gene's full annotated parts; identity
+uses canonical A/C/G/T pairs only. Matches require the same feature type and
+compatible alignment orientation. Connected components of qualifying matches form
+families; unmatched loci form their own families. Consequently, missing annotations,
+unaligned homologs, and transitive matches affect the inferred core/pan genome.
+This is not a separate protein-based orthology or paralogy search.
+
+The metric selector displays an all-pairs heatmap; the expandable pair table shows
+numerators, denominators, gene/family totals, and duplicate exclusions:
+
+- **Content Jaccard:** shared families / union of distinct families within the pair.
+- **Actual adjacency Jaccard:** intersection / union of strand-aware family-end
+  neighbor pairs, without removing unshared genes. Repeated pair types count once.
+- **Shared-gene adjacency conservation:** `2 × preserved / (pairs A + pairs B)`
+  after removing unshared families and any family with multiple copies in either
+  genome. The denominator is symmetric.
+- **Shared-gene DCJ:** `n − cycles` for the same unique shared markers on circular
+  chromosomes. Each chromosome wraps independently; there are no artificial links
+  between records. Rotation and whole-chromosome reverse complementation preserve
+  these metrics. Empty denominators report N/A.
+
+Known linear records and overlapping alignment blocks are rejected for this
+analysis. Missing topology is assumed circular and reported. Origin-spanning genes
+are ordered across the origin; overlapping genes use forward start-coordinate
+order. Duplicate families remain in content/core/pan counts, with their copy counts
+visible, but ambiguous shared copies are excluded from order/DCJ.
+
+The core/pan section shows pan, strict core, single-copy core, accessory, and
+genome-specific families, plus occupancy across genomes and a searchable, paged
+family presence/copy matrix. Export the pair table and family membership as TSV,
+or the complete results and settings as JSON. Results are recomputed on demand;
+export them for a durable analysis record.
+
+Checks: `node --test web/browser-tests/gene-analysis.test.mjs` verifies metrics,
+matching, circular-origin handling, and DCJ against all 105 four-gene adjacency
+matchings using exhaustive shortest paths. From `web/`, run
+`.venv/bin/python -m pytest browser-tests/test_gene_analysis.py -q` for static and
+server browser workflows, exports, and mobile layout. Real biological orthology
+validation remains necessary before interpreting inferred families as curated truth.
 
 ## Exports
 
@@ -552,7 +615,7 @@ There is currently one shared workspace and no authentication. Put it behind aut
 
 ## Current scope
 
-This is an initial alignment viewer, not a replacement for every Mauve feature. It runs progressiveMauve jobs and provides selected-block pairwise identity plots but does not yet reproduce Mauve similarity profiles, call SNPs, reorder contigs, score assemblies, or export orthologs. GenBank features and overview SVG/FASTA/TSV exports are supported; these are not a claim of complete parity with the Java application. Alignment imports are limited to 256 MiB; individual sequence/GenBank uploads remain limited to 50 MiB. Alignment uploads are spooled to disk and parsed block by block into an atomic SQLite transaction. Overview metadata lives in a separate table, so loading a map or exporting coordinates does not read the aligned DNA. Sequence inspection still loads the selected block into memory, and the browser still renders all overview blocks with SVG. A five-genome yeast result (68.4 MiB, 46 blocks) was recovered and checked through the browser, including its largest 4.5-million-column block; this is not a general benchmark of all files up to the limit. Indexed viewport queries, background uploads, and canvas rendering remain scaling work.
+This is an initial alignment viewer, not a replacement for every Mauve feature. It runs progressiveMauve jobs and provides selected-block pairwise identity plots but does not yet reproduce Mauve similarity profiles, call SNPs, reorder contigs, score assemblies, or export gene-level ortholog alignments. All-pairs alignment-derived gene-family comparisons, circular shared-gene DCJ, core/pan summaries, GenBank features, and overview SVG/FASTA/TSV exports are supported; these are not a claim of complete parity with the Java application. Alignment imports are limited to 256 MiB; individual sequence/GenBank uploads remain limited to 50 MiB. Alignment uploads are spooled to disk and parsed block by block into an atomic SQLite transaction. Overview metadata lives in a separate table, so loading a map or exporting coordinates does not read the aligned DNA. Sequence inspection still loads the selected block into memory, and the browser still renders all overview blocks with SVG. A five-genome yeast result (68.4 MiB, 46 blocks) was recovered and checked through the browser, including its largest 4.5-million-column block; this is not a general benchmark of all files up to the limit. Indexed viewport queries, background uploads, and canvas rendering remain scaling work.
 
 The XMFA parser accepts aligned DNA (including IUPAC ambiguity codes), validates coordinate spans and equal column counts, and handles absent `0-0` records. It does not verify source sequence identity, detect overlapping blocks, or interpret sequence IDs as contig boundaries. GenBank annotation import adds explicit record boundaries and verifies canonical bases against those source sequences.
 
@@ -604,7 +667,15 @@ are defensive cache correctness fixes, covered by direct overlapping-call tests.
 
 1. **Scientific validation:** compare coordinates, inversions, indels, and repeat-rich examples against the original viewer and real research datasets. Current tests establish specific behaviors, not complete scientific parity.
 2. **Similarity and navigation:** extend selected-block pairwise identity to scalable whole-alignment profiles, add reference-normalized navigation and track flipping, and validate against original Mauve statistics. Track reordering/visibility and column-length filtering are implemented.
-3. **Analysis exports:** SNP/indel tables, pairwise identity/coverage summaries, then ortholog exports with explicit gap, ambiguity, and missing-data rules.
+3. **Analysis exports:** SNP/indel tables, pairwise identity/coverage summaries, then gene-level ortholog alignments and validation of inferred family assignments against curated orthology.
 4. **Scale:** add sequence-coordinate indexes and viewport queries, render dense data with canvas, and benchmark more large comparisons. Block-by-block imports and separate overview metadata are implemented.
 5. **Workspace management:** saved views, annotation auto-attachment/GFF support, rename/delete controls, input cleanup, and clearer storage/job resource reporting.
-6. **Specialized Mauve tools:** contig ordering, assembly scoring, and DCJ rearrangement distances as the research workflow needs them. Multi-user hosting requires authentication/authorization and a separate durable worker design.
+6. **Specialized Mauve tools:** contig ordering, assembly scoring, and extensions beyond unique-marker circular DCJ (linear chromosomes and duplicate-copy resolution). Multi-user hosting requires authentication/authorization and a separate durable worker design.
+
+The overview’s **Display & filters → Align tracks on block click** option shifts each chromosome horizontally so the clicked base and its corresponding alignment-column bases line up, following Mauve’s align-view behavior. Zoom and chromosome orientation stay unchanged; tick labels remain native genome coordinates. Genes, identity windows, links, and sequence-page markers use the same shifts. Clicks in gaps use a nearby column shared with the anchor, searching neighboring sequence pages when necessary. Members absent from the block, or with no comparable column anywhere in that block, retain their previous position. Turn the option off to restore the common coordinate origin.
+
+In this mode, single chromosomes annotated as circular wrap in both directions at their full GenBank record length. Dashed origin marks indicate the last-base-to-base-1 boundary, and per-track ticks retain native coordinates. Panning can cross that boundary; wrapped blocks remain clickable and retain native sequence/annotation coordinates. Linear, unknown-topology, and concatenated multi-record inputs do not wrap.
+
+In aligned mode, the Region control uses the reference genome’s native coordinates. A circular range such as `1950-250` crosses the origin; the range summary names the reference and marks origin crossings. Zoom to selected block fits its members in aligned mode, or its reference member otherwise, with a small margin. Fit all clears rotations while retaining the alignment toggle.
+
+Circular tracks display at most one chromosome turn at a shared base-pair scale. Shorter chromosomes leave blank space rather than repeating to fill the longest track. If the viewing cut falls inside a gene, its two edge fragments cover disjoint native base ranges; tooltips identify the visible bases and continuation. Block, annotation, identity, and sequence-page layers share each genome’s clipping boundary.

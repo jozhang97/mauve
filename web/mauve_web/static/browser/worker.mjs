@@ -28,7 +28,7 @@ async function importAnnotations(aid, gid, blob, name, concatenate) {
   const parsed = annotationData(await parseRecords(blob), concatenate); let verified = 0;
   for (const b of await store.all('blocks', store.range(aid))) if (b.members.some(m => m.genome_id === gid)) verified += verifyMember(await cache.get(aid, b.id, gid), parsed.sequence);
   if (!verified) throw Error('No unambiguous aligned bases are available to verify this GenBank sequence.');
-  const metadata = {records: parsed.records, length: parsed.length, verified_bases: verified, feature_count: parsed.features.length};
+  const metadata = {records: parsed.records, length: parsed.length, verified_bases: verified, feature_count: parsed.features.length, analysis_version: 1};
   const features = parsed.features.map((f, i) => ({...f, id: `${gid}:${i}`, genome_id: gid})).sort((a, b) => a.start - b.start);
   await store.put('annotations', [aid, gid], {genome_id: gid, name: basename(name), metadata, features}); return metadata;
 }
@@ -51,10 +51,33 @@ async function route(path, options = {}) {
     return jobs.get(id);
   }
   if (parts[1] === 'demo') {
-    let a = (await store.all('alignments')).find(a => a.name === 'Yeast demo');
-    if (!a) a = await importAlignment(await (await fetch(new URL('../demo.alignment', import.meta.url))).blob(), 'Yeast demo');
-    if (!await store.get('annotations', [a.id, 2])) await importAnnotations(a.id, 2, await (await fetch(new URL('../demo.gbk', import.meta.url))).blob(), 'Yeast demo annotations', true);
-    return a;
+    const base = new URL('../demo/ecoli/', import.meta.url);
+    const response = await fetch(new URL('manifest.json', base));
+    if (!response.ok) throw Error('Could not load the E. coli demo manifest.');
+    const manifest = await response.json();
+    const compressed = async name => {
+      const response = await fetch(new URL(name, base));
+      if (!response.ok) throw Error(`Could not load demo asset: ${name}`);
+      return new Response(response.body.pipeThrough(new DecompressionStream('gzip'))).blob();
+    };
+    let a = (await store.all('alignments')).find(a => a.demo_id === manifest.id);
+    const created = !a;
+    try {
+      if (!a) {
+        progress('Loading the eight-strain E. coli alignment…');
+        a = await importAlignment(await compressed(manifest.alignment.file), manifest.name, manifest.genomes);
+      }
+      for (const genome of manifest.genomes) if (!await store.get('annotations', [a.id, genome.id])) {
+        progress(`Loading E. coli annotations ${genome.id}/${manifest.genomes.length}: ${genome.strain}…`);
+        await importAnnotations(a.id, genome.id, await compressed(genome.annotations), `${genome.chromosome}.gbk`, false);
+      }
+      a.demo_id = manifest.id;
+      await store.put('alignments', a.id, a);
+      return a;
+    } catch (error) {
+      if (created && a) await store.deleteAlignment(a.id);
+      throw error;
+    } finally { progress(''); }
   }
   if (parts[1] !== 'alignments') throw Error('Unknown operation.');
   const aid = parts[2];
@@ -69,7 +92,7 @@ async function route(path, options = {}) {
   if (parts[3] === 'features') {
     const start = integer(p, 'start', 1, 1), end = integer(p, 'end', Number.MAX_SAFE_INTEGER, start), offset = integer(p, 'offset', 0), limit = integer(p, 'limit', 100, 1, 500);
     const gid = p.has('genome_id') ? integer(p, 'genome_id', 0, 1) : null, query = (p.get('q') || '').toLowerCase();
-    const sources = await store.all('annotations', store.range(aid)), items = []; let total = 0;
+    const sources = gid === null ? await store.all('annotations', store.range(aid)) : [await store.get('annotations', [aid, gid])].filter(Boolean), items = []; let total = 0;
     for (const source of sources) {
       if (gid !== null && source.genome_id !== gid) continue;
       for (const f of source.features) {

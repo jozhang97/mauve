@@ -39,7 +39,8 @@ def parse_genbank(text, members, concatenate=False):
         raise ValueError('No unambiguous aligned bases are available to verify this GenBank sequence.')
     features, contigs, offset = [], [], 0
     for record in records:
-        contigs.append({'name': record.id, 'start': offset + 1, 'end': offset + len(record)})
+        contigs.append({'name': record.id, 'start': offset + 1, 'end': offset + len(record),
+                        'topology': record.annotations.get('topology', 'unknown')})
         for feature in record.features:
             if feature.type == 'source':
                 continue
@@ -64,6 +65,8 @@ def parse_genbank(text, members, concatenate=False):
             name = value('gene') or value('locus_tag') or value('label') or feature.type
             features.append({'name': name, 'type': feature.type, 'locus_tag': value('locus_tag'),
                              'product': value('product'), 'note': value('note'), 'record': record.id,
+                             'pseudo': 'pseudo' in qualifiers or 'pseudogene' in qualifiers,
+                             'experiment': value('experiment'), 'inference': value('inference'),
                              'start': min(p['start'] for p in parts), 'end': max(p['end'] for p in parts),
                              'strand': '+' if feature.location.strand == 1 else '-' if feature.location.strand == -1 else '.',
                              'location': str(feature.location), 'parts': parts})
