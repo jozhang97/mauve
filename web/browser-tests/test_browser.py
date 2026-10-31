@@ -241,7 +241,7 @@ def test_map_block_handlers_preserve_click_keys_and_double_click(site, browser):
     page.goto(site)
     page.wait_for_function("window.mauveReady === true")
     page.wait_for_function("typeof render === 'function'")
-    result = page.evaluate("""() => {
+    result = page.evaluate("""async () => {
       state.alignment = {genomes: [{id: 1, name: 'Genome', extent: 1000}]};
       state.order = [1]; state.start = 1; state.end = 1000; state.max = 1000;
       state.selected = null; state.detail = null; state.profile = null;
@@ -249,7 +249,13 @@ def test_map_block_handlers_preserve_click_keys_and_double_click(site, browser):
       state.blocks = [{id: 7, columns: 41, members: [{genome_id: 1, start: 100, end: 140, strand: '-'}]}];
       clearBlockFilters(); $('welcome').hidden = true; $('explorer').hidden = false; render();
       const selections = [], ranges = [], savedSelect = selectBlock, savedRange = setRange;
-      selectBlock = id => selections.push(id); setRange = (...args) => ranges.push(args);
+      let finishSelection;
+      selectBlock = id => {
+        selections.push(id); ++state.detailEpoch;
+        state.selected = id; $('zoom-selected').disabled = false;
+        if (selections.length === 5) return new Promise(resolve => { finishSelection = resolve; });
+      };
+      setRange = (...args) => ranges.push(args);
       const block = document.querySelector('#tracks .block');
       const event = (type, properties = {}) => type === 'keydown'
         ? new KeyboardEvent(type, {bubbles: true, cancelable: true, ...properties})
@@ -261,9 +267,13 @@ def test_map_block_handlers_preserve_click_keys_and_double_click(site, browser):
       block.dispatchEvent(event('keydown', {key: 'ArrowLeft'}));
       block.dispatchEvent(event('dblclick'));
       block.parentNode.dispatchEvent(event('click'));
+      const zoomedBeforeSelection = ranges.length > 0;
+      finishSelection();
+      await new Promise(resolve => setTimeout(resolve, 0));
       selectBlock = savedSelect; setRange = savedRange;
-      return {selections, ranges, enter: enter.defaultPrevented, space: space.defaultPrevented};
+      return {selections, ranges, zoomedBeforeSelection, enter: enter.defaultPrevented, space: space.defaultPrevented};
     }""")
-    assert result['selections'] == [7, 7, 7, 7]
-    assert result['ranges'] == [[95.2, 144.8]]
+    assert result['selections'] == [7, 7, 7, 7, 7]
+    assert not result['zoomedBeforeSelection']
+    assert result['ranges'] == [[90, 150]]
     assert result['enter'] and result['space']
