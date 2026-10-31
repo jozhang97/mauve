@@ -272,6 +272,39 @@ window.addEventListener("mauve-gene-analysis-status", () => {
   updateCoreGeneStatus();
   if (state.alignment) updateMapFeedback();
 });
+function trackDistance(id) {
+  if (id === state.reference) return 0;
+  const pair = window.mauveGeneAnalysis?.result?.pairs.find(p =>
+    (p.a === state.reference && p.b === id) || (p.b === state.reference && p.a === id));
+  return Number.isFinite(pair?.dcj) ? pair.dcj : null;
+}
+function applyTrackOrder() {
+  if (!state.alignment) return;
+  if ($("track-sort").value === "manual") { $("track-sort-status").textContent = "Manual track order"; return; }
+  state.hidden.delete(state.reference);
+  const available = window.mauveGeneAnalysis?.result;
+  const ranks = new Map(state.alignment.genomes.map((g,i) => [g.id,i]));
+  state.order.sort((a,b) => a === b ? 0 : a === state.reference ? -1 : b === state.reference ? 1
+    : available ? (trackDistance(a) ?? Infinity) - (trackDistance(b) ?? Infinity) || ranks.get(a)-ranks.get(b)
+      : ranks.get(a)-ranks.get(b));
+  $("track-sort-status").textContent = available
+    ? "Reference first · lowest DCJ first · unavailable values last"
+    : window.mauveGeneAnalysis?.status || "Run gene comparisons below to compute DCJ distances.";
+}
+function refreshTrackOrder() {
+  applyTrackOrder();
+  if (state.alignment) { renderTrackControls(); render(); renderBases(); renderComparisonSummary(); }
+}
+$("track-sort").onchange = () => {
+  refreshTrackOrder();
+  if ($("track-sort").value === "dcj" && !window.mauveGeneAnalysis?.result)
+    $("run-gene-analysis").click();
+};
+window.addEventListener("mauve-gene-analysis", refreshTrackOrder);
+window.addEventListener("mauve-gene-analysis-status", () => {
+  if ($("track-sort").value === "dcj" && !window.mauveGeneAnalysis?.result)
+    $("track-sort-status").textContent = window.mauveGeneAnalysis?.status || "Computing DCJ distances…";
+});
 function renderTrackControls() {
   $("track-controls").replaceChildren();
   const visibleCount = state.order.reduce((count, id) => count + !state.hidden.has(id), 0);
@@ -283,7 +316,7 @@ function renderTrackControls() {
     const label = document.createElement("label"), check = document.createElement("input");
     check.type = "checkbox";
     check.checked = !state.hidden.has(id);
-    check.disabled = check.checked && visibleCount === 1;
+    check.disabled = (check.checked && visibleCount === 1) || ($("track-sort").value === "dcj" && id === state.reference);
     check.onchange = () => {
       if (check.checked) state.hidden.delete(id); else state.hidden.add(id);
       refreshTracks();
@@ -296,6 +329,7 @@ function renderTrackControls() {
       button.setAttribute("aria-label", `${name}: ${g.name}`);
       button.disabled = index + delta < 0 || index + delta >= state.order.length;
       button.onclick = () => {
+        $("track-sort").value = "manual"; applyTrackOrder();
         [state.order[index], state.order[index + delta]] = [state.order[index + delta], state.order[index]];
         refreshTracks();
       };
@@ -308,6 +342,7 @@ async function loadProfile() {
   const token = ++state.profileEpoch;
   state.profile = null;
   state.profileError = null;
+  applyTrackOrder();
   $("comparison-summary").textContent = "";
   renderBases();
   render();
@@ -319,7 +354,7 @@ async function loadProfile() {
     const result = await api(`/api/alignments/${state.alignment.id}/blocks/${block.id}/profile?reference_id=${state.reference}`);
     if (token !== state.profileEpoch) return;
     state.profile = result;
-    renderTrackControls();
+    applyTrackOrder(); renderTrackControls();
     renderComparisonSummary();
     renderBases();
     $("identity-status").textContent = result.present
@@ -821,6 +856,12 @@ function render() {
         `#${g.id}${g.id === state.reference ? " · REF" : ""} · ${fmt(g.extent)} bp`,
       ),
     );
+    if ($("track-sort").value !== "manual") {
+      const distance = trackDistance(g.id);
+      const label = g.id === state.reference ? "Distance: 0 · reference" : distance === null ? "Distance: unavailable"
+        : `DCJ distance: ${fmt(distance)}`;
+      svg.append(svgNode("text", {x:10,y:y+90,class:"tick track-distance","data-genome":g.id},label));
+    }
     if (trackDirection(g.id) === -1) svg.append(svgNode("text", {
       x:10, y:y+74, class:"tick reversed-view", "data-genome":g.id
     }, "← Reversed view"));
@@ -1272,6 +1313,7 @@ $("reset-display").onclick = () => {
   $("core-genes-only").checked = false; updateCoreGeneStatus();
   $("align-tracks").checked = false;
   $("orient-tracks").checked = false;
+  $("track-sort").value = "manual"; applyTrackOrder();
   state.trackDirections.clear();
   state.trackOffsets.clear();
   for (const id of ["links", "show-annotations", "show-identity"]) $(id).checked = true;
@@ -1304,7 +1346,7 @@ $("min-columns").oninput = $("isolate-block").onchange = () => { render(); rende
 $("reference-genome").onchange = safely(async () => {
   state.reference = Number($("reference-genome").value);
   ++state.detailEpoch;
-  renderTrackControls();
+  applyTrackOrder(); renderTrackControls();
   if ($("orient-tracks").checked && state.detail) await alignTracks(state.detail);
   loadProfile();
 });

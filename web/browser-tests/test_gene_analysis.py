@@ -61,6 +61,12 @@ def test_all_pairs_core_pan_and_exports(analysis_site, browser, tmp_path):
     page.locator('#core-genes-only').uncheck()
     assert page.locator('.feature').count() == unfiltered
     page.locator('#core-genes-only').check()
+    page.locator('#track-sort').select_option('dcj')
+    assert page.evaluate('state.order') == [1, 2, 3]
+    page.locator('#reference-genome').select_option('3')
+    assert page.evaluate('state.order') == [3, 1, 2]
+    assert page.locator('.track-distance').count() == 3
+    page.locator('#reference-genome').select_option('1')
     page.locator('#gene-metric').select_option('dcj')
     assert page.locator('#gene-heatmap tbody tr').first.locator('td').all_text_contents() == ['—', '0', '0']
     for control, filename in [('#export-gene-pairs', 'pairs.tsv'), ('#export-gene-families', 'families.tsv'), ('#export-gene-json', 'analysis.json')]:

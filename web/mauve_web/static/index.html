@@ -320,7 +320,11 @@
           <div class="reference-bar">
             <label for="reference-genome">Compare with</label><select id="reference-genome" aria-label="Comparison reference"></select>
             <button id="focus-reference" disabled title="Focus the selected block at the reference genome’s coordinates">Focus reference region</button>
-            <span class="small">Native genome coordinates</span>
+            <label for="track-sort">Track order</label><select id="track-sort">
+              <option value="manual">Manual</option>
+              <option value="dcj">Gene order distance (DCJ)</option>
+            </select>
+            <span id="track-sort-status" class="small" role="status">Native genome coordinates</span>
           </div>
           <div class="view-settings">
             <details id="display-settings"><summary>Display &amp; filters</summary>
