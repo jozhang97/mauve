@@ -1,5 +1,10 @@
 name: Deploy browser Mauve to Pages
 on:
+  push:
+    branches: [master]
+    paths:
+      - 'web/**'
+      - '.github/workflows/pages.yml'
   workflow_dispatch:
 permissions:
   contents: read
