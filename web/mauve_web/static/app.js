@@ -37,6 +37,10 @@ const state = {
   sources: [],
   featureEpoch: 0,
   searchEpoch: 0,
+  overviewSearchEpoch: 0,
+  overviewFeature: null,
+  overviewMatches: [],
+  overviewFocusToken: null,
   selectedFeature: null,
 };
 const fmt = (n) => n.toLocaleString();
@@ -98,6 +102,7 @@ async function openAlignment(id) {
   state.trackDirections.clear();
   ++state.featureEpoch;
   ++state.searchEpoch;
+  resetOverviewSearch();
   notice("Loading alignment…");
   const [alignment, blocks, sources] = await Promise.all([
     api(`/api/alignments/${id}`),
@@ -174,6 +179,7 @@ async function openAlignment(id) {
   }
   if (sources.length) $("annotation-genome").value = sources[0].genome_id;
   annotationStatus();
+  populateOverviewGenomes();
   $("block-title").textContent = "Select an alignment block";
   $("member-summary").replaceChildren();
   $("comparison-summary").replaceChildren();
@@ -989,6 +995,7 @@ function render() {
     svg.append(layer);
   }
   drawAnnotations(svg, x, ys);
+  drawOverviewFeature(svg, x, ys);
   // Highlight corresponding members without changing selection or re-rendering
   // the SVG under the pointer. Identity overlays share their block's hover target.
   const blockId = node => node?.closest?.("[data-block-id]")?.dataset.blockId;
@@ -1577,6 +1584,182 @@ function drawAnnotations(svg, project, ys) {
     }
   }
 }
+function cancelOverviewFocus() {
+  // Cancel only the block request owned by gene zoom, never a newer manual selection.
+  if (state.overviewFocusToken !== null && state.overviewFocusToken === state.detailEpoch) ++state.detailEpoch;
+  state.overviewFocusToken = null;
+}
+function resetOverviewSearch() {
+  cancelOverviewFocus();
+  ++state.overviewSearchEpoch;
+  state.overviewFeature = null;
+  state.overviewMatches = [];
+  $("overview-gene-focus").disabled = true;
+  $("overview-gene-results").replaceChildren();
+  $("overview-gene-status").textContent = "";
+}
+function populateOverviewGenomes() {
+  resetOverviewSearch();
+  $("overview-gene-query").value = "";
+  const select = $("overview-gene-genome");
+  select.replaceChildren(new Option("All genomes", ""));
+  for (const genome of state.alignment.genomes) select.add(new Option(genome.name, genome.id));
+  $("overview-gene-status").textContent = state.sources.length
+    ? "Search imported annotations. Gene and CDS records are listed separately."
+    : "Import GenBank annotations in Genes & features to search genes.";
+}
+async function searchOverviewGenes() {
+  resetOverviewSearch();
+  render();
+  const token = state.overviewSearchEpoch, aid = state.alignment?.id;
+  const query = $("overview-gene-query").value.trim();
+  if (!aid || !query) {
+    $("overview-gene-status").textContent = "Enter a gene name, locus tag, or product.";
+    return;
+  }
+  const current = () => token === state.overviewSearchEpoch && aid === state.alignment?.id;
+  $("overview-gene-status").textContent = "Searching annotations…";
+  const params = new URLSearchParams({q: query, limit: 500});
+  if ($("overview-gene-genome").value) params.set("genome_id", $("overview-gene-genome").value);
+  try {
+    // Fetch every match, independently of the paginated result list, so the
+    // overview also highlights genes beyond the first page of results.
+    const matches = [];
+    for (let offset = 0; current();) {
+      params.set("offset", offset);
+      const result = await api(`/api/alignments/${aid}/features?${params}`);
+      if (!current()) return;
+      matches.push(...result.items);
+      offset += result.items.length;
+      if (offset >= result.total || !result.items.length) break;
+      $("overview-gene-status").textContent = `Finding gene locations… ${fmt(offset)} of ${fmt(result.total)}.`;
+    }
+    state.overviewMatches = matches;
+    for (const feature of matches) state.hidden.delete(feature.genome_id);
+    refreshTracks();
+    $("overview-gene-status").textContent = matches.length
+      ? `${fmt(matches.length)} matching features highlighted on the genome tracks. View and display filters preserved. Select a result for details; use Zoom to gene to focus. Gene and CDS records are listed separately.`
+      : state.sources.length ? "No matching features. Try another name or genome." : "Import GenBank annotations in Genes & features to search genes.";
+    renderOverviewGeneResults();
+  } catch (error) {
+    if (current()) $("overview-gene-status").textContent = `Search unavailable: ${error.message}. Search again to retry.`;
+  }
+}
+function renderOverviewGeneResults(offset = 0) {
+  const target = $("overview-gene-results");
+  if (!offset) target.replaceChildren();
+  target.querySelector(".more-results")?.remove();
+  for (const feature of state.overviewMatches.slice(offset, offset + 50)) {
+    const button = document.createElement("button");
+    const genome = state.alignment.genomes.find(g => g.id === feature.genome_id);
+    button.textContent = [genome.name, feature.name, feature.locus_tag, feature.type, feature.product,
+      `${fmt(feature.start)}–${fmt(feature.end)} (${feature.strand})`].filter(Boolean).join(" · ");
+    button.dataset.featureId = feature.id;
+    button.setAttribute("aria-pressed", String(state.overviewFeature?.id === feature.id));
+    button.onclick = () => selectOverviewGene(feature);
+    target.append(button);
+  }
+  if (offset + 50 < state.overviewMatches.length) {
+    const more = document.createElement("button");
+    more.className = "more-results";
+    more.textContent = "Load more results";
+    more.onclick = () => renderOverviewGeneResults(offset + 50);
+    target.append(more);
+  }
+}
+function selectOverviewGene(feature) {
+  cancelOverviewFocus();
+  state.overviewFeature = feature;
+  state.hidden.delete(feature.genome_id);
+  refreshTracks();
+  showFeature(feature);
+  $("overview-gene-focus").disabled = false;
+  for (const button of $("overview-gene-results").querySelectorAll("[data-feature-id]")) {
+    button.setAttribute("aria-pressed", String(button.dataset.featureId === String(feature.id)));
+  }
+  const aligned = state.blocks.some(block => block.members.some(member => member.genome_id === feature.genome_id
+    && feature.parts.some(part => part.start <= member.end && part.end >= member.start)));
+  $("overview-gene-status").textContent = `${fmt(state.overviewMatches.length)} matching features highlighted. Selected ${feature.name} · ${fmt(feature.start)}–${fmt(feature.end)}. ${aligned ? "View preserved; use Zoom to gene to focus." : "Outside aligned blocks; highlighted on its genome track."}`;
+}
+async function focusOverviewGene(feature) {
+  cancelOverviewFocus();
+  const aid = state.alignment.id, revision = state.mapRevision;
+  state.overviewFeature = feature;
+  state.hidden.delete(feature.genome_id);
+  $("show-annotations").checked = true;
+  $("min-columns").value = 0;
+  $("shared-only").checked = false;
+  $("core-genes-only").checked = false;
+  updateCoreGeneStatus();
+  renderTrackControls();
+  const candidates = state.blocks.map(block => {
+    const member = block.members.find(m => m.genome_id === feature.genome_id);
+    const overlap = member ? feature.parts.reduce((sum, part) => sum + Math.max(0,
+      Math.min(part.end, member.end) - Math.max(part.start, member.start) + 1), 0) : 0;
+    return {block, member, overlap};
+  }).filter(c => c.overlap).sort((a, b) => b.overlap - a.overlap);
+  const target = candidates[0];
+  if (target) {
+    const part = feature.parts.find(p => p.start <= target.member.end && p.end >= target.member.start);
+    const pending = selectBlock(target.block.id, 0, {genome_id: feature.genome_id, position: Math.max(part.start, target.member.start)});
+    const token = state.detailEpoch;
+    state.overviewFocusToken = token;
+    try {
+      await pending;
+      if (token !== state.detailEpoch || revision !== state.mapRevision) return;
+    } finally {
+      if (state.overviewFocusToken === token) state.overviewFocusToken = null;
+    }
+  }
+  if (aid !== state.alignment?.id || state.overviewFeature !== feature) return;
+  // Calculate the viewport after block selection has updated track orientation and offsets.
+  const span = feature.end - feature.start, margin = Math.max(20, span * 0.15);
+  const center = nearestTrackPosition((feature.start + feature.end) / 2, feature.genome_id);
+  setRange(center - span / 2 - margin, center + span / 2 + margin, false);
+  showFeature(feature);
+  $("overview-gene-status").textContent = `${feature.name} · ${fmt(feature.start)}–${fmt(feature.end)}. ${target ? `Selected block ${target.block.id}.` : "Outside aligned blocks; highlighted on its genome track."}`;
+}
+function drawOverviewFeature(svg, project, ys) {
+  const layer = svgNode("g", {"aria-label": "Matching genes"});
+  // Draw the selected match last so it stays visible where records overlap.
+  const matches = state.overviewMatches.filter(f => f.id !== state.overviewFeature?.id);
+  if (state.overviewFeature) matches.push(state.overviewFeature);
+  for (const feature of matches) {
+    if (!ys.has(feature.genome_id)) continue;
+    const selected = feature.id === state.overviewFeature?.id;
+    for (const part of feature.parts) for (const copy of trackCopies(part.start, part.end, feature.genome_id)) {
+      const a = project(part.start, feature.genome_id, copy), b = project(part.end + 1, feature.genome_id, copy);
+      const width = Math.max(5, Math.abs(b - a));
+      const marker = svgNode("rect", {x: (a + b - width) / 2, y: ys.get(feature.genome_id) - 8,
+        width, height: 36, fill: "var(--feature-selected)", "fill-opacity": selected ? 0.65 : 0.3,
+        stroke: "var(--feature-selected)", "stroke-width": selected ? 3 : 1.5,
+        "clip-path": genomeClip(feature.genome_id), role: "button", tabindex: 0,
+        "aria-label": `${feature.name}, ${feature.type}, ${fmt(part.start)}–${fmt(part.end)}`,
+        "aria-pressed": String(selected), class: "gene-search-marker", "data-genome": feature.genome_id});
+      marker.append(svgNode("title", {}, `${feature.name} · ${feature.type} · ${fmt(part.start)}–${fmt(part.end)}`));
+      marker.onclick = () => selectOverviewGene(feature);
+      marker.onkeydown = event => {
+        if (event.key === "Enter" || event.key === " ") { event.preventDefault(); selectOverviewGene(feature); }
+      };
+      layer.append(marker);
+    }
+  }
+  svg.append(layer);
+}
+$("overview-gene-focus").onclick = safely(() => state.overviewFeature && focusOverviewGene(state.overviewFeature));
+$("overview-gene-search").onsubmit = e => { e.preventDefault(); searchOverviewGenes(); };
+$("overview-gene-query").oninput = () => { resetOverviewSearch(); render(); };
+$("overview-gene-genome").onchange = () => { resetOverviewSearch(); render(); if ($("overview-gene-query").value.trim()) searchOverviewGenes(); };
+$("overview-gene-clear").onclick = () => { resetOverviewSearch(); $("overview-gene-query").value = ""; render(); $("overview-gene-query").focus(); };
+$("overview-gene-results").onkeydown = e => {
+  if (!["ArrowDown", "ArrowUp", "Escape"].includes(e.key)) return;
+  e.preventDefault();
+  if (e.key === "Escape") return $("overview-gene-query").focus();
+  const buttons = [...$("overview-gene-results").querySelectorAll("button")];
+  const index = buttons.indexOf(document.activeElement);
+  buttons[(index + (e.key === "ArrowDown" ? 1 : buttons.length - 1)) % buttons.length]?.focus();
+};
+
 function showFeature(f, focus = false) {
   state.selectedFeature = f.id;
   const detail = $("feature-detail");
@@ -1718,6 +1901,7 @@ $("annotation-file").onchange = safely(async () => {
     const sources = await api(`/api/alignments/${aid}/annotations`);
     if (aid !== state.alignment?.id) return;
     state.sources = sources;
+    populateOverviewGenomes();
     window.mauveGeneAnalysis?.reset();
     state.max = Math.max(
       ...state.alignment.genomes.map((g) => g.extent),

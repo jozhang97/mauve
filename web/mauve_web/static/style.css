@@ -1155,3 +1155,14 @@ select:focus-visible, summary:focus-visible { outline: 3px solid var(--focus); o
 .gene-occupancy-row { display: grid; grid-template-columns: 90px 1fr 100px; gap: 12px; align-items: center; font-size: 11px; margin: 9px 0; }
 .gene-occupancy-bar { display: block; height: 12px; background: var(--purple); border-radius: 2px; }
 @media (max-width: 650px) { .gene-analysis-body { padding: 0 15px 15px; } .gene-occupancy-row { grid-template-columns: 70px 1fr 85px; gap: 6px; } }
+
+.overview-gene-status { margin: 0; padding: 0 24px 12px; }
+#overview-gene-query { flex: 1; min-width: 180px; }
+#overview-gene-genome { max-width: 260px; }
+#overview-gene-results { display: grid; gap: 6px; max-height: 280px; overflow-y: auto; padding: 0 24px; }
+#overview-gene-results:not(:empty) { padding-bottom: 16px; }
+#overview-gene-results button { text-align: left; white-space: normal; overflow-wrap: anywhere; }
+
+.gene-search-marker { cursor: pointer; }
+.gene-search-marker:focus { outline: none; stroke: var(--text); stroke-width: 3; }
+#overview-gene-results button[aria-pressed="true"] { border-color: var(--feature-selected); box-shadow: inset 3px 0 var(--feature-selected); }

@@ -376,6 +376,23 @@ reference and exercise the real engine, local persistence, downloads, cancellati
 GPU/CPU parity, and `/mauve/` deployment paths. The native comparison defaults to
 the bundled macOS executable; set `MAUVE_ALIGNER` for another platform.
 
+The overview gene-search interaction suite runs 54 checks across browser-only and
+server modes. It covers preserved block/inspector context under display filters,
+real core-family filtering, block selection and paging, track visibility/order,
+reference changes and reversed tracks, circular and compound genes, SVG exports,
+keyboard/mobile interactions, duplicate loci, literal annotation labels, and
+annotation replacement. Controlled API gates test delayed searches, multi-page
+failures, canceled zooms, and competing block selections without timing sleeps.
+Run it from the repository root:
+
+```sh
+PYTHONPATH=web web/.venv/bin/python -m pytest web/browser-tests/test_overview_gene_search.py -q
+```
+
+For related regressions, also run `test_block_annotations.py`,
+`test_block_identity.py`, `test_track_orientation.py`, `test_track_order.py`,
+`test_core_blocks.py`, and `test_gene_analysis.py` from `web/browser-tests`.
+
 See [wasm/README.md](wasm/README.md) for pinned upstream sources, licensing,
 compatibility patches, build flags, and rebuild instructions.
 
@@ -539,6 +556,7 @@ validation remains necessary before interpreting inferred families as curated tr
 
 ## Exports
 
+- Use **Find gene** above the genome overview to search imported GenBank annotations by gene name, locus tag, or product. All matches are highlighted on their genome tracks, including matches beyond the first result page and genes outside aligned blocks. Search and result selection preserve the current zoom, block selection, and display filters; tracks containing matches are revealed. Select a result or a purple marker to emphasize that gene and view its details. Use **Zoom to gene** to explicitly focus its region and select an overlapping block. Gene and CDS records are listed separately. Use Tab/Enter or arrow keys within results, **Load more results** for additional matches, and **Clear** to remove search highlights.
 - Open **Export** in the overview heading. **Export view as SVG** saves the current genome overview with its styles, selected region, visible annotations, and block connections. It does not include the sequence inspector or offscreen features.
 - **Download block table** exports all block members as TSV, with block ID, alignment column count, genome ID, 1-based start, inclusive end, and strand.
 - **Download block as aligned FASTA** saves all columns of the selected block, preserving gaps and XMFA alignment orientation (including reverse-complemented reverse-strand records). FASTA identifiers use sequence IDs; coordinate and strand metadata follow the identifier.

@@ -37,6 +37,70 @@ def test_selected_block_annotations_per_genome_pagination_and_switching(analysis
         page.locator('#annotation-genome').select_option(str(gid))
         page.locator('#annotation-file').set_input_files({'name': f'g{gid}.gbk', 'mimeType': 'text/plain', 'buffer': out.getvalue().encode()})
         page.wait_for_function(f'state.sources.length === {gid}')
+    # Search highlights every hit in context without changing viewport or filters.
+    page.evaluate("() => { state.hidden.add(2); document.querySelector('#min-columns').value = 1000; render(); }")
+    original_range = page.evaluate('[state.start, state.end]')
+    page.locator('#overview-gene-query').fill('SECOND_BLOCK1')
+    page.locator('#overview-gene-search button').first.click()
+    page.wait_for_function("document.querySelector('#overview-gene-results').children.length === 1")
+    assert 'CDS' in page.locator('#overview-gene-results').inner_text()
+    assert page.locator('.gene-search-marker[data-genome="2"]').count() == 1
+    assert page.evaluate('[state.start, state.end]') == original_range
+    assert page.evaluate('!state.hidden.has(2) && state.selected === null')
+    assert page.locator('#min-columns').input_value() == '1000'
+    page.locator('#overview-gene-results button').first.focus()
+    page.keyboard.press('Enter')
+    assert page.locator('.gene-search-marker[aria-pressed="true"]').count() == 1
+    assert page.evaluate('[state.start, state.end]') == original_range
+    assert page.evaluate('state.selected') is None
+    # Zooming is an explicit action.
+    page.locator('#overview-gene-focus').click()
+    page.wait_for_function('state.selected === 1 && state.selectedFeature !== null')
+    assert page.evaluate('visibleBlocks().some(b => b.id === 1)')
+    assert page.evaluate('state.start <= 1150 && state.end >= 1160')
+    # Search computes its viewport after aligned/reversed track transforms change.
+    page.locator('#display-settings summary').click()
+    page.locator('#align-tracks').check()
+    page.locator('#orient-tracks').check()
+    page.locator('#overview-gene-focus').click()
+    page.wait_for_function('state.trackDirections.get(2) === -1')
+    page.wait_for_function("document.querySelector('#overview-gene-status').textContent.includes('Selected block')")
+    marker = page.locator('.gene-search-marker[data-genome="2"]').bounding_box()
+    tracks = page.locator('#tracks').bounding_box()
+    assert tracks['x'] <= marker['x'] < marker['x'] + marker['width'] <= tracks['x'] + tracks['width']
+    page.locator('#align-tracks').uncheck()
+    page.locator('#display-settings summary').click()
+    page.locator('#reset').click()
+    page.locator('#overview-gene-query').fill('outside')
+    page.locator('#overview-gene-search button').first.click()
+    page.locator('#overview-gene-results button').first.click()
+    page.wait_for_function("document.querySelector('#overview-gene-status').textContent.includes('Outside aligned blocks')")
+    assert page.locator('.gene-search-marker[data-genome="1"]').count() == 1
+    page.locator('#overview-gene-query').fill('pagination_')
+    page.locator('#overview-gene-search button').first.click()
+    page.wait_for_function("document.querySelectorAll('#overview-gene-results button').length === 51")
+    # All 510 matches are highlighted even though the list shows only 50.
+    assert page.locator('.gene-search-marker').count() == 510
+    page.locator('#overview-gene-results .more-results').click()
+    page.wait_for_function("document.querySelectorAll('#overview-gene-results button').length === 101")
+    page.locator('#overview-gene-genome').select_option('2')
+    page.wait_for_function("document.querySelector('#overview-gene-status').textContent.includes('No matching')")
+    # Editing the query invalidates an in-flight response.
+    page.evaluate("""() => {
+      const original = api;
+      window.restoreSearchApi = () => { api = original; };
+      api = async (...args) => { const result = await original(...args); if (args[0].includes('/features?')) await new Promise(resolve => setTimeout(resolve, 300)); return result; };
+    }""")
+    page.locator('#overview-gene-query').fill('second')
+    page.locator('#overview-gene-search button').first.click()
+    page.locator('#overview-gene-query').fill('new query')
+    page.wait_for_timeout(400)
+    assert page.locator('#overview-gene-results button').count() == 0
+    assert page.locator('.gene-search-marker').count() == 0
+    page.evaluate('restoreSearchApi()')
+    page.locator('#overview-gene-clear').click()
+    assert page.locator('.gene-search-marker').count() == 0
+    page.evaluate('() => { state.selected = null; state.features = []; render(); }')
     assert page.locator('svg .feature').count() == 0
     page.locator('#reset').click()
     page.evaluate('selectBlock(1)')

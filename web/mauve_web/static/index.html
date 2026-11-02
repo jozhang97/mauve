@@ -295,6 +295,17 @@
               </div></details>
             </div>
           </div>
+          <form id="overview-gene-search" class="annotation-search" role="search" aria-label="Find a gene in the genome overview">
+            <label for="overview-gene-query">Find gene</label>
+            <input id="overview-gene-query" type="search" placeholder="Gene, locus tag, product…" maxlength="200" />
+            <label for="overview-gene-genome">Genome</label>
+            <select id="overview-gene-genome"><option value="">All genomes</option></select>
+            <button>Search</button>
+            <button id="overview-gene-clear" type="button">Clear</button>
+            <button id="overview-gene-focus" type="button" disabled>Zoom to gene</button>
+          </form>
+          <p id="overview-gene-status" class="small overview-gene-status" role="status"></p>
+          <div id="overview-gene-results" aria-label="Gene search results"></div>
           <div class="toolbar">
             <div class="button-group">
               <button id="pan-left" title="Pan left" aria-label="Pan left">
