@@ -1,3 +1,4 @@
+import {buildConservation, sampleConservation, parseBackbone} from './conservation.mjs';
 import {Store, MemberCache} from './store.mjs';
 import {parseXMFA, metadata, columnSlice, coordinateColumn, profileMember, basename} from './core.mjs';
 import {parseRecords, annotationData, verifyMember} from './genbank.mjs';
@@ -9,7 +10,7 @@ const jobs = new Jobs(store, importAlignment, () => self.postMessage({usage: 'al
 const progress = message => self.postMessage({progress: message});
 async function getAlignment(id) { const a = await store.get('alignments', id); if (!a) throw Error('Alignment not found.'); return a; }
 async function getBlock(aid, bid) { await getAlignment(aid); const b = await store.get('blocks', [aid, bid]); if (!b) throw Error('Block not found.'); return b; }
-async function importAlignment(blob, name, inputs) {
+async function importAlignment(blob, name, inputs, backbone) {
   if (!(blob instanceof Blob) || blob.size > 256 * 1024 * 1024) throw Error('Alignment files must be at most 256 MiB.');
   const id = crypto.randomUUID();
   try {
@@ -19,8 +20,37 @@ async function importAlignment(blob, name, inputs) {
     });
     if (inputs) for (const g of meta.genomes) { if (!inputs[g.id - 1]) throw Error('Aligner output contains an unexpected genome ID.'); g.name = inputs[g.id - 1].name; }
     const alignment = {id, name: basename(name).slice(0, 200) || 'Untitled alignment', created: new Date().toISOString(), ...meta};
-    await store.put('alignments', id, alignment); progress(''); return alignment;
+    await store.put('alignments', id, alignment);
+    if (backbone) await saveBackbone(alignment, backbone);
+    progress(''); return alignment;
   } catch (e) { await store.deleteAlignment(id); progress(''); throw e; }
+}
+let conservationCache = null;
+async function saveBackbone(alignment, blob) {
+  if (!(blob instanceof Blob) || blob.size > 50 * 1024 * 1024) throw Error('Backbone files must be at most 50 MiB.');
+  const blocks = await store.all('blocks', store.range(alignment.id));
+  const segments = parseBackbone(await blob.text(), blocks, alignment.genomes);
+  const revision = crypto.randomUUID();
+  await store.batch([['artifacts', [alignment.id, 'conservation-backbone'], {revision, segments}]]);
+  conservationCache = null;
+  return {segments: segments.length, revision};
+}
+async function conservation(alignment, ranges) {
+  const aid = alignment.id, backbone = await store.get('artifacts', [aid, 'conservation-backbone']);
+  const key = `${aid}/${backbone?.revision || ''}`;
+  if (conservationCache?.key !== key) {
+    const promise = (async () => {
+      const blocks = await store.all('blocks', store.range(aid));
+      return buildConservation(alignment.genomes, blocks, async info => {
+        const members = [];
+        for (const m of info.members) members.push(await cache.get(aid, info.id, m.genome_id));
+        return {...info, members};
+      }, backbone?.segments ?? null, progress);
+    })();
+    conservationCache = {key, promise};
+    promise.catch(() => { if (conservationCache?.promise === promise) conservationCache = null; });
+  }
+  return sampleConservation(await conservationCache.promise, ranges);
 }
 async function importAnnotations(aid, gid, blob, name, concatenate) {
   const a = await getAlignment(aid); if (!a.genomes.some(g => g.id === gid)) throw Error('Genome not found.');
@@ -47,7 +77,7 @@ async function route(path, options = {}) {
     if (!id) return method === 'POST' ? jobs.create(JSON.parse(options.body)) : jobs.list();
     if (parts[3] === 'cancel') return jobs.cancel(id);
     if (parts[3] === 'import') return jobs.retry(id);
-    if (parts[3] === 'artifacts') { const blob = await store.get('artifacts', [id, parts[4]]); if (!blob) throw Error('Artifact not found.'); return {blob, filename: ({xmfa: 'alignment.xmfa', tree: 'guide.tree', backbone: 'alignment.backbone', log: 'run.log', manifest: 'manifest.json'})[parts[4]]}; }
+    if (parts[3] === 'artifacts') { const blob = await store.get('artifacts', [id, parts[4]]); if (!blob) throw Error('Artifact not found.'); return {blob, filename: ({xmfa: 'alignment.xmfa', tree: 'guide.tree', backbone: 'alignment.backbone', bbcols: 'alignment.xmfa.bbcols', log: 'run.log', manifest: 'manifest.json'})[parts[4]]}; }
     return jobs.get(id);
   }
   if (parts[1] === 'demo') {
@@ -67,6 +97,8 @@ async function route(path, options = {}) {
         progress('Loading the eight-strain E. coli alignment…');
         a = await importAlignment(await compressed(manifest.alignment.file), manifest.name, manifest.genomes);
       }
+      if (manifest.alignment.backbone && !await store.get('artifacts', [a.id, 'conservation-backbone']))
+        await saveBackbone(a, await compressed(manifest.alignment.backbone.file));
       for (const genome of manifest.genomes) if (!await store.get('annotations', [a.id, genome.id])) {
         progress(`Loading E. coli annotations ${genome.id}/${manifest.genomes.length}: ${genome.strain}…`);
         await importAnnotations(a.id, genome.id, await compressed(genome.annotations), `${genome.chromosome}.gbk`, false);
@@ -87,6 +119,8 @@ async function route(path, options = {}) {
   }
   const alignment = await getAlignment(aid);
   if (parts.length === 3) return alignment;
+  if (parts[3] === 'backbone' && method === 'POST') return saveBackbone(alignment, options.body);
+  if (parts[3] === 'conservation' && method === 'POST') return conservation(alignment, JSON.parse(options.body));
   if (parts[3] === 'annotations') return (await store.all('annotations', store.range(aid))).map(({features, ...s}) => s);
   if (parts[3] === 'genomes') return importAnnotations(aid, Number(parts[4]), options.body, p.get('name') || 'annotations.gbk', p.get('concatenate') === 'true');
   if (parts[3] === 'features') {

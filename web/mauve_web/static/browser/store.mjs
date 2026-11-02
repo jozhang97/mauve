@@ -18,9 +18,10 @@ export class Store {
     return done;
   }
   async deleteAlignment(id) {
-    const tx = this.db.transaction(['alignments', 'blocks', 'members', 'annotations'], 'readwrite');
+    const tx = this.db.transaction(['alignments', 'blocks', 'members', 'annotations', 'artifacts'], 'readwrite');
     const done = new Promise((resolve, reject) => { tx.oncomplete = resolve; tx.onerror = () => reject(tx.error); });
     tx.objectStore('alignments').delete(id);
+    tx.objectStore('artifacts').delete([id, 'conservation-backbone']);
     for (const name of ['blocks', 'members', 'annotations']) tx.objectStore(name).delete(this.range(id));
     return done;
   }

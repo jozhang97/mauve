@@ -337,11 +337,11 @@ svg {
 .block:hover,
 .block:focus {
   stroke: var(--selection-outline);
-  stroke-width: 2;
+  stroke-width: 4;
 }
 .block.block-match-hover {
   stroke: var(--selection-outline);
-  stroke-width: 3;
+  stroke-width: 4;
 }
 .alignment-links .block-match-hover {
   opacity: 0.55;
@@ -363,15 +363,8 @@ svg {
   margin: 0 5px 0 12px;
   border-radius: 2px;
 }
-.legend.reverse {
-  background: repeating-linear-gradient(
-    45deg,
-    #c3afd9,
-    #c3afd9 2px,
-    #f4edf9 2px,
-    #f4edf9 4px
-  );
-}
+.legend.forward { border-bottom: 2px solid var(--text); }
+.legend.reverse { border-top: 2px solid var(--text); }
 .inspector .eyebrow {
   font-size: 9px;
   margin-bottom: 8px;

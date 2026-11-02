@@ -8,6 +8,7 @@
     <script src="./static/theme.js"></script>
     <link rel="stylesheet" href="./static/style.css" />
     <script src="./static/track-geometry.js" defer></script>
+    <script src="./static/conservation-view.js" defer></script>
     <script src="./static/app.js" defer></script>
     <script src="./static/gene-analysis.js" defer></script>
     <script src="./static/rank-view.mjs" type="module"></script>
@@ -346,6 +347,8 @@
                 <label class="check" title="Align and reverse tracks where necessary so the selected block follows the reference direction."><input type="checkbox" id="orient-tracks" /> Orient tracks to selected block</label>
                 <label class="check"><input type="checkbox" id="show-annotations" checked /> Selected block annotations</label>
                 <label class="check" title="Show only genes in families present in every loaded genome, including hidden tracks, and blocks overlapping those genes. Includes all copies of core families."><input type="checkbox" id="core-genes-only" /> Core family genes only</label>
+                <label class="check"><input type="checkbox" id="show-conservation" checked /> Conservation profiles</label>
+                <button id="import-backbone" type="button">Import backbone (.bbcols)</button><input id="backbone-file" type="file" accept=".bbcols,.txt" hidden />
                 <label class="check"><input type="checkbox" id="show-identity" checked /> Selected block identity</label>
                 <label class="check"><input type="checkbox" id="isolate-block" /> Selected block only</label>
                 <label>Minimum block columns <input id="min-columns" type="number" min="0" step="1" value="0" /></label>
@@ -366,8 +369,8 @@
           <p id="feature-limit" class="small feature-status" hidden></p>
           <div class="plot-footer">
             <span
-              ><b class="legend forward"></b> Forward strand
-              <b class="legend reverse"></b> Reverse strand</span
+              ><b class="legend forward"></b> Forward · above baseline
+              <b class="legend reverse"></b> Reverse · below baseline</span
             ><span>Click a block to inspect · Double-click to focus</span>
           </div>
           <div class="block-browser">
@@ -379,6 +382,7 @@
             </div>
             <div id="block-list"></div>
           </div>
+          <p id="conservation-status" class="small feature-status" aria-live="polite"></p>
           <p id="identity-status" class="small feature-status" aria-live="polite">Select a block to compare identity with the reference.</p>
         </section>
         <section class="panel" id="gene-analysis-panel">

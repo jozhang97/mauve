@@ -132,6 +132,11 @@ def finalize(manifest):
     alignment.update({'file': destination.name, 'sha256': hashlib.sha256(raw).hexdigest(),
                       'bytes': len(raw), 'compressed_bytes': destination.stat().st_size,
                       'blocks': sum(line == b'=' for line in raw.splitlines())})
+    backbone = (WORK / 'alignment.xmfa.bbcols').read_bytes()
+    bb_destination = DEST / 'alignment.xmfa.bbcols.gz'
+    bb_destination.write_bytes(gzip.compress(backbone, mtime=0))
+    alignment['backbone'] = {'file': bb_destination.name, 'sha256': hashlib.sha256(backbone).hexdigest(),
+                             'bytes': len(backbone), 'compressed_bytes': bb_destination.stat().st_size}
     manifest['total_bases'] = sum(g['bases'] for g in manifest['genomes'])
     manifest['download_bytes'] = sum(p.stat().st_size for p in DEST.glob('*.gz') if p.name != 'sampling-pool.json.gz')
     (DEST / 'guide.tree').write_bytes((WORK / 'guide.tree').read_bytes())

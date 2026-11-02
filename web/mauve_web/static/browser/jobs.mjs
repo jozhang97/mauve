@@ -98,7 +98,7 @@ export class Jobs {
       job.status = 'importing';
       job.artifacts = ['manifest', 'log', ...Object.keys(files)];
       await this.store.batch([['jobs', job.id, job], ...Object.entries(files).map(([k, v]) => ['artifacts', [job.id, k], v])]);
-      const alignment = await this.importer(files.xmfa, job.name, job.spec.inputs);
+      const alignment = await this.importer(files.xmfa, job.name, job.spec.inputs, files.bbcols);
       job.alignment_id = alignment.id; job.status = 'succeeded';
     } catch (e) { job.status = run.cancelled ? 'cancelled' : 'failed'; job.error = e.message || String(e); job.can_import_result = !run.cancelled && Boolean(await this.store.get('artifacts', [job.id, 'xmfa'])); }
     finally {
@@ -118,7 +118,7 @@ export class Jobs {
   }
   async retry(id) {
     const job = await this.get(id); if (!job.can_import_result) throw Error('No saved result is available to import.');
-    const a = await this.importer(await this.store.get('artifacts', [id, 'xmfa']), job.name, job.spec.inputs);
+    const a = await this.importer(await this.store.get('artifacts', [id, 'xmfa']), job.name, job.spec.inputs, await this.store.get('artifacts', [id, 'bbcols']));
     job.alignment_id = a.id; job.status = 'succeeded'; job.error = ''; job.can_import_result = false; await this.store.put('jobs', id, job); return job;
   }
 }

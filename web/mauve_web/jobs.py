@@ -30,7 +30,7 @@ MAX_INPUT = 50 * 1024 * 1024
 MAX_TOTAL_BASES = 100_000_000
 
 MAX_OUTPUT = MAX_ALIGNMENT
-ARTIFACTS = {'xmfa': 'alignment.xmfa', 'tree': 'guide.tree', 'backbone': 'alignment.backbone',
+ARTIFACTS = {'xmfa': 'alignment.xmfa', 'tree': 'guide.tree', 'backbone': 'alignment.backbone', 'bbcols': 'alignment.xmfa.bbcols',
              'log': 'run.log', 'manifest': 'manifest.json'}
 
 

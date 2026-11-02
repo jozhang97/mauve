@@ -14,7 +14,7 @@ CANONICAL[list(b'ACGT')] = True
 
 HEADER = re.compile(r'^>\s*(\d+):(\d+)-(\d+)\s+([+-])(?:\s+(.*))?$')
 META = re.compile(r'^#Sequence(\d+)File\s+(.+)$')
-BASES = re.compile(r'^[ACGTRYSWKMBDHVNacgtryswkmbdhvn-]+$')
+BASES = re.compile(r'^[ACGTRYSWKMBDHVNXacgtryswkmbdhvnx-]+$')
 
 
 def basename(value):

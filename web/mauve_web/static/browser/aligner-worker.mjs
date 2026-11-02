@@ -24,7 +24,7 @@ self.onmessage = async ({data}) => {
     flush();
     if (code !== 0) throw Error(`progressiveMauve exited with status ${code}.`);
     const files = {};
-    for (const [key, name] of Object.entries({xmfa: 'alignment.xmfa', tree: 'guide.tree', backbone: 'alignment.backbone'})) {
+    for (const [key, name] of Object.entries({xmfa: 'alignment.xmfa', tree: 'guide.tree', backbone: 'alignment.backbone', bbcols: 'alignment.xmfa.bbcols'})) {
       try { files[key] = new Blob([module.FS.readFile('/' + name)]); } catch (e) { if (key === 'xmfa') throw Error('Aligner did not produce an XMFA alignment.'); }
     }
     self.postMessage({type: 'done', files, metrics: {threads: config.threads,

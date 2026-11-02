@@ -219,6 +219,7 @@ async function refreshJobDetail() {
           : "Raw XMFA (not validated)",
       tree: "Guide tree",
       backbone: "Backbone",
+      bbcols: "Viewer backbone (.bbcols)",
       log: "Full log",
       manifest: "Parameters & provenance",
     }[key];

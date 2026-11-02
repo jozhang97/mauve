@@ -38,3 +38,8 @@ def test_sample_is_reproducible_and_assets_match_manifest():
     assert len(raw) == manifest['alignment']['bytes']
     assert raw.splitlines().count(b'=') == manifest['alignment']['blocks']
     assert b'/tmp/' not in raw and b'/Users/' not in raw
+
+    backbone = manifest['alignment']['backbone']
+    raw = gzip.decompress((ROOT / backbone['file']).read_bytes())
+    assert hashlib.sha256(raw).hexdigest() == backbone['sha256']
+    assert len(raw) == backbone['bytes']

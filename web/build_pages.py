@@ -1,5 +1,6 @@
 """Build the standalone browser app, without Python APIs or user data."""
 import argparse
+import hashlib
 import json
 import os
 import re
@@ -40,6 +41,16 @@ def build(output, goatcounter_code=''):
     html = html.replace('2–8', '2–64').replace('up to 8 assemblies', 'up to 64 assemblies')
     html = html.replace('id="alignment-form">', 'id="alignment-form"><p class="small">Runs on this device. Keep this tab open until the job finishes. Saved results belong to this browser; export important work. Larger genome counts are experimental.</p>')
     html = html.replace('workspace. Closing the browser does not stop a job.', 'browser. Closing this tab interrupts unfinished jobs; saved results remain available.')
+    # A reused preview/hosting URL can retain an old worker in the HTTP cache.
+    # Version entrypoints together; client.js passes this version to its worker.
+    digest = hashlib.sha256()
+    for asset in sorted((output / 'static').rglob('*')):
+        if asset.is_file() and asset.suffix in ('.js', '.mjs', '.css'):
+            digest.update(str(asset.relative_to(output)).encode())
+            digest.update(asset.read_bytes())
+    version = digest.hexdigest()[:16]
+    html = re.sub(r'((?:src|href)="\./static/[^"?]+\.(?:js|mjs|css))"',
+                  lambda match: f'{match[1]}?v={version}"', html)
     (output / 'index.html').write_text(html)
     shutil.copytree(ROOT / 'demo/ecoli', output / 'static/demo/ecoli')
     (output / '.nojekyll').touch()

@@ -161,7 +161,7 @@ export async function parseXMFA(blob, saveBlock) {
       if (!genomes.has(id)) genomes.set(id, {id, name: basename(match[5] || `Sequence ${id}`), extent: 0});
       current = {genome_id: id, start, end, strand: match[4], parts: []};
     } else if (line[0] === '=') await flush();
-    else if (current && /^[ACGTRYSWKMBDHVNacgtryswkmbdhvn-]+$/.test(line)) current.parts.push(line);
+    else if (current && /^[ACGTRYSWKMBDHVNXacgtryswkmbdhvnx-]+$/.test(line)) current.parts.push(line);
     else throw Error(`Unexpected content at line ${lineNumber}; expected XMFA aligned DNA.`);
   }
   await flush();

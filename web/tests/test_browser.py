@@ -300,7 +300,7 @@ def test_richer_viewer(browser_app, tmp_path):
             open_small_fixture(page)
             page.wait_for_selector('svg .feature')
             page.locator('#block-list button').first.click()
-            page.wait_for_selector('.identity-window')
+            page.wait_for_selector('.conservation-profile')
             assert 'Only A/C/G/T pairs count' in page.locator('#identity-status').inner_text()
             assert not page.locator('#differences-only').is_checked()
             assert page.locator('.sequence-row .base').count() == 200
@@ -342,12 +342,12 @@ def test_richer_viewer(browser_app, tmp_path):
             assert page.locator('#block-list button').count() == 1
             page.locator('#min-columns').fill('999999')
             assert page.locator('svg .block').count() == 0
-            assert page.locator('.identity-window').count() == 0
+            assert page.locator('.conservation-profile').count() == 0
             page.locator('#min-columns').fill('0')
-            page.locator('#show-identity').uncheck()
-            assert page.locator('.identity-window').count() == 0
-            page.locator('#show-identity').check()
-            page.wait_for_selector('.identity-window')
+            page.locator('#show-conservation').uncheck()
+            assert page.locator('.conservation-profile').count() == 0
+            page.locator('#show-conservation').check()
+            page.wait_for_selector('.conservation-profile')
             page.locator('#block-search').fill('does-not-exist')
             assert 'No matching blocks' in page.locator('#block-list').inner_text()
             page.locator('#reset-display').click()

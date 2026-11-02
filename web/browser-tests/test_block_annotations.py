@@ -172,8 +172,9 @@ def test_selected_block_annotations_per_genome_pagination_and_switching(analysis
     assert page.evaluate('state.detail.members.find(m => m.genome_id === 1).positions[0]') in range(101, 201)
     assert abs(wrapped.evaluate("e => Number(e.getAttribute('x'))") - before_wrap_x) < 0.001
     assert page.locator('svg .feature[aria-label^="first_block1,"]').count() == 1
-    page.wait_for_function('state.profile?.block_id === 1 || document.querySelectorAll(".identity-window").length > 0')
-    assert page.locator('.identity-window').count() > 0
+    page.wait_for_function('state.profile?.reference_id && document.querySelectorAll(".conservation-profile").length > 0')
+    page.wait_for_selector('.conservation-profile')
+    assert page.locator('.conservation-profile').count() > 0
     assert page.locator('.page-window').count() > 0
     # Panning backwards also wraps; native labels never become negative.
     page.evaluate('() => { state.trackOffsets.clear(); setRange(-1950, -1750, false); }')

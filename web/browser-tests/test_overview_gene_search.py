@@ -157,7 +157,8 @@ def test_block_clicks_paging_zoom_and_fit_keep_search(gene_page):
     page.wait_for_function('state.selected === 1')
     page.locator('#reset').click()
     assert markers(page).count() == 5
-    assert page.locator('.identity-window').count() > 0
+    page.wait_for_selector('.conservation-profile')
+    assert page.locator('.conservation-profile').count() > 0
     assert page.locator('.page-window').count() > 0
 
 

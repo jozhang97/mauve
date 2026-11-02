@@ -207,8 +207,14 @@
     "sha256": "aeefeda9a6070e23d6b995f589f9d56f27e94301ebeb82433b0fe1f3142d385d",
     "bytes": 57173775,
     "compressed_bytes": 11983981,
-    "blocks": 281
+    "blocks": 281,
+    "backbone": {
+      "file": "alignment.xmfa.bbcols.gz",
+      "sha256": "2f15d4f0c7d225b6652a35819ead709d05a201fcf16c6e23cdf70b6827d3416c",
+      "bytes": 133879,
+      "compressed_bytes": 38890
+    }
   },
   "total_bases": 38646189,
-  "download_bytes": 38472972
+  "download_bytes": 38511862
 }

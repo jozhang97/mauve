@@ -7,7 +7,9 @@
     return window.mauveBrowser.request(...args);
   }};
   await ready;
-  const worker = new Worker(new URL('./worker.mjs', scriptURL), {type: 'module'});
+  const workerURL = new URL('./worker.mjs', scriptURL);
+  workerURL.search = new URL(scriptURL).search;
+  const worker = new Worker(workerURL, {type: 'module'});
   const pending = new Map(); let serial = 0, failure;
   window.mauveBrowser = {
     request(path, options) {

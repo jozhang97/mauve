@@ -364,7 +364,7 @@ async function loadProfile() {
     renderComparisonSummary();
     renderBases();
     $("identity-status").textContent = result.present
-      ? `Block ${block.id} · Whole-block nucleotide identity vs ${state.alignment.genomes.find(g => g.id === state.reference).name} is shown beside each track; bars show identity per window. Only A/C/G/T pairs count; gaps and ambiguous bases excluded. Gray = no comparable bases.`
+      ? `Block ${block.id} · Whole-block nucleotide identity vs ${state.alignment.genomes.find(g => g.id === state.reference).name} is shown beside each track; in-block curves show alignment-wide conservation. Only A/C/G/T pairs count; gaps and ambiguous bases excluded.`
       : `Block ${block.id} is absent from the reference; no identity comparison is available.`;
     render();
   } catch (e) {
@@ -692,38 +692,8 @@ function selectOverviewBlock(event, member, id, svg, copy = null) {
   return selectBlock(id, 0, {genome_id: member.genome_id, position,
     viewPosition: orientedBase(position, member.genome_id) + copy - trackOffset(member.genome_id)}, false, true);
 }
-function drawIdentity(svg, project, ys, blocks) {
-  if (!state.profile || !$("show-identity").checked || !blocks.some(b => b.id === state.selected)) return;
-  const layer = svgNode("g", {"clip-path": "url(#track-clip)", class: "identity-layer"});
-  svg.append(layer);
-  const selectCurrent = safely(() => selectBlock(state.selected, state.offset));
-  for (const m of state.profile.members) {
-    if (!ys.has(m.genome_id)) continue;
-    const baseline = ys.get(m.genome_id) + 18;
-    for (const w of m.windows) for (const copy of trackCopies(w.start, w.end, m.genome_id)) {
-      const x = p => project(p, m.genome_id, copy);
-      const rect = svgNode("rect", {
-        x: Math.min(x(w.start), x(w.end + 1)), y: baseline - (w.identity === null ? 18 : w.identity * 18),
-        width: Math.max(.5, Math.abs(x(w.end + 1) - x(w.start))),
-        height: w.identity === null ? 18 : Math.max(.6, w.identity * 18),
-        fill: w.identity === null ? "var(--muted)" : "var(--text)",
-        opacity: w.identity === null ? .35 : .65,
-        class: "identity-window",
-        "clip-path": genomeClip(m.genome_id),
-        "data-genome": m.genome_id,
-        "data-block-id": state.selected,
-      });
-      rect.append(svgNode("title", {}, `${fmt(w.start)}–${fmt(w.end)} · ${w.identity === null ? "No comparable bases" : (w.identity * 100).toFixed(1) + "% identity"} · ${w.compared}/${w.columns} comparable columns`));
-      rect.onclick = safely(event => {
-        const member = state.blocks.find(b => b.id === state.selected)?.members.find(item => item.genome_id === m.genome_id);
-        return $("align-tracks").checked && member ? selectOverviewBlock(event, member, state.selected, svg, copy) : selectCurrent();
-      });
-      layer.append(rect);
-    }
-  }
-}
-// Block-member metadata is immutable after loading. Weak keys release cached
-// bounds when an alignment is discarded; replacing the members array refreshes it.
+
+// Metadata is immutable; weak keys release bounds when an alignment closes.
 const blockBounds = new WeakMap();
 function blockIntersectsViewport(block, padding = 0) {
   if ($("align-tracks").checked) return true;
@@ -759,25 +729,6 @@ function render() {
   const clip = svgNode("clipPath", { id: "track-clip" });
   clip.append(svgNode("rect", { x: left, y: 0, width: right - left, height }));
   defs.append(clip);
-  const pattern = svgNode("pattern", {
-    id: "reverse-hatch",
-    width: 6,
-    height: 6,
-    patternUnits: "userSpaceOnUse",
-    patternTransform: "rotate(45)",
-  });
-  pattern.append(
-    svgNode("line", {
-      x1: 0,
-      y1: 0,
-      x2: 0,
-      y2: 6,
-      stroke: "#ffffff",
-      "stroke-opacity": ".45",
-      "stroke-width": 2,
-    }),
-  );
-  defs.append(pattern);
   svg.append(defs);
   const span = state.end - state.start + 1,
     x = (p, gid, copy = 0) => left + ((orientedEdge(p, gid) + copy - trackOffset(gid) - state.start) / span) * (right - left),
@@ -830,8 +781,8 @@ function render() {
         };
         const [a1, a2] = ends(a, ac),
           [c1, c2] = ends(c, cc),
-          y1 = ys.get(a.genome_id) + 18,
-          y2 = ys.get(c.genome_id);
+          y1 = conservationBoxY(ys.get(a.genome_id), a) + 24,
+          y2 = conservationBoxY(ys.get(c.genome_id), c);
         connections.append(
           svgNode("path", {
             "data-block-id": b.id,
@@ -905,7 +856,7 @@ function render() {
           "text",
           {
             x: tx,
-            y: y + 41,
+            y: y + 50,
             class: "tick genome-coordinate",
             "data-genome": g.id,
             "text-anchor": t === 4 ? "end" : "start",
@@ -942,22 +893,22 @@ function render() {
       const y = ys.get(m.genome_id),
         attrs = {
           x: Math.min(x(m.start, m.genome_id, copy), x(m.end + 1, m.genome_id, copy)),
-          y,
+          y: conservationBoxY(y, m),
           width: Math.max(2, Math.abs(x(m.end + 1, m.genome_id) - x(m.start, m.genome_id))),
-          height: 18,
+          height: 24,
           "clip-path": genomeClip(m.genome_id),
           rx: 3,
         };
       const r = svgNode("rect", {
         ...attrs,
-        fill: color(b.id),
+        fill: "white",
         class: "block",
         "data-block-id": b.id,
         tabindex: 0,
         role: "button",
         "aria-label": `Block ${b.id}, sequence ${m.genome_id}, ${m.start} to ${m.end}, ${m.strand === "+" ? "forward" : "reverse"} strand`,
-        stroke: state.selected === b.id ? "var(--selection-outline)" : "none",
-        "stroke-width": 2,
+        stroke: state.selected === b.id ? "var(--selection-outline)" : color(b.id),
+        "stroke-width": 3,
       });
       r.append(
         svgNode(
@@ -969,16 +920,25 @@ function render() {
       // JS-only metadata keeps exported SVG markup unchanged.
       r.mauveBlockId = b.id; r.mauveMember = m; r.mauveCopy = copy;
       rectangles.append(r);
-      if (displayedStrand(m.strand, m.genome_id) === -1)
-        rectangles.append(
-          svgNode("rect", {
-            ...attrs,
-            fill: "url(#reverse-hatch)",
-            "pointer-events": "none",
-          }),
-        );
     }
-  drawIdentity(svg, x, ys, blocks);
+  drawConservation(svg, x, ys, viewportBlocks, left, right);
+
+  // Paint block ends above the profile fills, which otherwise cover the
+  // inner half of the rectangle stroke at each sequence boundary.
+  const boundaries = svgNode("g", {
+    "clip-path": "url(#track-clip)", "pointer-events": "none", class: "block-boundaries",
+  });
+  for (const r of rectangles.children) {
+    const leftEdge = Number(r.getAttribute("x")), rightEdge = leftEdge + Number(r.getAttribute("width"));
+    const topEdge = Number(r.getAttribute("y")) + 2, bottomEdge = topEdge + 20;
+    boundaries.append(svgNode("path", {
+      d: `M${leftEdge},${topEdge}V${bottomEdge}M${rightEdge},${topEdge}V${bottomEdge}`,
+      fill: "none", stroke: r.getAttribute("stroke"), "stroke-width": 4,
+      "stroke-linecap": "round", "clip-path": r.getAttribute("clip-path"),
+    }));
+  }
+  svg.append(boundaries);
+
   if (state.detail?.id === state.selected && blocks.some(b => b.id === state.selected)) {
     const layer = svgNode("g", {"clip-path": "url(#track-clip)", class: "sequence-page-markers"});
     for (const member of sequenceMembers()) {
@@ -986,7 +946,7 @@ function render() {
       if (!positions.length || !ys.has(member.genome_id)) continue;
       const start = Math.min(...positions), end = Math.max(...positions);
       for (const copy of trackCopies(start, end, member.genome_id)) {
-      const marker = svgNode("rect", {x: Math.min(x(start, member.genome_id, copy), x(end + 1, member.genome_id, copy)), y: ys.get(member.genome_id) + 23,
+      const marker = svgNode("rect", {x: Math.min(x(start, member.genome_id, copy), x(end + 1, member.genome_id, copy)), y: ys.get(member.genome_id) + 35,
         width: Math.max(3, Math.abs(x(end + 1, member.genome_id) - x(start, member.genome_id))), height: 4, fill: "var(--purple)", class: "page-window", "clip-path": genomeClip(member.genome_id)});
       marker.append(svgNode("title", {}, `Sequence page: ${fmt(start)}–${fmt(end)} bp · alignment columns ${fmt(state.offset + 1)}–${fmt(state.offset + member.bases.length)}`));
       layer.append(marker);
@@ -997,7 +957,7 @@ function render() {
   drawAnnotations(svg, x, ys);
   drawOverviewFeature(svg, x, ys);
   // Highlight corresponding members without changing selection or re-rendering
-  // the SVG under the pointer. Identity overlays share their block's hover target.
+  // the SVG under the pointer. Profiles preserve their block's hover target.
   const blockId = node => node?.closest?.("[data-block-id]")?.dataset.blockId;
   const highlight = id => {
     for (const node of svg.querySelectorAll("[data-block-id]"))
@@ -1324,7 +1284,7 @@ $("reset-display").onclick = () => {
   $("track-sort").value = "manual"; applyTrackOrder();
   state.trackDirections.clear();
   state.trackOffsets.clear();
-  for (const id of ["links", "show-annotations", "show-identity"]) $(id).checked = true;
+  for (const id of ["links", "show-annotations", "show-identity", "show-conservation"]) $(id).checked = true;
   $("isolate-block").checked = $("shared-only").checked = false;
   $("min-columns").value = 0;
   $("block-search").value = "";
@@ -1359,6 +1319,19 @@ $("reference-genome").onchange = safely(async () => {
   loadProfile();
 });
 $("show-identity").onchange = loadProfile;
+$("show-conservation").onchange = render;
+$("import-backbone").onclick = () => $("backbone-file").click();
+$("backbone-file").onchange = safely(async () => {
+  const file = $("backbone-file").files[0], aid = state.alignment?.id;
+  if (!file || !aid) return;
+  try {
+    if (file.size > 50 * 1024 * 1024) throw Error('Backbone files must be at most 50 MiB.');
+    const result = await api(`/api/alignments/${aid}/backbone`, {method: 'POST', body: file});
+    if (state.alignment?.id !== aid) return;
+    conservationView.revision++; render();
+    notice(`Imported ${fmt(result.segments)} backbone segments.`);
+  } finally { $("backbone-file").value = ''; }
+});
 $("focus-reference").onclick = () => {
   const member = state.blocks.find(b => b.id === state.selected)?.members.find(m => m.genome_id === state.reference);
   if (!member) return;
@@ -1921,7 +1894,11 @@ $("annotation-file").onchange = safely(async () => {
     $("annotation-file").value = "";
   }
 });
-$("export-svg").onclick = () => {
+$("export-svg").onclick = safely(async () => {
+  if ($('show-conservation').checked) {
+    await fetchConservation();
+    if (conservationView.error) throw conservationView.error;
+  }
   const source = $("tracks").querySelector("svg"),
     clone = source.cloneNode(true);
   const originals = [source, ...source.querySelectorAll("*")],
@@ -1970,7 +1947,7 @@ $("export-svg").onclick = () => {
     svgNode(
       "desc",
       {},
-      `Genomic coordinates are 1-based inclusive. Colors denote alignment blocks; hatching denotes reverse strands. Green arrows are GenBank features; selected features are purple. Track percentages show whole-block nucleotide identity for selected block ${state.selected ?? 'none'} versus ${state.alignment.genomes.find(g => g.id === state.reference)?.name}. Dark bars show identity per window (0–100%); gaps and ambiguous bases are excluded. Gray windows have no comparable bases. Purple marks below tracks indicate the current sequence page. Coordinate labels remain native to each genome. ${$("align-tracks").checked ? "Tracks are shifted to align corresponding positions in the selected block; annotated circular chromosomes wrap at their origin." : "Tracks share a coordinate origin."} ${$("orient-tracks").checked ? "Tracks marked Reversed view are displayed in reverse orientation relative to their native coordinates." : ""} ${$("core-genes-only").checked ? "Gene arrows are restricted to core families present in every loaded genome; only blocks overlapping those genes are shown." : ""} This export captures the current visible overview.`,
+      `Genomic coordinates are 1-based inclusive. Colors denote alignment blocks. Forward blocks are above the baseline and reverse blocks below it. Green arrows are GenBank features; selected features are purple. Track percentages show whole-block nucleotide identity for selected block ${state.selected ?? 'none'} versus ${state.alignment.genomes.find(g => g.id === state.reference)?.name}. In-block profiles show Mauve conservation (one minus mean column entropy), with a mean line and shaded similarity range. Gaps reduce conservation; gray profile segments lie outside supplied backbone. Pairwise identity excludes gaps and ambiguous bases. Purple marks below tracks indicate the current sequence page. Coordinate labels remain native to each genome. ${$("align-tracks").checked ? "Tracks are shifted to align corresponding positions in the selected block; annotated circular chromosomes wrap at their origin." : "Tracks share a coordinate origin."} ${$("orient-tracks").checked ? "Tracks marked Reversed view are displayed in reverse orientation relative to their native coordinates." : ""} ${$("core-genes-only").checked ? "Gene arrows are restricted to core families present in every loaded genome; only blocks overlapping those genes are shown." : ""} This export captures the current visible overview.`,
     ),
     clone.firstChild,
   );
@@ -1985,7 +1962,7 @@ $("export-svg").onclick = () => {
   a.click();
   window.mauveAnalytics?.trackUsage("svg-downloaded");
   setTimeout(() => URL.revokeObjectURL(url), 1000);
-};
+});
 
 new ResizeObserver(() => render()).observe($("tracks"));
 safely(async () => {

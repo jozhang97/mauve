@@ -18,6 +18,7 @@ from starlette.concurrency import run_in_threadpool
 
 from .xmfa import basename, column_slice, identity_profile, coordinate_column, iter_xmfa, next_difference
 from .cache import BlockCache
+from .conservation import build_conservation, sample_conservation, parse_backbone
 from .annotations import parse_genbank
 from .jobs import JobManager, JobRequest
 from .limits import MAX_ALIGNMENT
@@ -42,6 +43,8 @@ def create_app(data_dir=None, aligner_path=None):
     database = storage / 'alignments.sqlite3'
     block_cache = BlockCache()
     demo_lock = threading.Lock()
+    conservation_lock = threading.Lock()
+    conservation_cache = {}
     with closing(sqlite3.connect(database, timeout=30)) as db:
         db.executescript('''
             CREATE TABLE IF NOT EXISTS alignments (
@@ -57,6 +60,7 @@ def create_app(data_dir=None, aligner_path=None):
                 alignment_id TEXT NOT NULL, genome_id INTEGER NOT NULL,
                 name TEXT NOT NULL, metadata TEXT NOT NULL,
                 PRIMARY KEY (alignment_id, genome_id));
+            CREATE TABLE IF NOT EXISTS conservation_backbones (alignment_id TEXT PRIMARY KEY, revision TEXT NOT NULL, segments TEXT NOT NULL);
             CREATE TABLE IF NOT EXISTS features (
                 id INTEGER PRIMARY KEY, alignment_id TEXT NOT NULL, genome_id INTEGER NOT NULL,
                 start INTEGER NOT NULL, end INTEGER NOT NULL, search_text TEXT NOT NULL, data TEXT NOT NULL);
@@ -160,6 +164,10 @@ def create_app(data_dir=None, aligner_path=None):
                            (aid, basename(name)[:200] or 'Untitled alignment', json.dumps(genome_list), count))
         except (ValueError, UnicodeError) as exc:
             raise HTTPException(422, str(exc)) from exc
+        if isinstance(raw, Path):
+            companion = Path(str(raw) + '.bbcols')
+            if companion.is_file():
+                save_backbone(aid, companion.read_bytes())
         return get_alignment(aid)
 
     jobs = JobManager(storage, save, executable=aligner_path)
@@ -245,6 +253,9 @@ def create_app(data_dir=None, aligner_path=None):
                             while chunk := source.read(1024 * 1024):
                                 target.write(chunk)
                         alignment = save(path, manifest['name'], manifest['genomes'])
+                if manifest['alignment'].get('backbone') and not query('SELECT revision FROM conservation_backbones WHERE alignment_id=?', (alignment['id'],)):
+                    with gzip.open(folder / manifest['alignment']['backbone']['file'], 'rb') as source:
+                        save_backbone(alignment['id'], source.read())
                 for genome in manifest['genomes']:
                     if not query('SELECT genome_id FROM annotation_sources WHERE alignment_id=? AND genome_id=?', (alignment['id'], genome['id'])):
                         with gzip.open(folder / genome['annotations'], 'rb') as source:
@@ -253,7 +264,7 @@ def create_app(data_dir=None, aligner_path=None):
             except Exception:
                 if not existing and alignment is not None:
                     with closing(sqlite3.connect(database, timeout=30)) as db, db:
-                        for table in ('alignments', 'blocks', 'block_overviews', 'annotation_sources', 'features'):
+                        for table in ('alignments', 'conservation_backbones', 'blocks', 'block_overviews', 'annotation_sources', 'features'):
                             column = 'id' if table == 'alignments' else 'alignment_id'
                             db.execute(f'DELETE FROM {table} WHERE {column}=?', (alignment['id'],))
                 raise
@@ -269,6 +280,39 @@ def create_app(data_dir=None, aligner_path=None):
         return [{'id': b['id'], 'columns': b['columns'],
                  'members': json.loads(b['members'])}
                 for b in query('SELECT * FROM block_overviews WHERE alignment_id=? ORDER BY id', (aid,))]
+
+    def save_backbone(aid, raw):
+        alignment = get_alignment(aid)
+        segments = parse_backbone(raw.decode('utf-8'), blocks(aid), alignment['genomes'])
+        revision = uuid.uuid4().hex
+        with closing(sqlite3.connect(database, timeout=30)) as db, db:
+            db.execute('INSERT OR REPLACE INTO conservation_backbones VALUES (?,?,?)', (aid, revision, json.dumps(segments)))
+        return {'segments': len(segments), 'revision': revision}
+
+    @app.post('/api/alignments/{aid}/backbone')
+    async def import_backbone(aid: str, request: Request):
+        try:
+            return await run_in_threadpool(save_backbone, aid, await read_upload(request))
+        except (ValueError, UnicodeError) as exc:
+            raise HTTPException(422, str(exc)) from exc
+
+    def conservation_samples(aid, ranges):
+        alignment = get_alignment(aid)
+        rows = query('SELECT * FROM conservation_backbones WHERE alignment_id=?', (aid,))
+        key = (aid, rows[0]['revision'] if rows else '')
+        with conservation_lock:
+            if key not in conservation_cache:
+                conservation_cache.clear()
+                conservation_cache[key] = build_conservation(alignment['genomes'], blocks(aid),
+                    lambda info: get_block(aid, info['id']), json.loads(rows[0]['segments']) if rows else None)
+            return sample_conservation(conservation_cache[key], ranges)
+
+    @app.post('/api/alignments/{aid}/conservation')
+    async def conservation(aid: str, request: Request):
+        try:
+            return await run_in_threadpool(conservation_samples, aid, await request.json())
+        except (ValueError, TypeError) as exc:
+            raise HTTPException(422, str(exc)) from exc
 
     @app.get('/api/alignments/{aid}/blocks/{bid}')
     def block(aid: str, bid: int, offset: int = Query(0, ge=0), limit: int = Query(100, ge=1, le=500),

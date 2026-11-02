@@ -75,7 +75,8 @@ def test_static_viewer_import_persistence_exports_and_job(site, browser, tmp_pat
     page.wait_for_function("document.querySelector('#staged-inputs').children.length === 2")
     page.locator('#submit-job').click()
     page.wait_for_function("document.querySelector('#job-status').textContent === 'succeeded'", timeout=60000)
-    assert page.locator('#job-artifacts a').count() == 5
+    assert page.locator('#job-artifacts a').count() == 6
+    assert page.locator('#job-artifacts a').filter(has_text='Viewer backbone').count() == 1
     page.locator('#open-result').click(); page.locator('#block-list button').first.click(); page.wait_for_selector('.base-row')
     assert page.locator('#genome-count').inner_text() == '2'
     page.reload(); page.wait_for_selector('svg .block')
