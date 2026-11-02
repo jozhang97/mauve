@@ -330,6 +330,7 @@ svg {
   fill: var(--subtle);
 }
 .block-identity-value { font-size: 10px; font-weight: 600; fill: var(--purple); }
+.orientation-label { font-size: 13px; font-weight: 700; fill: var(--plot-label); }
 .block {
   cursor: pointer;
   outline: none;

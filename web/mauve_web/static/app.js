@@ -831,16 +831,6 @@ function render() {
         svgNode("text", {x: 10, y: y + 57, class: "tick"}, identity.detail));
       svg.append(metric);
     }
-    svg.append(
-      svgNode("line", {
-        x1: left,
-        x2: left + (trackEnd(g.id) - state.start + 1) / span * (right - left),
-        y1: y + 9,
-        y2: y + 9,
-        stroke: "var(--track-line)",
-        "stroke-width": 2,
-      }),
-    );
     if (circularLength(g.id)) for (const copy of trackCopies(1, 1, g.id)) {
       const origin = svgNode("line", {x1: x(1, g.id, copy), x2: x(1, g.id, copy),
         y1: y - 8, y2: y + 22, stroke: "var(--text)", "stroke-dasharray": "3 3",
@@ -938,6 +928,24 @@ function render() {
     }));
   }
   svg.append(boundaries);
+
+  // Keep the orientation baseline visible over block edges and profile fills.
+  const baselines = svgNode("g", {class: "track-baselines", "pointer-events": "none"});
+  for (const g of genomes) {
+    const y = ys.get(g.id) + 9;
+    baselines.append(svgNode("line", {
+      x1: left - 6, x2: right + 6, y1: y, y2: y,
+      stroke: "var(--plot-label)", "stroke-width": 1.5, "stroke-dasharray": "6 4",
+    }));
+    for (const [offset, symbol, description] of [[-9, "+", "Forward: above baseline"], [17, "−", "Reverse: below baseline"]]) {
+      const label = svgNode("text", {
+        x: right + 14, y: y + offset, "text-anchor": "middle", class: "orientation-label",
+      }, symbol);
+      label.append(svgNode("title", {}, description));
+      baselines.append(label);
+    }
+  }
+  svg.append(baselines);
 
   if (state.detail?.id === state.selected && blocks.some(b => b.id === state.selected)) {
     const layer = svgNode("g", {"clip-path": "url(#track-clip)", class: "sequence-page-markers"});
