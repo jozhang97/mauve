@@ -15,6 +15,22 @@ def test_essentiality_import_filter_and_export(analysis_site, browser):
     fixtures = json.loads((Path(__file__).resolve().parents[1] / 'data/essentiality/test-cds.json').read_text())
     sequence = ''.join(f['sequence'] for f in fixtures) + 'ACGT' * 15
     context = browser.new_context(service_workers='block')
+    # Model a browser cache that still serves pre-essentiality worker/modules
+    # at their old unversioned URLs. Updated entrypoints must bypass them.
+    stale_requests = []
+    versioned_requests = []
+    def old_cache(route):
+        from urllib.parse import urlparse, parse_qs
+        version = parse_qs(urlparse(route.request.url).query).get('v')
+        if version:
+            versioned_requests.append((urlparse(route.request.url).path, version[0]))
+            route.continue_()
+        else:
+            stale_requests.append(route.request.url)
+            route.fulfill(content_type='text/javascript', body='throw new Error("Stale pre-essentiality code");')
+    context.route('**/browser/gene-worker.mjs*', old_cache)
+    context.route('**/browser/gene-analysis.mjs*', old_cache)
+
     page = context.new_page()
     page.goto(url)
     if mode == 'static':
@@ -53,6 +69,9 @@ def test_essentiality_import_filter_and_export(analysis_site, browser):
     assert 'https://doi.org/10.1128/mBio.02096-17' in exported
     result = page.evaluate('window.mauveGeneAnalysis.result')
     assert result['essentiality_source']['reference'] == 'CP009273.1'
+    assert not stale_requests
+    assert len(versioned_requests) >= 2
+    assert len({version for _, version in versioned_requests}) == 1
     assert sum(m['essentiality']['status'] == 'essential' for f in result['families'] for m in f['members']) == 2
     assert page.locator('#gene-pan-summary [data-essentiality="essential"] strong').all_text_contents() == ['1', '1', '0']
     assert page.locator('#gene-genome-counts tbody tr').first.locator('td').all_text_contents()[-2:] == ['1', '1']

@@ -1,6 +1,8 @@
 "use strict";
 (() => {
   const workerURL = new URL('./browser/gene-worker.mjs', document.currentScript.src);
+  // Keep the worker and its analysis modules on the same release as the UI.
+  workerURL.searchParams.set('v', new URL(document.currentScript.src).searchParams.get('v') || String(Date.now()));
   let worker, result, page = 0;
   let evidenceByGene = new Map();
   const essential = item => item.essentiality?.status.split(' / ').includes('essential') || false;

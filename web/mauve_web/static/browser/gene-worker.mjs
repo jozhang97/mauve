@@ -1,11 +1,18 @@
-import {annotateEssentiality} from './essentiality.mjs';
 import {Store, MemberCache} from './store.mjs';
 import {indexMember} from './core.mjs';
-import {analyzeGenes} from './gene-analysis.mjs';
 
 self.onmessage = async ({data: {aid, local, base, options}}) => {
   let store;
   try {
+    const version = new URL(import.meta.url).searchParams.get('v');
+    const moduleURL = name => {
+      const url = new URL(name, import.meta.url);
+      if (version) url.searchParams.set('v', version);
+      return url.href;
+    };
+    const [{annotateEssentiality}, {analyzeGenes}] = await Promise.all([
+      import(moduleURL('./essentiality.mjs')), import(moduleURL('./gene-analysis.mjs')),
+    ]);
     let input, load;
     if (local) {
       store = await new Store().open();
