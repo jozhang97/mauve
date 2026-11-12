@@ -1048,7 +1048,7 @@ function render() {
   const length = circularLength(gid), windowSpan = state.end - state.start + 1;
   const crossesOrigin = length && Math.floor((state.start + trackOffset(gid) - 1) / length) !== Math.floor((trackEnd(gid) + trackOffset(gid) - 1) / length);
   $("range").textContent = `${aligned ? `REF #${gid} · ` : ''}${fmt(rangeStart)}–${fmt(rangeEnd)} bp${crossesOrigin ? ' · crosses origin' : ''}${length && windowSpan > length ? ` · one complete turn` : ''}`;
-  $("region").value = `${rangeStart}-${rangeEnd}`;
+  if (document.activeElement !== $("region")) $("region").value = `${rangeStart}-${rangeEnd}`;
   $("region").title = aligned ? `Native coordinates in reference genome #${gid}. For circular chromosomes, an end smaller than the start crosses the origin.` : "Genomic coordinate range";
   updateMapFeedback();
 }

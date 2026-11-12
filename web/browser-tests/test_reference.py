@@ -49,7 +49,11 @@ def test_browser_genbank_matches_biopython_demo():
     actual = node('''
       import {parseRecords,annotationData} from './mauve_web/static/browser/genbank.mjs';
       let data='';for await(const s of process.stdin)data+=s;
-      const {sequence,...out}=annotationData(await parseRecords(new Blob([JSON.parse(data)])),true);console.log(JSON.stringify(out));
+      const parsed=annotationData(await parseRecords(new Blob([JSON.parse(data)])),true);
+      const {hashCodingSequences}=await import('./mauve_web/static/browser/essentiality.mjs');
+      await hashCodingSequences(parsed);
+      for (const feature of parsed.features) feature.sequence_sha256 ||= '';
+      const {sequence,...out}=parsed;console.log(JSON.stringify(out));
     ''', text)
     expected.pop('verified_bases')
     for f in expected['features']: f.pop('location')
