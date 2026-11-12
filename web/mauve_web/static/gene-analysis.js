@@ -105,7 +105,7 @@
     if (source) {
       const count = families.filter(f => f.essentiality?.evidence.length).length;
       const essential = families.filter(f => f.essentiality?.status.split(' / ').includes('essential')).length;
-      el('gene-essentiality-status').append(document.createTextNode(`Current filters: ${families.length} families; ${essential} with essential reference evidence; ${count} with any reference evidence from ${source.strain}. These are reference assay calls, not measurements in your strains. Unknown means no evidence; unclear is the assay's ambiguous call. ${source.conditions} Reimport older annotations to enable sequence matching. Source: `));
+      el('gene-essentiality-status').append(document.createTextNode(`Current filters: ${families.length} families; ${essential} with essential reference evidence; ${count} with any reference evidence from ${source.strain}. ${result.essentiality_reference_note || "These are reference assay calls, not measurements in your strains."} Unknown means no evidence; unclear is the assay's ambiguous call. ${source.conditions} Reimport older annotations to enable sequence matching. Source: `));
       const link = text('a', source.title); link.href = source.publication; link.target = '_blank'; link.rel = 'noopener';
       el('gene-essentiality-status').append(link);
     } else el('gene-essentiality-status').textContent = result.essentiality_error || 'Essentiality evidence unavailable.';

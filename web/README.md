@@ -33,12 +33,87 @@ WebGPU is optional: the app checks availability and validates its integer
 kernel against CPU results, then falls back to CPU if unavailable or lost.
 Safari/Firefox behavior has not yet been validated end to end.
 
+### Bundled demos
+
+Use **Open E. coli demo** for eight sampled strains, or **Open H. pylori demo**
+for six curated strains: 26695, J99, G27, HPAG1, P12, and Shi470. Both include
+precomputed full progressiveMauve alignments, conservation backbones, complete
+circular chromosomes, and GenBank gene annotations. Each demo opens separately
+and is retained in the library. H. pylori adds approximately 9 MiB to the static
+release; assets download only when that demo is opened.
+
+The H. pylori manifest in `demo/hpylori/manifest.json` records pinned RefSeq
+assemblies, source links, excluded plasmids, checksums, and the alignment command.
+To rebuild its inputs and alignment:
+
+```sh
+web/.venv/bin/python web/demo/build_hpylori.py --align
+```
+
+H. pylori essentiality uses Chalker et al. (2001), Table 1: a targeted
+45-gene allelic-replacement study in strain 26695 (33 essential, 12 nonessential),
+not a genome-wide screen. One nonessential reference CDS contains an ambiguous
+base and is excluded, leaving 44 mapped calls. Exact complete CDS matching finds
+31 essential and 9 nonessential copies in the bundled 26695 chromosome; variants
+in the other strains remain unknown. Reference calls are not propagated to other
+family members. The worker selects the bundled assay with the most identical CDS
+matches and reports its strain, method, conditions, and source.
+
+All six H. pylori chromosomes have sequence-verified DoriC oriC1 anchors.
+H. pylori has a bipartite origin flanking `dnaA`: the anchor consistently uses
+the start of the upstream oriC1 region, rather than claiming a precise initiation
+nucleotide (DNA unwinding occurs in oriC2). Other sequence-matching DoriC regions
+and the origin publication are retained in annotation metadata and origin exports.
+Existing saved demos upgrade their annotation evidence when reopened.
+
+Rebuild the frozen evidence from the original reference GenBank record
+`AE000511.1` and shards produced by `update_doric.py`:
+
+```sh
+web/.venv/bin/python web/update_hpylori_evidence.py --reference /path/to/AE000511.1.gbk --doric /path/to/shards
+```
+
+The **Open B. subtilis demo** button loads six curated strains: 168, NCIB 3610,
+PY79, QB928, BSn5, and RO-NN-1. Complete circular chromosomes include
+GenBank annotations and a full progressiveMauve alignment with conservation
+backbone; plasmids are excluded. Pinned assemblies, checksums, and excluded
+records are recorded in `demo/bsubtilis/manifest.json`. Rebuild with:
+
+```sh
+web/.venv/bin/python web/demo/build_bsubtilis.py --align
+```
+
+The B. subtilis demo includes the 257 essential-gene calls from Koo et al.
+(2017), Table S3 A, for strain 168 grown in LB at 37 °C. Calls attach only to
+identical complete CDS sequences; variants and genes outside this essential set
+remain unknown. Thirty listed genes have viable conditions or genetic contexts
+in the source table. These are reference calls, not measurements in every demo
+strain. The frozen locus table lives in `data/essentiality/koo-2017-bsubtilis.tsv`.
+
+All six chromosomes have sequence-verified DoriC origins. B. subtilis has a
+bipartite origin; the coordinate anchor is the downstream oriC2 region start,
+not a resolved initiation nucleotide. Matching upstream regions and any verified
+one-base start corrections are retained in the snapshot provenance. BSn5's origin
+is internal to its deposited chromosome, so coordinate 1 is not assumed to be oriC.
+Reopen the demo after updating to refresh saved annotations without realigning.
+
+Rebuild the evidence using DoriC shards from `update_doric.py`:
+
+```sh
+web/.venv/bin/python web/update_bsubtilis_evidence.py --doric /path/to/shards
+```
+
+Use `--extract-xlsx /path/to/TableS3.xlsx` to regenerate the frozen table from
+[Table S3 A](https://ars.els-cdn.com/content/image/1-s2.0-S2405471216304471-mmc4.xlsx).
+The snapshot records the [study](https://doi.org/10.1016/j.cels.2016.12.013),
+conditions, reference accession, table checksum, and sequence-mapping policy.
+
 ### oriC normalization
 
 The new-alignment dialog can rotate a single-record circular GenBank genome so
 oriC becomes coordinate 1 before progressiveMauve runs. The opt-in toggle uses
 one unambiguous `rep_origin` annotation first, then the bundled DoriC 14.0
-snapshot for the E. coli demo accessions and accession shards generated from the
+snapshot for the E. coli and H. pylori demo accessions and accession shards generated from the
 official DoriC CSV for other genomes. The Pages deployment and local preview
 refresh these shards automatically. Server mode caches them on first lookup.
 Bundled records require a matching whole-sequence checksum; other DoriC records
@@ -848,7 +923,7 @@ calls and provenance are included in TSV and JSON exports. A family match does
 not assign evidence to unmatched members. Unknown means no matching evidence;
 unclear is an ambiguous assay call, not a conditional-essential designation.
 
-The bundled snapshot uses Galaxy Training Network's frozen TSV transcription of
+The bundled E. coli snapshot uses Galaxy Training Network's frozen TSV transcription of
 [Goodall et al. (2018)](https://doi.org/10.1128/mBio.02096-17), published at
 [Zenodo](https://zenodo.org/records/3382053). The study uses TraDIS in E. coli
 K-12 BW25113. **The TSV does not specify its library/condition subset**; the UI

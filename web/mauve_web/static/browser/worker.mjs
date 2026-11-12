@@ -72,13 +72,16 @@ async function importAnnotations(aid, gid, blob, name, concatenate) {
     const matches = (snapshot.records[record.name] || []).filter(m => m.length === parsed.sequence.length && m.sha256 === digest);
     if (matches.length === 1) {
       record.replication_origin = matches[0].start;
-      record.replication_origin_source = 'DoriC (sequence verified)';
+      record.replication_origin_source = matches[0].anchor ? `DoriC (sequence verified; ${matches[0].anchor})` : 'DoriC (sequence verified)';
+      record.replication_origin_note = matches[0].note || '';
+      record.replication_origin_regions = matches[0].regions || [];
+      record.replication_origin_publication = matches[0].publication || '';
     }
   }
   for (const b of await store.all('blocks', store.range(aid))) if (b.members.some(m => m.genome_id === gid)) verified += verifyMember(await cache.get(aid, b.id, gid), parsed.sequence);
   if (!verified) throw Error('No unambiguous aligned bases are available to verify this GenBank sequence.');
   await hashCodingSequences(parsed);
-  const metadata = {sequence_hash_version: 1, records: parsed.records, length: parsed.length, verified_bases: verified, feature_count: parsed.features.length, analysis_version: 1};
+  const metadata = {sequence_hash_version: 1, demo_evidence_version: 2, records: parsed.records, length: parsed.length, verified_bases: verified, feature_count: parsed.features.length, analysis_version: 1};
   const features = parsed.features.map((f, i) => ({...f, id: `${gid}:${i}`, genome_id: gid})).sort((a, b) => a.start - b.start);
   await store.put('annotations', [aid, gid], {genome_id: gid, name: basename(name), metadata, features}); return metadata;
 }
@@ -101,9 +104,11 @@ async function route(path, options = {}) {
     return jobs.get(id);
   }
   if (parts[1] === 'demo') {
-    const base = new URL('../demo/ecoli/', import.meta.url);
+    const organism = p.get('organism') || 'ecoli';
+    if (!['ecoli', 'hpylori', 'bsubtilis'].includes(organism)) throw Error('Unknown demo organism.');
+    const base = new URL(`../demo/${organism}/`, import.meta.url);
     const response = await fetch(new URL('manifest.json', base));
-    if (!response.ok) throw Error('Could not load the E. coli demo manifest.');
+    if (!response.ok) throw Error('Could not load the demo manifest.');
     const manifest = await response.json();
     const compressed = async name => {
       const response = await fetch(new URL(name, base));
@@ -119,13 +124,13 @@ async function route(path, options = {}) {
     const created = !a;
     try {
       if (!a) {
-        progress('Loading the eight-strain E. coli alignment…');
+        progress(`Loading ${manifest.name} alignment…`);
         a = await importAlignment(await compressed(manifest.alignment.file), manifest.name, manifest.genomes);
       }
       if (manifest.alignment.backbone && !await store.get('artifacts', [a.id, 'conservation-backbone']))
         await saveBackbone(a, await compressed(manifest.alignment.backbone.file));
-      for (const genome of manifest.genomes) if (!(await store.get('annotations', [a.id, genome.id]))?.metadata.sequence_hash_version) {
-        progress(`Loading E. coli annotations ${genome.id}/${manifest.genomes.length}: ${genome.strain}…`);
+      for (const genome of manifest.genomes) if (((await store.get('annotations', [a.id, genome.id]))?.metadata.demo_evidence_version || 0) < 2) {
+        progress(`Loading annotations ${genome.id}/${manifest.genomes.length}: ${genome.strain}…`);
         await importAnnotations(a.id, genome.id, await compressed(genome.annotations), `${genome.chromosome}.gbk`, false);
       }
       a.demo_id = manifest.id;

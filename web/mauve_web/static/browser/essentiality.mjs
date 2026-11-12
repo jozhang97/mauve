@@ -1,4 +1,4 @@
-// Goodall et al. evidence is attached only to identical, complete CDS sequences.
+// Reference assay evidence is attached only to identical, complete CDS sequences.
 // Sequence identity does not establish essentiality in a different strain.
 const complement = {65:84, 84:65, 67:71, 71:67};
 export async function hashCodingSequences(parsed) {
@@ -41,4 +41,17 @@ export function annotateEssentiality(result, snapshot) {
     family.essentiality = {status: evidence.size ? [...new Set([...evidence.values()].map(e => e.status))].sort().join(' / ') : 'unknown',
       evidence: [...evidence.values()]};
   }
+}
+
+// Choose by exact CDS evidence, never by a gene name or a species-name guess.
+export function annotateEssentialityReferences(result, snapshots) {
+  if (!snapshots.length) throw Error('No essentiality reference snapshots available.');
+  const members = result.families.flatMap(f => f.members);
+  const counts = snapshots.map(snapshot => members.reduce((n, m) => n + Boolean(snapshot.sequences?.[m.sequence_sha256]), 0));
+  const index = counts.indexOf(Math.max(...counts));
+  annotateEssentiality(result, snapshots[index]);
+  result.essentiality_matched_copies = counts[index];
+  result.essentiality_reference_note = counts[index]
+    ? `${snapshots[index].source.method}. Calls require an identical complete CDS; sequence variants and untested genes remain unknown.`
+    : 'No identical CDS matches to the bundled reference assays. Unknown means no matching evidence, not nonessentiality.';
 }

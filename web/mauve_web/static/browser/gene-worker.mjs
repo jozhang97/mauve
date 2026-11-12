@@ -10,7 +10,7 @@ self.onmessage = async ({data: {aid, local, base, options}}) => {
       if (version) url.searchParams.set('v', version);
       return url.href;
     };
-    const [{annotateEssentiality}, {analyzeGenes}] = await Promise.all([
+    const [{annotateEssentialityReferences}, {analyzeGenes}] = await Promise.all([
       import(moduleURL('./essentiality.mjs')), import(moduleURL('./gene-analysis.mjs')),
     ]);
     let input, load;
@@ -33,9 +33,12 @@ self.onmessage = async ({data: {aid, local, base, options}}) => {
     }
     const result = await analyzeGenes(input, load, options, progress => self.postMessage({progress}));
     try {
-      const response = await fetch(new URL('../essentiality-ecoli.json', import.meta.url));
-      if (!response.ok) throw Error(`snapshot request failed (HTTP ${response.status})`);
-      annotateEssentiality(result, await response.json());
+      const snapshots = await Promise.all(['ecoli', 'hpylori', 'bsubtilis'].map(async organism => {
+        const response = await fetch(new URL(`../essentiality-${organism}.json`, import.meta.url));
+        if (!response.ok) throw Error(`snapshot request failed (HTTP ${response.status})`);
+        return response.json();
+      }));
+      annotateEssentialityReferences(result, snapshots);
     } catch (error) {
       result.essentiality_error = `Essentiality unavailable: ${error.message}`;
     }

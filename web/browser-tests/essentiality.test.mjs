@@ -61,3 +61,32 @@ test('legacy CDS annotations report unavailable instead of zero essential matche
   assert.equal(result.essentiality_source, undefined);
   assert.equal(result.families[0].essentiality, undefined);
 });
+
+const hpSnapshot = JSON.parse(readFileSync(new URL('../mauve_web/static/essentiality-hpylori.json', import.meta.url)));
+test('H. pylori selects its own assay using CDS evidence and leaves variants unknown', async () => {
+  const {annotateEssentialityReferences} = await import('../mauve_web/static/browser/essentiality.mjs');
+  const [hash] = Object.entries(hpSnapshot.sequences).find(([,v]) => v.some(e=>e.status==='essential'));
+  const result = {families:[{members:[{type:'CDS',sequence_sha256:hash}, {type:'CDS',sequence_sha256:'f'.repeat(64)}]}]};
+  annotateEssentialityReferences(result, [snapshot,hpSnapshot]);
+  assert.equal(result.essentiality_source.id,'chalker-2001-hpylori');
+  assert.equal(result.essentiality_matched_copies,1);
+  assert.equal(result.families[0].members[0].essentiality.status,'essential');
+  assert.equal(result.families[0].members[1].essentiality.status,'unknown');
+  assert.match(result.essentiality_reference_note,/untested genes remain unknown/);
+  const other = {families:[{members:[{type:'CDS',sequence_sha256:fixture[0].sha256}]}]};
+  annotateEssentialityReferences(other, [snapshot,hpSnapshot]);
+  assert.equal(other.essentiality_source.id,'goodall-2018-galaxy');
+});
+
+const bsSnapshot = JSON.parse(readFileSync(new URL('../mauve_web/static/essentiality-bsubtilis.json', import.meta.url)));
+test('B. subtilis selects the Koo assay and never infers calls from gene names or family membership', async () => {
+  const {annotateEssentialityReferences} = await import('../mauve_web/static/browser/essentiality.mjs');
+  const hash = Object.keys(bsSnapshot.sequences)[0];
+  const result = {families:[{members:[{type:'CDS',sequence_sha256:hash}, {type:'CDS',name:'dnaA',sequence_sha256:'f'.repeat(64)}]}]};
+  annotateEssentialityReferences(result, [snapshot,hpSnapshot,bsSnapshot]);
+  assert.equal(result.essentiality_source.id,'koo-2017-bsubtilis');
+  assert.equal(result.essentiality_matched_copies,1);
+  assert.equal(result.families[0].members[0].essentiality.status,'essential');
+  assert.equal(result.families[0].members[1].essentiality.status,'unknown');
+  assert.match(result.essentiality_source.conditions,/LB at 37 C/);
+});

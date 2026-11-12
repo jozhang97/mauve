@@ -77,13 +77,21 @@ function refresh() {
 function render() {
   el('origin-results').hidden=!output;
   if(!output){el('origin-analysis-status').textContent='Compute gene comparisons above to explore core/accessory genes relative to oriC.';return;}
-  const unit=el('origin-unit').value, normalized=unit==='percent', gid=el('origin-genome').value;
+  const unit=el('origin-unit').value, normalized=unit==='percent';
   const options=state.alignment.genomes.map(g=>[String(g.id),g.name]);
-  if(el('origin-genome').options.length!==options.length+1){
+  if(JSON.stringify([...el('origin-genome').options].slice(1).map(o=>[o.value,o.text]))!==JSON.stringify(options)){
     el('origin-genome').replaceChildren(new Option('All eligible genomes','all'),...options.map(([id,name])=>new Option(name,id)));
   }
+  const gid=el('origin-genome').value;
   const genes=output.genes.filter(g=>gid==='all'||String(g.genome_id)===gid);
   el('origin-analysis-status').textContent=`Origins available for ${output.eligible.length}/${state.alignment.genomes.length} genomes. ${output.excluded.length?'Excluded: '+output.excluded.map(g=>g.name).join('; ')+'. ':''}${genes.length.toLocaleString()} gene copies in the selected scope. Core/accessory membership uses all loaded genomes. Cross-genome ranges always use all eligible genomes, regardless of the genome selector.`;
+  const originNotes = [...new Set(output.origins.map(o=>o.note).filter(Boolean))];
+  if (originNotes.length) el('origin-analysis-status').textContent += ' ' + originNotes.join(' ');
+  if (!output.eligible.length) {
+    el('origin-results').hidden = true;
+    el('origin-analysis-status').textContent += ' No verified oriC coordinates are available; origin charts cannot be computed.';
+    return;
+  }
   const rows=[],fractionGroups=[];
   for(const category of ['core','accessory','pan','essential reference matches']){
     const group=genes.filter(g=>category==='essential reference matches'?essential(g):category==='pan'||g.category===category);

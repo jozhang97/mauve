@@ -1,0 +1,333 @@
+{
+  "schema_version": 1,
+  "source": {
+    "id": "chalker-2001-hpylori",
+    "title": "Chalker et al. (2001), Table 1: 45 targeted genes",
+    "publication": "https://doi.org/10.1128/JB.183.4.1259-1268.2001",
+    "table_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC94999/#T1",
+    "strain": "Helicobacter pylori 26695",
+    "reference": "AE000511.1",
+    "method": "Targeted allelic replacement mutagenesis; 45 selected genes, not a genome-wide essentiality screen",
+    "conditions": "In vitro growth at 37 C under microaerobic conditions on Columbia agar with 5% horse blood. Nutritional supplementation was tested for selected genes. Calls apply to this experiment; untested genes remain unknown.",
+    "license": "Factual locus identifiers and assay calls transcribed from Table 1; article copyright ASM (2001).",
+    "table_sha256": "15c789dc7e24c5ca473e15bd6325bcf183bee7969e3cbf5fd1abbc0ffe67161c",
+    "reference_sha256": "0c161815caff83246eb3c76ef296cb7fbceb6042b0fe0b2bfcdbb6c6942fd5cf",
+    "mapping": "Paper HP number to unique original reference HP locus tag; exact complete CDS SHA-256 at runtime. Sequence variants remain unknown.",
+    "input_rows": 45,
+    "counts": {
+      "nonessential": 11,
+      "essential": 33,
+      "ambiguous_reference_sequence": 1
+    }
+  },
+  "sequences": {
+    "0f83509028953dfcaf65938da9286aa6144a5d6f05668dab689fd4211e4bee3d": [
+      {
+        "locus_tag": "HP1100",
+        "gene": "edd",
+        "status": "essential"
+      }
+    ],
+    "2bdb94b3a3ae4bf46157f58d03f6fc2d7a90bed77161a96230af7adfae6300ec": [
+      {
+        "locus_tag": "HP0509",
+        "gene": "glcD",
+        "status": "essential"
+      }
+    ],
+    "2c493f2fdc0c9766de1208ffd020dfd3554c26c2dede69a0cfa4cabf03fc7db4": [
+      {
+        "locus_tag": "HP1385",
+        "gene": "fbp",
+        "status": "essential"
+      }
+    ],
+    "2f15d99a9a53cd82ac754ed98a4aabae056cb098cf7e8d537edc12d8367c72c0": [
+      {
+        "locus_tag": "HP1231",
+        "gene": "holB",
+        "status": "essential"
+      }
+    ],
+    "33578e641648eaa92c8f5865f14293106ea8cebcdb96644d0ac160e0c60aced1": [
+      {
+        "locus_tag": "HP0616",
+        "gene": "cheV",
+        "status": "nonessential"
+      }
+    ],
+    "37f852622a305484ad9a010973e1036bc6a226eeb9ea710bba2c0b9d04748d13": [
+      {
+        "locus_tag": "HP1027",
+        "gene": "fur",
+        "status": "nonessential"
+      }
+    ],
+    "3c8d52dcf50e0229961a2ade7c877e9886383cb481fe1d7a71980b259d9527a8": [
+      {
+        "locus_tag": "HP0658",
+        "gene": "gatB",
+        "status": "essential"
+      }
+    ],
+    "3d60d6aca769d96cf091de788a18d1979162cf546b9d6d351ade30964b8feece": [
+      {
+        "locus_tag": "HP1109",
+        "gene": "porD",
+        "status": "essential"
+      }
+    ],
+    "445cc2de5e13988d3fbae8a83281351043c75b288b260238eb8d346c7ef37b1e": [
+      {
+        "locus_tag": "HP0588",
+        "gene": "oorD",
+        "status": "essential"
+      }
+    ],
+    "55b461ac2dbeb02349da4bd5de39e7b24202b1bd8cc7f808a970f32104363b04": [
+      {
+        "locus_tag": "HP1563",
+        "gene": "ahpC",
+        "status": "essential"
+      }
+    ],
+    "593ab5143bec654058ecd0227a684234a32a173994b4fe117cfe433c2cfc0588": [
+      {
+        "locus_tag": "HP0808",
+        "gene": "acpS",
+        "status": "essential"
+      }
+    ],
+    "5ae33e8929f49aeca72e87b2a24a612edf7272e38ff185a7b70aab5459c8a2d3": [
+      {
+        "locus_tag": "HP1099",
+        "gene": "eda",
+        "status": "essential"
+      }
+    ],
+    "5c29054ca3f738e79da0dd92839d0662896c98f99c3ad89233db7e695c06b9b1": [
+      {
+        "locus_tag": "HP1448",
+        "gene": "rnpA",
+        "status": "essential"
+      }
+    ],
+    "5d1bca9001e2da68fc695b6d2b5b8ed7fff812660ccc1828ee038f01d6510ea0": [
+      {
+        "locus_tag": "HP0975",
+        "gene": "gatC",
+        "status": "essential"
+      }
+    ],
+    "60783b1a7d59d1cd2c66fb959a84fca647dbf87f23f9ba70f68b563224b32f77": [
+      {
+        "locus_tag": "HP1364",
+        "gene": "HK",
+        "status": "nonessential"
+      }
+    ],
+    "6a94447fe7e0a43db874650f1dcb0290adb67b733fbd679b7d2b61d9565a7799": [
+      {
+        "locus_tag": "HP0657",
+        "gene": "ymxG",
+        "status": "essential"
+      }
+    ],
+    "6e13ede28b99ad7de65c040ebd806596ba2a1f701bc85b915aedc4e7805691fe": [
+      {
+        "locus_tag": "HP0740",
+        "gene": "murF",
+        "status": "essential"
+      }
+    ],
+    "7033b06acb64da43db1d8434aae82ae8d6f73d15618296e46245486b8449490e": [
+      {
+        "locus_tag": "HP1495",
+        "gene": "tal",
+        "status": "nonessential"
+      }
+    ],
+    "74348fc97df2037adb92fe0f5f7e3d3e823275143da976a1240e58c997a7fba1": [
+      {
+        "locus_tag": "HP0735",
+        "gene": "gpt",
+        "status": "essential"
+      }
+    ],
+    "771b1c26734c32b01f02c61bd117567ea1340410d3e367b533bd64053507fdfc": [
+      {
+        "locus_tag": "HP0591",
+        "gene": "oorC",
+        "status": "essential"
+      }
+    ],
+    "7727b31cdc8450909242815b4c7f288a79ecac27f9401eebcd8562b5b067b8dd": [
+      {
+        "locus_tag": "HP0832",
+        "gene": "speE",
+        "status": "nonessential"
+      }
+    ],
+    "77d3eee379e7fa833d6156a5aab2d838a06fa9c6457c6e5bf543872a317eb915": [
+      {
+        "locus_tag": "HP1110",
+        "gene": "porA",
+        "status": "essential"
+      }
+    ],
+    "7e89fa20fd7e143b19f01f68db14644c8844145db3d3d12c4839990d78fe6a0a": [
+      {
+        "locus_tag": "HP0074",
+        "gene": "lspA",
+        "status": "essential"
+      }
+    ],
+    "90bb51f4354001f71223336e7a0e036f5615a2b0cbbdaa5598a73f95fcef8adf": [
+      {
+        "locus_tag": "HP1111",
+        "gene": "porB",
+        "status": "essential"
+      }
+    ],
+    "91c079b2f1747e76aecf4bd7c4839615ef7c6966dab75dab748a675f3cba0390": [
+      {
+        "locus_tag": "HP1038",
+        "gene": "aroQ",
+        "status": "essential"
+      }
+    ],
+    "93d88038a90d67daef70de2893dfb904f10e528c5740e33f61180aebbd946423": [
+      {
+        "locus_tag": "HP1159",
+        "gene": "fic",
+        "status": "essential"
+      }
+    ],
+    "966e1f7f7783b8dc34ec6b8ffaa2f2ccb1dd238fd7c628f8a3faea60edb421f7": [
+      {
+        "locus_tag": "HP1108",
+        "gene": "porC",
+        "status": "essential"
+      }
+    ],
+    "9b51ee27a04c1fcbc2b978aac067f584e2e6d6d41bf88067df926689c46d5432": [
+      {
+        "locus_tag": "HP1553",
+        "gene": "recB",
+        "status": "essential"
+      }
+    ],
+    "a824fc2b42ecc30eb89ade690d5e725f1354ffd42c63c0afe073d208bf64d6a4": [
+      {
+        "locus_tag": "HP0830",
+        "gene": "gatA",
+        "status": "essential"
+      }
+    ],
+    "b1bd5254958b7213e9d6557bedd069b5bf06cd6dd297a98feb93b57e95ab29ae": [
+      {
+        "locus_tag": "HP0086",
+        "gene": "mqo",
+        "status": "essential"
+      }
+    ],
+    "b4938b8bb3169c3b935c7d4ac96dc22e04c08ab9dfd4051abb7ae92a403410ac": [
+      {
+        "locus_tag": "HP1021",
+        "gene": "RR",
+        "status": "nonessential"
+      }
+    ],
+    "bf6af6cae4d27d1f9e842d3527fb5b5c67957a8eb2a508f23f5a2ea6527fcb62": [
+      {
+        "locus_tag": "HP1372",
+        "gene": "mreC",
+        "status": "essential"
+      }
+    ],
+    "c17d4930440da4beeddaebdbc0431101d1067f96792d9077a2b3759cecb5e0c2": [
+      {
+        "locus_tag": "HP0470",
+        "gene": "pepF",
+        "status": "nonessential"
+      }
+    ],
+    "c52ec4bacb32ca8519897aa5bf297098caff76bf289cc5f30da31d32c73c37d3": [
+      {
+        "locus_tag": "HP0020",
+        "gene": "nspC",
+        "status": "essential"
+      }
+    ],
+    "ca56cd6cc31827ef2412cc71064b0cf7008ecca12eadb94dcfd7b30db222bb6d": [
+      {
+        "locus_tag": "HP0785",
+        "gene": "lolA",
+        "status": "nonessential"
+      }
+    ],
+    "cb1466594c6e79fefa832e8601a9f1cbbc85c99423aae0b618ecc2041dce4e85": [
+      {
+        "locus_tag": "HP1418",
+        "gene": "murB",
+        "status": "essential"
+      }
+    ],
+    "cf110e06db5e98540f7b746089ec018c6f420e5c789541be729346c3996f9191": [
+      {
+        "locus_tag": "HP0589",
+        "gene": "oorA",
+        "status": "essential"
+      }
+    ],
+    "cfbb606aa21af2aa21a6ee1e8a26d3ab050e9d82a4c5128dfe7e15e50d69e62f": [
+      {
+        "locus_tag": "HP1140",
+        "gene": "birA",
+        "status": "essential"
+      }
+    ],
+    "d8eb4c1494e82e3981e1ed221a51f68c3707649e604a273ebf2a212552f8ca49": [
+      {
+        "locus_tag": "HP1257",
+        "gene": "pyrE",
+        "status": "essential"
+      }
+    ],
+    "decb168718cdb41a9ba56621d6c2897f5758cf80103ce430e081d3a106f7923d": [
+      {
+        "locus_tag": "HP1138",
+        "gene": "spo0J",
+        "status": "nonessential"
+      }
+    ],
+    "e64f617d51b99c0a8ee082d7f5bae40a0e6d7235128512c5e7ff749974cc5654": [
+      {
+        "locus_tag": "HP1164",
+        "gene": "trxB",
+        "status": "essential"
+      }
+    ],
+    "efaef5f290c57b682d69d2531cb9057d7cfb03d5f09bc97fcd9ed5986f5dfafc": [
+      {
+        "locus_tag": "HP0590",
+        "gene": "oorB",
+        "status": "essential"
+      }
+    ],
+    "f0d4a551df45ff09c19744e9a1fa0ec2fd40e5df903c25b4524de2a60eb32e52": [
+      {
+        "locus_tag": "HP0372",
+        "gene": "dcd",
+        "status": "nonessential"
+      }
+    ],
+    "f5230697ba2093f4bfaea141e3451f92bf53bd282d3a0abb4f7c3741aedd9fc5": [
+      {
+        "locus_tag": "HP0801",
+        "gene": "moaD",
+        "status": "nonessential"
+      }
+    ]
+  }
+}

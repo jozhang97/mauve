@@ -128,6 +128,7 @@ def create_app(data_dir=None, aligner_path=None):
         metadata['feature_count'] = len(parsed['features'])
         metadata['analysis_version'] = 1
         metadata['sequence_hash_version'] = 1
+        metadata['demo_evidence_version'] = 2
         # A complete validated import replaces annotations atomically for this genome.
         with closing(sqlite3.connect(database, timeout=30)) as db, db:
             db.execute('DELETE FROM features WHERE alignment_id=? AND genome_id=?', (aid, gid))
@@ -249,8 +250,8 @@ def create_app(data_dir=None, aligner_path=None):
             return await run_in_threadpool(save, Path(stream.name), name)
 
     @app.post('/api/demo')
-    def demo(prepare: bool = Query(False)):
-        folder = ROOT / 'demo/ecoli'
+    def demo(prepare: bool = Query(False), organism: Literal['ecoli', 'hpylori', 'bsubtilis'] = Query('ecoli')):
+        folder = ROOT / 'demo' / organism
         manifest = json.loads((folder / 'manifest.json').read_text())
         if prepare:
             inputs = []
@@ -275,7 +276,7 @@ def create_app(data_dir=None, aligner_path=None):
                         save_backbone(alignment['id'], source.read())
                 for genome in manifest['genomes']:
                     saved = query('SELECT metadata FROM annotation_sources WHERE alignment_id=? AND genome_id=?', (alignment['id'], genome['id']))
-                    if not saved or not json.loads(saved[0]['metadata']).get('sequence_hash_version'):
+                    if not saved or not json.loads(saved[0]['metadata']).get('sequence_hash_version') or json.loads(saved[0]['metadata']).get('demo_evidence_version', 0) < 2:
                         with gzip.open(folder / genome['annotations'], 'rb') as source:
                             save_annotations(alignment['id'], genome['id'], source.read(), f"{genome['chromosome']}.gbk", False)
                 return alignment
@@ -439,6 +440,7 @@ def create_app(data_dir=None, aligner_path=None):
     def index():
         return FileResponse(ROOT / 'mauve_web/static/index.html')
 
-    app.mount('/static/demo/ecoli', StaticFiles(directory=ROOT / 'demo/ecoli'), name='demo-assets')
+    for organism in ('ecoli', 'hpylori', 'bsubtilis'):
+        app.mount(f'/static/demo/{organism}', StaticFiles(directory=ROOT / 'demo' / organism), name=f'{organism}-demo-assets')
     app.mount('/static', StaticFiles(directory=ROOT / 'mauve_web/static'), name='static')
     return app

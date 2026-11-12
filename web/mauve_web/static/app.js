@@ -1174,16 +1174,21 @@ $("next-difference").onclick = safely(async () => {
   else await selectBlock(bid, result.offset, null, true);
 });
 
-const demo = safely(async () => {
-  notice("Opening the eight-strain E. coli demo and its annotations…");
-  $("demo").disabled = $("welcome-demo").disabled = true;
-  try {
-    const a = await api("/api/demo", { method: "POST" });
-    await openAlignment(a.id);
-  } finally { $("demo").disabled = $("welcome-demo").disabled = false; }
-});
-$("demo").onclick = demo;
-$("welcome-demo").onclick = demo;
+const demoButtons = ["demo", "welcome-demo", "demo-hpylori", "welcome-demo-hpylori", "demo-bsubtilis", "welcome-demo-bsubtilis"];
+function openDemo(organism = "ecoli") {
+  return safely(async () => {
+    const name = organism === "bsubtilis" ? "six-strain B. subtilis" : organism === "hpylori" ? "six-strain H. pylori" : "eight-strain E. coli";
+    notice(`Opening the ${name} demo and its annotations…`);
+    for (const id of demoButtons) $(id).disabled = true;
+    try {
+      const a = await api(`/api/demo?organism=${organism}`, { method: "POST" });
+      await openAlignment(a.id);
+    } finally { for (const id of demoButtons) $(id).disabled = false; }
+  });
+}
+$("demo").onclick = $("welcome-demo").onclick = openDemo();
+$("demo-hpylori").onclick = $("welcome-demo-hpylori").onclick = openDemo("hpylori");
+$("demo-bsubtilis").onclick = $("welcome-demo-bsubtilis").onclick = openDemo("bsubtilis");
 $("import").onclick = () => $("file").click();
 $("file").onchange = safely(async () => {
   const file = $("file").files[0];

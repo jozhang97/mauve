@@ -112,7 +112,7 @@ export function analyzeOrigins(result, sources, genomes, replication, options={}
         range_fraction:Math.max(...means.map(m=>m.fraction))-Math.min(...means.map(m=>m.fraction)),means});
     }
   }
-  return {genes,ranges,eligible:[...eligible.keys()],excluded,orientations,reference,
+  return {genes,ranges,origins:[...eligible].map(([genome_id,s])=>({genome_id,origin:s.origin,source:s.record.replication_origin_source || 'GenBank rep_origin',note:s.record.replication_origin_note || '',regions:s.record.replication_origin_regions || [],publication:s.record.replication_origin_publication || ''})),eligible:[...eligible.keys()],excluded,orientations,reference,
     orientation_policy:{minimum_column_agreement:0.8,minimum_supporting_span_coverage:0.5,
       coverage:'Union of supporting block coordinate spans on each chromosome; overlaps counted once'}};
 }

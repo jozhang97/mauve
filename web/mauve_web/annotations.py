@@ -111,7 +111,11 @@ def parse_genbank(text, members, concatenate=False, rotation=0):
                        if m['length'] == len(record) and m.get('sha256') == digest]
             if len(matches) == 1:
                 contig['replication_origin'] = contig['start'] + matches[0]['start'] - 1
-                contig['replication_origin_source'] = 'DoriC (sequence verified)'
+                anchor = matches[0].get('anchor')
+                contig['replication_origin_source'] = f'DoriC (sequence verified; {anchor})' if anchor else 'DoriC (sequence verified)'
+                contig['replication_origin_note'] = matches[0].get('note', '')
+                contig['replication_origin_regions'] = matches[0].get('regions', [])
+                contig['replication_origin_publication'] = matches[0].get('publication', '')
         window = max(1, (len(record) + 199) // 200)
         contig['gc_skew'] = []
         dna = str(record.seq).upper()

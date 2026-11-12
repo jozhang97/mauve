@@ -1,0 +1,1823 @@
+{
+  "schema_version": 1,
+  "source": {
+    "id": "koo-2017-bsubtilis",
+    "title": "Koo et al. (2017), Table S3 A: 257 essential genes",
+    "publication": "https://doi.org/10.1016/j.cels.2016.12.013",
+    "table_url": "https://ars.els-cdn.com/content/image/1-s2.0-S2405471216304471-mmc4.xlsx",
+    "strain": "Bacillus subtilis 168",
+    "reference": "NC_000964.3",
+    "method": "Genome-scale gene replacement with two antibiotic markers; published essential set only",
+    "conditions": "Growth in LB at 37 C. The study reports viable conditions or genetic contexts for 30 of these genes; see Table S3 A. Absence from this snapshot does not establish nonessentiality. Calls in other strains require identical complete CDS sequences and remain reference evidence.",
+    "license": "Factual locus identifiers and essential-set membership extracted from Table S3 A; article copyright Elsevier (2017).",
+    "table_sha256": "83bc3a79251b53c91e07bc9ceba0c2f7d25d66236709d5bede9c5a74da0676f5",
+    "source_xlsx_sha256": "19f6675eb07b8869a4a0fa74f43180600b5ef05a3fdce360694b504d5ed1754f",
+    "reference_sha256": "71572ae0b98f44a6382b29e194e56c1f7d87477be8f53915fb06816f886b17b7",
+    "mapping": "Unique BSU locus tag, ignoring underscore, to complete strain 168 reference CDS; exact CDS SHA-256 at runtime. Gene names are display labels only.",
+    "input_rows": 257,
+    "counts": {
+      "essential": 257
+    }
+  },
+  "sequences": {
+    "0042bda4e8c0fff3b787bb8f4b8f3de90ae09a7dd7df179a0f4b151439339594": [
+      {
+        "locus_tag": "BSU01490",
+        "gene": "rplM",
+        "status": "essential"
+      }
+    ],
+    "01e6daf97ec915319b24717d5eb32f9aa9d64a692e2d8d8fff8263d50947c1a2": [
+      {
+        "locus_tag": "BSU00130",
+        "gene": "serS",
+        "status": "essential"
+      }
+    ],
+    "022e3d5c7d5ed7d335970970df302549f14aaa678058dca69c999a7c54ef4ad6": [
+      {
+        "locus_tag": "BSU30800",
+        "gene": "menB",
+        "status": "essential"
+      }
+    ],
+    "0349e54c3127a7e1798adc1fee1a87d06f4cdbf28636d375512aeb1080d5746e": [
+      {
+        "locus_tag": "BSU15700",
+        "gene": "coaBC",
+        "status": "essential"
+      }
+    ],
+    "0400028f07c78bfc477eec3d5f64302bcd7f8805d6fdd054fd0a74a04e2dc7d8": [
+      {
+        "locus_tag": "BSU06670",
+        "gene": "gatC",
+        "status": "essential"
+      }
+    ],
+    "04f05fbf8b3b3522b106df28ee6dbc4158dd01a8198dfc757dcade87c9387c9c": [
+      {
+        "locus_tag": "BSU18100",
+        "gene": "parC",
+        "status": "essential"
+      }
+    ],
+    "057bd90c7afd5b351deea340e5dbe0da8fb65dc2854ca90ba7d881af0904745c": [
+      {
+        "locus_tag": "BSU18070",
+        "gene": "plsY",
+        "status": "essential"
+      }
+    ],
+    "072e8d725171e98aa9c7ee29b0739355ace536ff25aa166d1c47fcc1173dcf43": [
+      {
+        "locus_tag": "BSU22450",
+        "gene": "cca",
+        "status": "essential"
+      }
+    ],
+    "074a8fb0d27a740b7a771cbbfa212e997bd63f6dcf9d89ba25f0ed063bc70d13": [
+      {
+        "locus_tag": "BSU35290",
+        "gene": "prfB",
+        "status": "essential"
+      }
+    ],
+    "0845d6443d4d52a8b69d6cc1395d3672ccece811f2be7fe79b6d2f00e4e4d312": [
+      {
+        "locus_tag": "BSU27410",
+        "gene": "alaS",
+        "status": "essential"
+      }
+    ],
+    "08c663c02ca5fbec35736cd239c9f7f08498c466fd37a343c42d25582bc4ad47": [
+      {
+        "locus_tag": "BSU22890",
+        "gene": "cmk",
+        "status": "essential"
+      }
+    ],
+    "0901bfd307d990a78fdb0130b2c278c493661161bc5d002a818196aec7f1ef70": [
+      {
+        "locus_tag": "BSU01770",
+        "gene": "glmM",
+        "status": "essential"
+      }
+    ],
+    "09890f6c3d7c557229c19dc4e295896279bcd00b61da538972cca57f2d9e1a37": [
+      {
+        "locus_tag": "BSU04560",
+        "gene": "ddl",
+        "status": "essential"
+      }
+    ],
+    "0a9f6cb7e18f098ebff2497bc35479fc77cf33ba4755ab3516f81a84464d4e0e": [
+      {
+        "locus_tag": "BSU16680",
+        "gene": "rpsO",
+        "status": "essential"
+      }
+    ],
+    "0b55fb4998a374abf24213d04f7257f19431618af560dede44ed7c0bf3546142": [
+      {
+        "locus_tag": "BSU01440",
+        "gene": "rplQ",
+        "status": "essential"
+      }
+    ],
+    "0b7e089e01ca047d32906ef746da7fb40d49ab3e221c83d04f244ec640bcfa0e": [
+      {
+        "locus_tag": "BSU28980",
+        "gene": "dnaI",
+        "status": "essential"
+      }
+    ],
+    "0d8803ca1b21ec4d498544e866dc9d31dca721a67eaa73002aff47987d90488b": [
+      {
+        "locus_tag": "BSU32700",
+        "gene": "sufD",
+        "status": "essential"
+      }
+    ],
+    "0e42b464325ac1faee84480c40bdab5a89e9484531352cfe7cdcc61538f0b7f9": [
+      {
+        "locus_tag": "BSU38690",
+        "gene": "yxlC",
+        "status": "essential"
+      }
+    ],
+    "0ec07b2b24dcaed72c1b7c902d6e1e4d13282c0dcf541a665a80b7d4c7b67e4d": [
+      {
+        "locus_tag": "BSU01210",
+        "gene": "rplV",
+        "status": "essential"
+      }
+    ],
+    "11597cb937d453e9333d7230b18b05c0b327681979b3e9124b86ed6ba9262ae6": [
+      {
+        "locus_tag": "BSU24340",
+        "gene": "accC",
+        "status": "essential"
+      }
+    ],
+    "11d3c7d42b7541853b0675216d6e3c89fde331f6db6c6c205071f042f4fc303d": [
+      {
+        "locus_tag": "BSU15710",
+        "gene": "priA",
+        "status": "essential"
+      }
+    ],
+    "127bbda5f80250026ffa1c4e3bc79e83e13172e6b00fb0f7606e06f0d0ec196b": [
+      {
+        "locus_tag": "BSU06610",
+        "gene": "pcrA",
+        "status": "essential"
+      }
+    ],
+    "128436cba08ef22bc9bd8a2ac4fe971b1ae972f0647a1b49dab4c2bab2e502d4": [
+      {
+        "locus_tag": "BSU00770",
+        "gene": "sul (folP)",
+        "status": "essential"
+      }
+    ],
+    "150e8a5e5305e82032262c668888793ba7cac33ab01cc300e3b9d96a45514667": [
+      {
+        "locus_tag": "BSU31660",
+        "gene": "mrpG",
+        "status": "essential"
+      }
+    ],
+    "156cca30733df8a8112711d37e06a038ec607fa2b6d086dda5382765bd548d47": [
+      {
+        "locus_tag": "BSU16540",
+        "gene": "cdsA",
+        "status": "essential"
+      }
+    ],
+    "1659d3d889fd65d0b9ee5a12f58bd2c063804310cbff76584f011033c3d4bcf5": [
+      {
+        "locus_tag": "BSU00940",
+        "gene": "cysS",
+        "status": "essential"
+      }
+    ],
+    "174bc0d43b05cfc89ee0bc572b200b6c0bf122f2144689327f613ef273e57e9c": [
+      {
+        "locus_tag": "BSU28390",
+        "gene": "racE",
+        "status": "essential"
+      }
+    ],
+    "1824d5f449e6fbf28c209deee9038e2d9cc0d20110d7c4d0fbee7d760f88cfd5": [
+      {
+        "locus_tag": "BSU31650",
+        "gene": "mrpF",
+        "status": "essential"
+      }
+    ],
+    "18271f50397f7302c07e28f13a9957eb40db2417b14c52f5becf6c4db5a3e401": [
+      {
+        "locus_tag": "BSU25640",
+        "gene": "nadD",
+        "status": "essential"
+      }
+    ],
+    "199d07d2a63637a95a20d3262a5776417f35a88325daabbb5568784f46dbed9b": [
+      {
+        "locus_tag": "BSU04640",
+        "gene": "alrA",
+        "status": "essential"
+      }
+    ],
+    "1a6430f6d2337a182e305143e526f5b00a48b5f5168d73b386473553c3544fff": [
+      {
+        "locus_tag": "BSU01300",
+        "gene": "rpsH",
+        "status": "essential"
+      }
+    ],
+    "1b9d8e09550f5eaf720796e08a3f14012a22ea12cde4577170c1c59e065dd48a": [
+      {
+        "locus_tag": "BSU14850",
+        "gene": "ftsW",
+        "status": "essential"
+      }
+    ],
+    "1bb9e54185b81124533b9c641896101a1a7621eec15b0f06c1b599eeede64282": [
+      {
+        "locus_tag": "BSU22710",
+        "gene": "aroF",
+        "status": "essential"
+      }
+    ],
+    "1c75a8274366fe12a0e9d70b556ac8691ead343385034f1449adf71d1ef7a215": [
+      {
+        "locus_tag": "BSU15020",
+        "gene": "coaD",
+        "status": "essential"
+      }
+    ],
+    "1d646c8e793ffd74c904e5f1d6f2e50603b52dc7f5a26b23ec1cd7c418f4d3cb": [
+      {
+        "locus_tag": "BSU16030",
+        "gene": "trmD",
+        "status": "essential"
+      }
+    ],
+    "1dd0cbde5701e533975080cf9b28953af5475076c576ba9926bd6be03a21cec6": [
+      {
+        "locus_tag": "BSU15910",
+        "gene": "fabG",
+        "status": "essential"
+      }
+    ],
+    "1e0b42a6315886b90105ce7d6766d45b51b6b93ada7e8056749c9877c88de637": [
+      {
+        "locus_tag": "BSU01320",
+        "gene": "rplR",
+        "status": "essential"
+      }
+    ],
+    "1f1f77258f5a038127c8b31df7de61e3b9486fe9c240b3e3e078369343f39b5d": [
+      {
+        "locus_tag": "BSU23220",
+        "gene": "scpA",
+        "status": "essential"
+      }
+    ],
+    "1fa344b349312c1d4c8560fea5c98ce46f4883191e4cd314965daf82f3c01919": [
+      {
+        "locus_tag": "BSU35300",
+        "gene": "secA",
+        "status": "essential"
+      }
+    ],
+    "2061a9f063d5303c84ed8eea3f94483b7284dd3d45cf405e431a6ad76c8db5eb": [
+      {
+        "locus_tag": "BSU36370",
+        "gene": "fabZ",
+        "status": "essential"
+      }
+    ],
+    "21a11d1ebb6024507c45f48df5012022aebda8708f48fed4f3d3bd82d071ccf0": [
+      {
+        "locus_tag": "BSU16500",
+        "gene": "tsf",
+        "status": "essential"
+      }
+    ],
+    "2346c5c4f8c1aadf1af1e2299745af4f8f1a181f9c64f287759d7b3d6d772ffb": [
+      {
+        "locus_tag": "BSU00500",
+        "gene": "gcaD (glmU)",
+        "status": "essential"
+      }
+    ],
+    "23bc9d5ce67d139145539bff3fd9e33d9b87a75b299a7d4e468ec1dfe52f31ce": [
+      {
+        "locus_tag": "BSU25210",
+        "gene": "dnaG",
+        "status": "essential"
+      }
+    ],
+    "240faca78cff9ce90068bdf75ce8d56f8a9a8fbc073c72df2fabb2353510d3ab": [
+      {
+        "locus_tag": "BSU22440",
+        "gene": "birA",
+        "status": "essential"
+      }
+    ],
+    "24775017cee1b75beca19549cd5894698b5c3bf38f621d5aed0db5fb4a292faa": [
+      {
+        "locus_tag": "BSU11610",
+        "gene": "ppnKA",
+        "status": "essential"
+      }
+    ],
+    "24e8cb2e827502a0396e7c66c890d78895da2fcb8d56ebacf37caf1d0ae6ab1b": [
+      {
+        "locus_tag": "BSU00020",
+        "gene": "dnaN",
+        "status": "essential"
+      }
+    ],
+    "25ca2c0db76297472770c7012cc8371c25cfbe8cd86aba242a042343100f6721": [
+      {
+        "locus_tag": "BSU01160",
+        "gene": "rplC",
+        "status": "essential"
+      }
+    ],
+    "26d5ab1144e0f0635021bdde0590ce995f51dd1c6054f14d63af0b9993753b23": [
+      {
+        "locus_tag": "BSU16550",
+        "gene": "dxr",
+        "status": "essential"
+      }
+    ],
+    "27dede2a3d107234a9919e0b2bea726de8a19b9dc0ff9e84a7e882145f0452e7": [
+      {
+        "locus_tag": "BSU35700",
+        "gene": "tagH",
+        "status": "essential"
+      }
+    ],
+    "284fcf0705ae6b9d3035813263188a29f561730fd3b1be5400a9c0f1ce1944ce": [
+      {
+        "locus_tag": "BSU16520",
+        "gene": "frr",
+        "status": "essential"
+      }
+    ],
+    "28aee034779a21057597d1ec1e24ea9159fa7751f2d84f784e88f67e68f94350": [
+      {
+        "locus_tag": "BSU28630",
+        "gene": "pheT",
+        "status": "essential"
+      }
+    ],
+    "29335483bee285d07521bacf6ad126d42d8b1791e05d4091703df0a59f2cb9e9": [
+      {
+        "locus_tag": "BSU39290",
+        "gene": "yxxD (rtbE)",
+        "status": "essential"
+      }
+    ],
+    "29f4ef03a23502135069f301fa7189f5e76a42f56d0221e5d2b4c97f8b57cfbb": [
+      {
+        "locus_tag": "BSU01110",
+        "gene": "rpsG",
+        "status": "essential"
+      }
+    ],
+    "2a3fc218bfe7d1fcb9bec52a178cc9fb3465dc107f86c4683e4c0d63728862aa": [
+      {
+        "locus_tag": "BSU25290",
+        "gene": "era",
+        "status": "essential"
+      }
+    ],
+    "2ae9225231076d75bb49e253ae67b5122e4cefb16360ff22d30d79f9ac44560f": [
+      {
+        "locus_tag": "BSU40890",
+        "gene": "rpsR",
+        "status": "essential"
+      }
+    ],
+    "2c030dc4c6f93d8f79c18e77e0fe2b7855214a5a086492e570f075c5758c0a47": [
+      {
+        "locus_tag": "BSU15200",
+        "gene": "murD",
+        "status": "essential"
+      }
+    ],
+    "2cb397a5255a94bc6ca807bc9e76e151d9550677ebfc1933eef3d2352a37a1bd": [
+      {
+        "locus_tag": "BSU30550",
+        "gene": "metK",
+        "status": "essential"
+      }
+    ],
+    "2cbbf0b8c100460c22ec9b1b7c557aee71a172668237d60435cf3d395f03be53": [
+      {
+        "locus_tag": "BSU00010",
+        "gene": "dnaA",
+        "status": "essential"
+      }
+    ],
+    "2d08a8779c863363cec66d22a2d5329f2792bb22b1acc176718c6d9e6fa13625": [
+      {
+        "locus_tag": "BSU27550",
+        "gene": "aspS",
+        "status": "essential"
+      }
+    ],
+    "2f239377fd1e9d647ec3c5fb0d3b0c8637ff525908980aed67160470683ddd06": [
+      {
+        "locus_tag": "BSU15680",
+        "gene": "gmk",
+        "status": "essential"
+      }
+    ],
+    "2fa3c133d04044156a73f074860240943f54a19011137747b9b259de779bdcde": [
+      {
+        "locus_tag": "BSU06020",
+        "gene": "groES",
+        "status": "essential"
+      }
+    ],
+    "305ceafcf61b2b264a5ebe4dfde8deb67d0d282eb3c68da308038602c182b159": [
+      {
+        "locus_tag": "BSU37010",
+        "gene": "prfA",
+        "status": "essential"
+      }
+    ],
+    "30c11b11b12cee8feec0ca5177f312dbd85db7b14c794fcf80f532123fa74c7e": [
+      {
+        "locus_tag": "BSU28080",
+        "gene": "folC",
+        "status": "essential"
+      }
+    ],
+    "31a78615f2366b564a456d5dafa9bf44a4629e0506830852a326aa8af4b30a24": [
+      {
+        "locus_tag": "BSU40900",
+        "gene": "ssbA",
+        "status": "essential"
+      }
+    ],
+    "3243751e9bc2ffba6e9486a617e1001007496309bc005ee1a8bd137a1a738406": [
+      {
+        "locus_tag": "BSU09510",
+        "gene": "yhdL",
+        "status": "essential"
+      }
+    ],
+    "330f32759c87a93dd78b7f9d0c0fe1745b34f6974ce59701ce4c8716ed652b38": [
+      {
+        "locus_tag": "BSU27950",
+        "gene": "ysxB",
+        "status": "essential"
+      }
+    ],
+    "3419f0eeb6f5d673442b9c1a4bc29aebc4d17e0818f4a4e511fc637d65a97e0f": [
+      {
+        "locus_tag": "BSU25270",
+        "gene": "glyQ",
+        "status": "essential"
+      }
+    ],
+    "37a88da49e3ced68c578884969d1e1228312752becdc11404a5d416029c8ae49": [
+      {
+        "locus_tag": "BSU29670",
+        "gene": "tyrS",
+        "status": "essential"
+      }
+    ],
+    "3adb49ec80ebc0738af9f40e4cec92446f74581e0be4942a1c50d19b99455447": [
+      {
+        "locus_tag": "BSU14190",
+        "gene": "dapL (dapI)",
+        "status": "essential"
+      }
+    ],
+    "3b4083cb4bb129a079d60ca8aa091d226fec5a15a0ad79479d26e9114a2cc393": [
+      {
+        "locus_tag": "BSU17390",
+        "gene": "nrdF",
+        "status": "essential"
+      }
+    ],
+    "3d6e07ded699a7c6926c97521486949b9c70ac2ca4279e26ba95a64a501b90b5": [
+      {
+        "locus_tag": "BSU15980",
+        "gene": "ffh",
+        "status": "essential"
+      }
+    ],
+    "3def4d170795941c5fedfc60cd8f4721bdaf83e037059944e3e3913763d8bdc1": [
+      {
+        "locus_tag": "BSU01250",
+        "gene": "rpsQ",
+        "status": "essential"
+      }
+    ],
+    "3e248147a009800314fdf0cda7e9355e50876962f8f0ef71f4394e7f52923f34": [
+      {
+        "locus_tag": "BSU01170",
+        "gene": "rplD",
+        "status": "essential"
+      }
+    ],
+    "3e3fe58968da3fe6932e1c80ae381e6641e1d4b31d5a678b66058c599139da58": [
+      {
+        "locus_tag": "BSU01220",
+        "gene": "rpsC",
+        "status": "essential"
+      }
+    ],
+    "3f5faf332aecc39876c79c364a02567364c71c11fc575e22d33af9cb45879073": [
+      {
+        "locus_tag": "BSU22490",
+        "gene": "dapB",
+        "status": "essential"
+      }
+    ],
+    "405c3610acc55f93a1192ad048cba3d410e286d64689342ed7bfeda7e96c80f2": [
+      {
+        "locus_tag": "BSU15160",
+        "gene": "pbpB",
+        "status": "essential"
+      }
+    ],
+    "4113a3c26541544df364f0a279de351acb5b95042058e3a602774046c3a9803a": [
+      {
+        "locus_tag": "BSU06811",
+        "gene": "yezG",
+        "status": "essential"
+      }
+    ],
+    "464f21b6b1ff14ae0640b6e3691092b368934d3b5728cffec4bec9d8af71ac5f": [
+      {
+        "locus_tag": "BSU16750",
+        "gene": "asd",
+        "status": "essential"
+      }
+    ],
+    "480a135b6e10cb5cbcf41242ef488d777ecd43a6ffe7c98ef3c5aef1e3a40a7d": [
+      {
+        "locus_tag": "BSU15230",
+        "gene": "murB",
+        "status": "essential"
+      }
+    ],
+    "4908a98c98c2e35e9fd6200f393e0c1cbbe39303912653f8c8a0ad45a48067fc": [
+      {
+        "locus_tag": "BSU01040",
+        "gene": "rplJ",
+        "status": "essential"
+      }
+    ],
+    "494745088a13cc835424b18941b1236d90ea0403accaa8850c151b4d3ea7af32": [
+      {
+        "locus_tag": "BSU01050",
+        "gene": "rplL",
+        "status": "essential"
+      }
+    ],
+    "4ac2eaa8fb96d73e6068db8d7a53ab1e41e184c6de720f5a32c1571a8b4d3990": [
+      {
+        "locus_tag": "BSU29790",
+        "gene": "murC",
+        "status": "essential"
+      }
+    ],
+    "4c528fb4b62f338a76ab3030d10e6ff0e8daad007e86bcb54cd3e2b6361f5b55": [
+      {
+        "locus_tag": "BSU21810",
+        "gene": "dfrA",
+        "status": "essential"
+      }
+    ],
+    "4c52b813b78a638c8753141a1acb4010a8b42142450cb06d4b1863b465d7214e": [
+      {
+        "locus_tag": "BSU01150",
+        "gene": "rpsJ",
+        "status": "essential"
+      }
+    ],
+    "4ece0613be5904677c88f6f85a77ba21c863c9239e55a6405f411b220ab61eea": [
+      {
+        "locus_tag": "BSU25560",
+        "gene": "holA",
+        "status": "essential"
+      }
+    ],
+    "4f2553f19d45b194493a7f88782d5f3600d1e43573de17cca63a7d1317f67f27": [
+      {
+        "locus_tag": "BSU17370",
+        "gene": "nrdI",
+        "status": "essential"
+      }
+    ],
+    "4f426c003dc8daaf302211b29f4339dd58e6c9cdfcc731c4b9302cff582f5e8d": [
+      {
+        "locus_tag": "BSU32690",
+        "gene": "sufS",
+        "status": "essential"
+      }
+    ],
+    "4fd9d33f2fd02ca36fd52a706c262b1da4bddd7506ccd86c7464b8c98b6ca2da": [
+      {
+        "locus_tag": "BSU35740",
+        "gene": "tagD",
+        "status": "essential"
+      }
+    ],
+    "5044802d98772854287fbc7c6ba09ddf4345de46f5e0743670ba46b8a67676bf": [
+      {
+        "locus_tag": "BSU15940",
+        "gene": "smc",
+        "status": "essential"
+      }
+    ],
+    "52070b8f0d7f90b513dae0f2b600572d01f111cb2f183fd126c5715c100ffb25": [
+      {
+        "locus_tag": "BSU30780",
+        "gene": "menC",
+        "status": "essential"
+      }
+    ],
+    "5238ce02454660cdd26d3ffc8765c33be65a9ce27e90383244eddd02fbd0e67b": [
+      {
+        "locus_tag": "BSU22600",
+        "gene": "aroE",
+        "status": "essential"
+      }
+    ],
+    "53d8335365244d76c4ac74742d574a3c6f89e8f7b378a3e077b27860767550e7": [
+      {
+        "locus_tag": "BSU01270",
+        "gene": "rplX",
+        "status": "essential"
+      }
+    ],
+    "54663a98c5c1955146009388815ff0dda96a9c6babf352b90de79042a7a3f831": [
+      {
+        "locus_tag": "BSU01430",
+        "gene": "rpoA",
+        "status": "essential"
+      }
+    ],
+    "55e2a685edfe4ee6b6500ae3c78185b3f1037bddd08c78b08663e1008141d629": [
+      {
+        "locus_tag": "BSU29210",
+        "gene": "accD",
+        "status": "essential"
+      }
+    ],
+    "55ef30a23b3ba54e891d4bea16bbfbd7f591f45debdb8a62afeb8690698709c1": [
+      {
+        "locus_tag": "BSU27500",
+        "gene": "trmU (mnmA)",
+        "status": "essential"
+      }
+    ],
+    "56db418b440ddc3250d9f24772510f33e697988ef27ed3405bae42a6c1dd1798": [
+      {
+        "locus_tag": "BSU25070",
+        "gene": "ispG",
+        "status": "essential"
+      }
+    ],
+    "5a306bb91db61c9e3ec600240ee51ab76edda1a27f7f61fa443ab5894e2c61ef": [
+      {
+        "locus_tag": "BSU06060",
+        "gene": "ydiO (bsuMA)",
+        "status": "essential"
+      }
+    ],
+    "5b0eb915bdd4a158f087c48bba9d167bbf4b47d89724d527ff65f049341d0080": [
+      {
+        "locus_tag": "BSU06680",
+        "gene": "gatA",
+        "status": "essential"
+      }
+    ],
+    "5bfe09d203237504e44835f629fc50fe3a72896a3eb92fe3ce1a19b7f6cb8e91": [
+      {
+        "locus_tag": "BSU28020",
+        "gene": "mreC",
+        "status": "essential"
+      }
+    ],
+    "5fc7b335f47bd85cf848861a8d70743adbeb5076b3a667794c5849c4b2ea38cb": [
+      {
+        "locus_tag": "BSU16040",
+        "gene": "rplS",
+        "status": "essential"
+      }
+    ],
+    "60fd976ea90a8b2806916ff8a08c810e6362c13f2daa725e6f5ffaed8b855e46": [
+      {
+        "locus_tag": "BSU14840",
+        "gene": "ylaN",
+        "status": "essential"
+      }
+    ],
+    "6158b94ac3c3bb13a7b17f54d1a11b74d3f6047a5a50ef93273b3f0373f4cce9": [
+      {
+        "locus_tag": "BSU11420",
+        "gene": "trpS",
+        "status": "essential"
+      }
+    ],
+    "62be9596be527062f5c71abbdd8add2b1babd0e789755ca147f8d3a7e6de1060": [
+      {
+        "locus_tag": "BSU31640",
+        "gene": "mrpE",
+        "status": "essential"
+      }
+    ],
+    "641709f19f39519409acb3c58a68ffb8e05846de1be5e2aebded9767b25157c4": [
+      {
+        "locus_tag": "BSU16760",
+        "gene": "dapG",
+        "status": "essential"
+      }
+    ],
+    "655b264ad24ac1ea826426a20522e3218d829218b42b52a2d5dfc6dccc91bdbd": [
+      {
+        "locus_tag": "BSU00060",
+        "gene": "gyrB",
+        "status": "essential"
+      }
+    ],
+    "66a463920cecded0a7b91605b5f51660242c272fe70fbe905e65ceafdcb3e77f": [
+      {
+        "locus_tag": "BSU05920",
+        "gene": "ydiC (tsaB)",
+        "status": "essential"
+      }
+    ],
+    "66d50aaddf286d4c2a00e36f62d99de44163301dbe825832156071c142136a29": [
+      {
+        "locus_tag": "BSU01360",
+        "gene": "secY",
+        "status": "essential"
+      }
+    ],
+    "676689df94031811d9c643243e997e9d114b364bf6cc557538e3165748cad4b9": [
+      {
+        "locus_tag": "BSU15150",
+        "gene": "ftsL",
+        "status": "essential"
+      }
+    ],
+    "687c3293ba3e969558272bddeff826c1026dc922f107993b3633dd1daf59e632": [
+      {
+        "locus_tag": "BSU31630",
+        "gene": "mrpD",
+        "status": "essential"
+      }
+    ],
+    "6a4743c87d76f37ca843cdd8944b31391ec157ab253beef002ff346d93ac1b55": [
+      {
+        "locus_tag": "BSU27920",
+        "gene": "obg",
+        "status": "essential"
+      }
+    ],
+    "6ab642bd6090720e06d1782cd877afa927d951728a61d255cf13ca3b7c21f198": [
+      {
+        "locus_tag": "BSU01340",
+        "gene": "rpmD",
+        "status": "essential"
+      }
+    ],
+    "6ad1f868935efd5a3079c6634dc34857f23a4b9b3eabb1bdfb8c532f7446dff2": [
+      {
+        "locus_tag": "BSU16490",
+        "gene": "rpsB",
+        "status": "essential"
+      }
+    ],
+    "6ade871718fca6febb855ea6bb8570da891d9cc00b65bb6e55e536fb2071bca7": [
+      {
+        "locus_tag": "BSU35750",
+        "gene": "tagA",
+        "status": "essential"
+      }
+    ],
+    "6b783877b5681d0378e07ee852322ba4bb8c7dd17bdb55a4d4f1c5938fd9b1a2": [
+      {
+        "locus_tag": "BSU30820",
+        "gene": "menD",
+        "status": "essential"
+      }
+    ],
+    "6ce512c04dddc182e12933132adca1ad2f37fd6a4218d2350860fc8fd60c2ae2": [
+      {
+        "locus_tag": "BSU14180",
+        "gene": "dapH",
+        "status": "essential"
+      }
+    ],
+    "70371abfada34fb59af1fda16123d110f133daae58b6d34e60daec89345d8a0e": [
+      {
+        "locus_tag": "BSU06070",
+        "gene": "ydiP (bsuMB)",
+        "status": "essential"
+      }
+    ],
+    "708c93bc41db4aba7f7491fb298a6f3553f9f4c1457c1c10250a81f8ebb14d25": [
+      {
+        "locus_tag": "BSU25160",
+        "gene": "ispH",
+        "status": "essential"
+      }
+    ],
+    "7094a3b992bf01567a25d4bc610a1420bb0b1a5f95c2d85ba30e42bbe4c5cc18": [
+      {
+        "locus_tag": "BSU22790",
+        "gene": "hbs",
+        "status": "essential"
+      }
+    ],
+    "71f37b65ed1d29726fe01e52fd9e1dbf9d79129e6b5bcd51825bfe663fd5fbe6": [
+      {
+        "locus_tag": "BSU31750",
+        "gene": "pncB",
+        "status": "essential"
+      }
+    ],
+    "7227030509a061281b8c92ec23b91d7637008825a5b9801d2a6b02b7c2632351": [
+      {
+        "locus_tag": "BSU01280",
+        "gene": "rplE",
+        "status": "essential"
+      }
+    ],
+    "73dcd171ddd8395992162828edaf83dc5bec0a911fef858fa1f10c72283bc206": [
+      {
+        "locus_tag": "BSU06030",
+        "gene": "groEL",
+        "status": "essential"
+      }
+    ],
+    "7493ab576d75a4d1dcfa041133a0f28cc7fdc6e8f19cd43fff17b1fb4b0c31e4": [
+      {
+        "locus_tag": "BSU14000",
+        "gene": "patA",
+        "status": "essential"
+      }
+    ],
+    "755ad0d12fe4a0f2435f869beb5bd030d05bc602f9efeee42ead50cb3a293118": [
+      {
+        "locus_tag": "BSU25260",
+        "gene": "glyS",
+        "status": "essential"
+      }
+    ],
+    "75a5dadcb44dcc645be43198d25837deffaab8e66c67ecf714b8de097f5f53fd": [
+      {
+        "locus_tag": "BSU00510",
+        "gene": "prs",
+        "status": "essential"
+      }
+    ],
+    "769ca5ae7107e6805356fed61cc0497bb0f48b024c6ef5782997f5b1de852a97": [
+      {
+        "locus_tag": "BSU00070",
+        "gene": "gyrA",
+        "status": "essential"
+      }
+    ],
+    "771f61eb9e91cd7eff2952478f5548125b2c8b6566ba02289002fb021273ca72": [
+      {
+        "locus_tag": "BSU28500",
+        "gene": "trxA",
+        "status": "essential"
+      }
+    ],
+    "772d1f3d433b2a3cb5d9bc7e5aa3c0ec1c3b25e2b0e1ad085824f1ac9ce32d9c": [
+      {
+        "locus_tag": "BSU22840",
+        "gene": "engA (der)",
+        "status": "essential"
+      }
+    ],
+    "7735cc94c4a637b4fb1c891f22d3a92435d9db8e4eb99788a275ba2d0173bb7c": [
+      {
+        "locus_tag": "BSU38490",
+        "gene": "menA",
+        "status": "essential"
+      }
+    ],
+    "77fc4e9f77acb2e1ca5129a38d991d8a8bc2c7c13c50a8dd0ca925b6678f5a1a": [
+      {
+        "locus_tag": "BSU39220",
+        "gene": "yxxG (wapI)",
+        "status": "essential"
+      }
+    ],
+    "793cca9a90179522bc9896f1965b48aff48b4fba92b79601a44deab35628d481": [
+      {
+        "locus_tag": "BSU28190",
+        "gene": "ysxC",
+        "status": "essential"
+      }
+    ],
+    "797f25abe089e1d5d0a0f4e0ca950d6c8330f388f7aa90a3bf4a007d8c06c7f5": [
+      {
+        "locus_tag": "BSU29230",
+        "gene": "dnaE",
+        "status": "essential"
+      }
+    ],
+    "798aa37281ff476275a86d59499f6f140397c3dcb6b5b6a43ebc56f06bb674cc": [
+      {
+        "locus_tag": "BSU00820",
+        "gene": "lysS",
+        "status": "essential"
+      }
+    ],
+    "7b21d1773a8d58e3df5469923ea1e3959fe88df7332653555ecd99516e60f1a9": [
+      {
+        "locus_tag": "BSU15180",
+        "gene": "murE",
+        "status": "essential"
+      }
+    ],
+    "7bacf093b5a2437eb3b965361bc2a0fd4bdcc7695e2572ec25b72cb6891d1c88": [
+      {
+        "locus_tag": "BSU15920",
+        "gene": "acpA",
+        "status": "essential"
+      }
+    ],
+    "7dfd151e0c2693fb766e081821d14fa84251b930a9720bff13ee371848f8a8a0": [
+      {
+        "locus_tag": "BSU01100",
+        "gene": "rpsL",
+        "status": "essential"
+      }
+    ],
+    "7febbd96b4729cc5c12d192fd70a35fc6bdff6382face8b8293680f28a36ebfd": [
+      {
+        "locus_tag": "BSU06620",
+        "gene": "ligA",
+        "status": "essential"
+      }
+    ],
+    "8039cdb1265e614a3cf2a647a2424b845f84f60fd1ecb553215598b97f416225": [
+      {
+        "locus_tag": "BSU00920",
+        "gene": "gltX",
+        "status": "essential"
+      }
+    ],
+    "80ebb7d4655a7fc5ddc0038268f65028750669c10936e94f778cc0d1eaf5fbad": [
+      {
+        "locus_tag": "BSU24350",
+        "gene": "accB",
+        "status": "essential"
+      }
+    ],
+    "82f39f2d7337646e77fbf060cca1e457d729f8df1dca849cce1840345bbc75c5": [
+      {
+        "locus_tag": "BSU26350",
+        "gene": "yqaE (sknR)",
+        "status": "essential"
+      }
+    ],
+    "838079a7472bd6fe90c24e6587a3621b739a35969b077f535e50538d437e88b7": [
+      {
+        "locus_tag": "BSU24270",
+        "gene": "dxs",
+        "status": "essential"
+      }
+    ],
+    "83a298ad61f432dd4f646e6e28a7a15090ce7a02e73e19c8b3a73e00455fa8e4": [
+      {
+        "locus_tag": "BSU16050",
+        "gene": "rbgA",
+        "status": "essential"
+      }
+    ],
+    "844e8967add5b09f4d4c725e5acab0ed243dfb17b20923b169623f0bb442e5b9": [
+      {
+        "locus_tag": "BSU04620",
+        "gene": "acpS",
+        "status": "essential"
+      }
+    ],
+    "848a0f8a10d36ae04dd2371ececf08279287711b5a1f62477dbbc57e430fa8ff": [
+      {
+        "locus_tag": "BSU32110",
+        "gene": "yumC",
+        "status": "essential"
+      }
+    ],
+    "855abb92e31bfbfe070e077433a1fcacb09909525c723eafb9b0a6cfa3d14365": [
+      {
+        "locus_tag": "BSU16530",
+        "gene": "uppS",
+        "status": "essential"
+      }
+    ],
+    "8571ccfc8da817bd21b0cff505aae14db1da8be233d8c12809ab88f831697ae1": [
+      {
+        "locus_tag": "BSU37330",
+        "gene": "argS",
+        "status": "essential"
+      }
+    ],
+    "85db82a427775078c56d587f004f874aad9df9a935f033a97b2844175d2eec70": [
+      {
+        "locus_tag": "BSU00790",
+        "gene": "folK",
+        "status": "essential"
+      }
+    ],
+    "8689b493f58285aaa9a3fe7b550637ce421d29767ac80e76571f4f4a05973f16": [
+      {
+        "locus_tag": "BSU15430",
+        "gene": "ileS",
+        "status": "essential"
+      }
+    ],
+    "8a36b60fb13376431778858d44483336fb4b42eac1ac48824982be7747beab2c": [
+      {
+        "locus_tag": "BSU01120",
+        "gene": "fusA",
+        "status": "essential"
+      }
+    ],
+    "8b4fa385f914f93850ecc3acd08e4439ff9ed802a6ef81eba5b8dce2206015b2": [
+      {
+        "locus_tag": "BSU00900",
+        "gene": "ispD",
+        "status": "essential"
+      }
+    ],
+    "8b62932fb60ae17e44ddd9acf3d7af05b59d9ca0afd664403d0712cd5b193b46": [
+      {
+        "locus_tag": "BSU28030",
+        "gene": "mreB",
+        "status": "essential"
+      }
+    ],
+    "8bca3a3deedaa49fd4d60a125a86f461b9d28815778f05e924dc5f43fefd9a07": [
+      {
+        "locus_tag": "BSU28010",
+        "gene": "mreD",
+        "status": "essential"
+      }
+    ],
+    "8bdeca5cc6eb0e9335285c318ddfd315dcaf086688a390b67635bce8415b07cf": [
+      {
+        "locus_tag": "BSU00780",
+        "gene": "folB",
+        "status": "essential"
+      }
+    ],
+    "8be0611e8f8967ce2e5054b75fd7be8eca4eebbd9093c5273201eca3d989fa64": [
+      {
+        "locus_tag": "BSU15990",
+        "gene": "rpsP",
+        "status": "essential"
+      }
+    ],
+    "8cd0472903e37c48b055c0b611a27dc1b7bf87f3150b721ce2489b5d14719a19": [
+      {
+        "locus_tag": "BSU31600",
+        "gene": "mrpA",
+        "status": "essential"
+      }
+    ],
+    "8d8ee180b6cb63d0e0422fd1ef6f72bb7dd191bb32595f7e4c0014318e8d63ce": [
+      {
+        "locus_tag": "BSU31610",
+        "gene": "mrpB",
+        "status": "essential"
+      }
+    ],
+    "8e22ce4ef75e29085dfb29a021f8ebaf145b5141c56eecb876334d324b8c4af1": [
+      {
+        "locus_tag": "BSU29200",
+        "gene": "accA",
+        "status": "essential"
+      }
+    ],
+    "8eaf03123e04c17f4376a290b0fbf0f0a8f828a5236d8e7927e72f505c0ba25d": [
+      {
+        "locus_tag": "BSU00530",
+        "gene": "pth",
+        "status": "essential"
+      }
+    ],
+    "94ba8b6f859c60fb3644386f2ca959793432d334ae85ec5abfd10d2a48608133": [
+      {
+        "locus_tag": "BSU12510",
+        "gene": "xre",
+        "status": "essential"
+      }
+    ],
+    "9625087599925a79239036ccfa8b8a170f1bcec0054d26dfde639c921f688ca2": [
+      {
+        "locus_tag": "BSU40410",
+        "gene": "walR",
+        "status": "essential"
+      }
+    ],
+    "96d09c137082eae5b9ef1d0480746a41dd2f44de56c524d4585a4e60d7052ab6": [
+      {
+        "locus_tag": "BSU28870",
+        "gene": "infC",
+        "status": "essential"
+      }
+    ],
+    "9e58e0213def72fa44e841d028251681e26d5ca29cb0b0ba9b76b6942e902b82": [
+      {
+        "locus_tag": "BSU01190",
+        "gene": "rplB",
+        "status": "essential"
+      }
+    ],
+    "9fabd04a367ed185483cb8dd41a036c7302ae9728293ede3834e73341e873659": [
+      {
+        "locus_tag": "BSU18090",
+        "gene": "parE",
+        "status": "essential"
+      }
+    ],
+    "9fe03b0cd04ab83f12eddc6dfa899b2ce66dc5ced660d997a3ccc580dc542aac": [
+      {
+        "locus_tag": "BSU27510",
+        "gene": "iscS (iscSA)",
+        "status": "essential"
+      }
+    ],
+    "a16588c884e332572efd1f3975eb7937d9789c0ed87206af294a3044f9330da3": [
+      {
+        "locus_tag": "BSU15930",
+        "gene": "rnc",
+        "status": "essential"
+      }
+    ],
+    "a188aa0b4023718b26cb1ffb21f78a1633872879404c83c078cd4bebe440b96c": [
+      {
+        "locus_tag": "BSU15290",
+        "gene": "ftsZ",
+        "status": "essential"
+      }
+    ],
+    "a36946903775654463111c5993224fb0bae162a62b869cd34c444da03ea7dc21": [
+      {
+        "locus_tag": "BSU31620",
+        "gene": "mrpC",
+        "status": "essential"
+      }
+    ],
+    "a441eaeb437b81d3281c3cd6489a11ae1c6ea90979adbceef3e431a2a6d62ace": [
+      {
+        "locus_tag": "BSU27940",
+        "gene": "rpmA",
+        "status": "essential"
+      }
+    ],
+    "a4609f1cea495b548cc400ef4c2673d6465794f2740442d3165a4ae8ff3e6564": [
+      {
+        "locus_tag": "BSU25200",
+        "gene": "sigA",
+        "status": "essential"
+      }
+    ],
+    "a64a900c12d070d724b1f8ea945a4b59dc7116daaa0b8bdc17fafe57ae564c2d": [
+      {
+        "locus_tag": "BSU01310",
+        "gene": "rplF",
+        "status": "essential"
+      }
+    ],
+    "a763d66ae97da9be8cf45209da87fbfee06d067d58c02ba2a42c8befc29ce30c": [
+      {
+        "locus_tag": "BSU16600",
+        "gene": "nusA",
+        "status": "essential"
+      }
+    ],
+    "a8b5a04961678080ddad80067b140812ad918e16776b3269de3446350c20ab5f": [
+      {
+        "locus_tag": "BSU32170",
+        "gene": "dapF",
+        "status": "essential"
+      }
+    ],
+    "a95634e895b582bbeb5c808436f40b80399cb75a646c3187d8922c7470360a27": [
+      {
+        "locus_tag": "BSU25680",
+        "gene": "yqeG",
+        "status": "essential"
+      }
+    ],
+    "a9841a0d046cb9c7522bb6779193bf6ab497b98ace65c08ad534f05a5aad7494": [
+      {
+        "locus_tag": "BSU11340",
+        "gene": "fabF",
+        "status": "essential"
+      }
+    ],
+    "ab0c335d60dcccfa630d6d17aa8a5398a39b180b1273ae8dbe87eb43f12f016f": [
+      {
+        "locus_tag": "BSU01330",
+        "gene": "rpsE",
+        "status": "essential"
+      }
+    ],
+    "ab79499ebc70d824923b5a93b44d9540299d5600196c92f409a79d7cc81a08b1": [
+      {
+        "locus_tag": "BSU35600",
+        "gene": "tuaB",
+        "status": "essential"
+      }
+    ],
+    "adcbf171fb9c65f1040fa772a6807dab4e2efccd3f7058887f77c3858a3e0101": [
+      {
+        "locus_tag": "BSU15890",
+        "gene": "plsX",
+        "status": "essential"
+      }
+    ],
+    "ade62d0bf893679c7240e18701fc01cd74b6fcb5a3d4dc0bbc80d8af1c048712": [
+      {
+        "locus_tag": "BSU17910",
+        "gene": "yneF",
+        "status": "essential"
+      }
+    ],
+    "af011421b91005d2389ea4a99f3a4d2d0fd3e3a22e18af0cf363e85ea91b168e": [
+      {
+        "locus_tag": "BSU23840",
+        "gene": "rnz",
+        "status": "essential"
+      }
+    ],
+    "b022c6eea174e9d15727f5b01e31fc0dd3f57aaf9fb431e3bb8a012334684e83": [
+      {
+        "locus_tag": "BSU01230",
+        "gene": "rplP",
+        "status": "essential"
+      }
+    ],
+    "b059c536656b81edb6b097aa2d1d89a11d4fc9561e71c3e73ab5fe9032158bf4": [
+      {
+        "locus_tag": "BSU40440",
+        "gene": "dnaC",
+        "status": "essential"
+      }
+    ],
+    "b17040359bdeaf35981831b3da7d83aaab80ccc8317d3d542f2799694d4458f1": [
+      {
+        "locus_tag": "BSU16630",
+        "gene": "infB",
+        "status": "essential"
+      }
+    ],
+    "b2ee2b110474694a4eeb22597c0f164ed783a977060cc8eb614fbd528fc0d5e5": [
+      {
+        "locus_tag": "BSU29060",
+        "gene": "coaE",
+        "status": "essential"
+      }
+    ],
+    "b365f396131193d7acabfc8b6d062e7fec97dd0f5d43b72d04fcc7b7f5377d14": [
+      {
+        "locus_tag": "BSU15240",
+        "gene": "divIB",
+        "status": "essential"
+      }
+    ],
+    "b39bedfdec828676b1d79904d15aa06594ca0729ac08cb993767e25372a6dfb4": [
+      {
+        "locus_tag": "BSU27560",
+        "gene": "hisS",
+        "status": "essential"
+      }
+    ],
+    "b8611853011fa0b299e54393549460d3167f7980354c29f54a35ba599ce3ec24": [
+      {
+        "locus_tag": "BSU33910",
+        "gene": "pgm",
+        "status": "essential"
+      }
+    ],
+    "b9060f9e148654f744fc4b55bd7e73fa0de09a6121a0f3fa12a568dc6637fce7": [
+      {
+        "locus_tag": "BSU16580",
+        "gene": "polC",
+        "status": "essential"
+      }
+    ],
+    "bb197e870ed43494dfbdbe64e93d23a1e07fb4bd8b3848a7ca0424d5fa962b4a": [
+      {
+        "locus_tag": "BSU00670",
+        "gene": "tilS",
+        "status": "essential"
+      }
+    ],
+    "bb1f767805438f6ac164d3b32416fa281c9b6ea8f301d5992e2dbd9e68eb804b": [
+      {
+        "locus_tag": "BSU17380",
+        "gene": "nrdE",
+        "status": "essential"
+      }
+    ],
+    "bbc11c8536281c37c32a91acd4f005c703396315ab1550a825bd16e49d22322e": [
+      {
+        "locus_tag": "BSU01370",
+        "gene": "adk",
+        "status": "essential"
+      }
+    ],
+    "bc0fd89406eedef791c066eb028faba2cd4010301c567f696b9b63ee6dee6fc6": [
+      {
+        "locus_tag": "BSU01130",
+        "gene": "tufA",
+        "status": "essential"
+      }
+    ],
+    "bcd7f86e1a6e6ad1186f6c94f019499beeb107ae9456118a02be16429e24a365": [
+      {
+        "locus_tag": "BSU30320",
+        "gene": "leuS",
+        "status": "essential"
+      }
+    ],
+    "bed43025e4107583b766ce337be2deb5ac09bef0ab46a944f0171fb15e7e459f": [
+      {
+        "locus_tag": "BSU00190",
+        "gene": "dnaX",
+        "status": "essential"
+      }
+    ],
+    "bf005c53cf5aa88b3cf3f17e08f42b66b1c1d46b19e3d1c472149dd21b6fbb12": [
+      {
+        "locus_tag": "BSU01390",
+        "gene": "infA",
+        "status": "essential"
+      }
+    ],
+    "bf6d8720344f508c0f22c7ed1836912979018918e576b99b5a51d5d4b85e8455": [
+      {
+        "locus_tag": "BSU00620",
+        "gene": "divIC",
+        "status": "essential"
+      }
+    ],
+    "c0cb700a1559c3c08efd798b95835764a5f338d737f8af2348e7f7ec649fb60e": [
+      {
+        "locus_tag": "BSU33900",
+        "gene": "eno",
+        "status": "essential"
+      }
+    ],
+    "c1247bd63c8915c91b8c55cc154083f9d16eeab0776e44d0f3c6cf18ad431517": [
+      {
+        "locus_tag": "BSU01290",
+        "gene": "rpsNA",
+        "status": "essential"
+      }
+    ],
+    "c196dbb930b34c0f33639c427d5deaf1ba01a801d5f8e6b685592eb3fc4bc009": [
+      {
+        "locus_tag": "BSU22350",
+        "gene": "dnaD",
+        "status": "essential"
+      }
+    ],
+    "c1c25483123eac98dd964e65e2c643dcab4791fd3e953e4104560283d9500dc0": [
+      {
+        "locus_tag": "BSU04570",
+        "gene": "murF",
+        "status": "essential"
+      }
+    ],
+    "c2494a7d6d4ab10876ad6483973e0dbcb4993c6e1926bc9e252536fda43f737d": [
+      {
+        "locus_tag": "BSU35660",
+        "gene": "mnaA",
+        "status": "essential"
+      }
+    ],
+    "c262d7d1da76fe2f98abb9894b0481b88047b7107d298d0408e1aefdc5950f6e": [
+      {
+        "locus_tag": "BSU28990",
+        "gene": "dnaB",
+        "status": "essential"
+      }
+    ],
+    "c3b285922fdbc189116190f8ba785695db5f9d998f9c024e4092226a44ff85a7": [
+      {
+        "locus_tag": "BSU00910",
+        "gene": "ispF",
+        "status": "essential"
+      }
+    ],
+    "c46b7136650b557c2643ea2a94ec4bc54496f48f1d700a0128056b1b9482b806": [
+      {
+        "locus_tag": "BSU32670",
+        "gene": "sufB",
+        "status": "essential"
+      }
+    ],
+    "c72d0a6c36a4267060db4a490866f4ac106d3181676f66108b3b15356b3650c9": [
+      {
+        "locus_tag": "BSU01070",
+        "gene": "rpoB",
+        "status": "essential"
+      }
+    ],
+    "c7969fdd198cf7141169a2812a1fd8057191765ea49d9734d8e4a8c2e17810fa": [
+      {
+        "locus_tag": "BSU28090",
+        "gene": "valS",
+        "status": "essential"
+      }
+    ],
+    "c8d60ce20da182eb41666ae6b9f6dc3250e33d5ce7d9cf850cb19c73c344b3bd": [
+      {
+        "locus_tag": "BSU05940",
+        "gene": "gcp (tsaD)",
+        "status": "essential"
+      }
+    ],
+    "c8de7c9f63281e84b556f2738a83105b3ca82c79a90f63e7d4dfed198685d804": [
+      {
+        "locus_tag": "BSU38120",
+        "gene": "rodA",
+        "status": "essential"
+      }
+    ],
+    "c99463dcd5cdb1f1061942a56de1823bb9959d72ee23ba3d6f74d17d98d5ba3a": [
+      {
+        "locus_tag": "BSU29660",
+        "gene": "rpsD",
+        "status": "essential"
+      }
+    ],
+    "ca42d6e05d94742077bb7378970bb6b407aba66f74793d1c89cc0f398d0d392b": [
+      {
+        "locus_tag": "BSU37150",
+        "gene": "pyrG",
+        "status": "essential"
+      }
+    ],
+    "ca7fb07154582b28a828905e45eaa222ea6497180193ca0eff948d998adc052b": [
+      {
+        "locus_tag": "BSU28850",
+        "gene": "rplT",
+        "status": "essential"
+      }
+    ],
+    "cbb086a249618c8461b641812a19e0cbea3bbbe46dd465149b3d7b3792b6263b": [
+      {
+        "locus_tag": "BSU16920",
+        "gene": "pgsA",
+        "status": "essential"
+      }
+    ],
+    "cc231ad855f8ad15510d8ab3934f7b6d6f4918b8e466d22c897a79984bb8b6af": [
+      {
+        "locus_tag": "BSU01500",
+        "gene": "rpsI",
+        "status": "essential"
+      }
+    ],
+    "cc5f2f8313bbc85e9b3f9dfc764a4c71208514131a42463e7ccc325deae7b12c": [
+      {
+        "locus_tag": "BSU01200",
+        "gene": "rpsS",
+        "status": "essential"
+      }
+    ],
+    "cd3224907b18502c690ccd937312abba1f1407965ab4cc4907874565ecc83cac": [
+      {
+        "locus_tag": "BSU15900",
+        "gene": "fabD",
+        "status": "essential"
+      }
+    ],
+    "d1bf1fa0a7f26dc84270c2a450e33cb8465adff706099d93f9938fa2a07a284c": [
+      {
+        "locus_tag": "BSU13300",
+        "gene": "mgtE",
+        "status": "essential"
+      }
+    ],
+    "d503a39eb573eeb986ee803730ac4872656967135840dae9000edef33ee1c329": [
+      {
+        "locus_tag": "BSU15280",
+        "gene": "ftsA",
+        "status": "essential"
+      }
+    ],
+    "d5e078312b2bcf7166aac6721e4192eeb6945f1e987300b03cf7d217eff23e8f": [
+      {
+        "locus_tag": "BSU00460",
+        "gene": "ispE",
+        "status": "essential"
+      }
+    ],
+    "d77aa800d1cd1a7bc201b92cc72adafffcd1f739e6f40dc4cb81936b600a0bda": [
+      {
+        "locus_tag": "BSU03150",
+        "gene": "aroK",
+        "status": "essential"
+      }
+    ],
+    "d77b9c78e9f46eaa71bbee8557a822bbb4458c36437928adb5a5854465281184": [
+      {
+        "locus_tag": "BSU40400",
+        "gene": "walK",
+        "status": "essential"
+      }
+    ],
+    "d7d9211dcdec36a62d2903cecdbd2541540a03deea43138dd036c380d27c2d50": [
+      {
+        "locus_tag": "BSU22780",
+        "gene": "folEA",
+        "status": "essential"
+      }
+    ],
+    "d976abc7ae0409094bcb37d14f2653f9ac05e9a3e7837b7d7937c27baa6d80bf": [
+      {
+        "locus_tag": "BSU33940",
+        "gene": "gapA",
+        "status": "essential"
+      }
+    ],
+    "d99e0291e44be7a06392e88a6cb174fb813e9d7d420d2065798c92d564967b1b": [
+      {
+        "locus_tag": "BSU00380",
+        "gene": "metS",
+        "status": "essential"
+      }
+    ],
+    "da6e11ef6fab7d639e84d7a403a4ef49fe55c3f9c3e970e1349dacb91ba49d89": [
+      {
+        "locus_tag": "BSU25870",
+        "gene": "yqcF (rttF)",
+        "status": "essential"
+      }
+    ],
+    "da82d4bface69499c184c708eb33dd58a234301591adf391fd28a9da2c20ba6b": [
+      {
+        "locus_tag": "BSU16670",
+        "gene": "ribC",
+        "status": "essential"
+      }
+    ],
+    "dad87d431afb6f569d9038c2a7dab081623d51dbb06919ee70dcafd3f4b3b85c": [
+      {
+        "locus_tag": "BSU36760",
+        "gene": "murAA",
+        "status": "essential"
+      }
+    ],
+    "daf38beb2c223cb31fcff80de0cca07ac9701b2994ba1a70b270c57092469c5b": [
+      {
+        "locus_tag": "BSU09540",
+        "gene": "plsC",
+        "status": "essential"
+      }
+    ],
+    "db4011eb8387f12ca81856fbf72ef0d234863d8539abf1a708fab108b6c32a56": [
+      {
+        "locus_tag": "BSU41050",
+        "gene": "rnpA",
+        "status": "essential"
+      }
+    ],
+    "dc6c17e36cee756a00bf47b322e66ea98d0a31cbb3a9096347b2b819378548cb": [
+      {
+        "locus_tag": "BSU16570",
+        "gene": "proS",
+        "status": "essential"
+      }
+    ],
+    "de361b018aff693a2b08c401c82b901b01240134c58c54d6f29e1ddc407f0b31": [
+      {
+        "locus_tag": "BSU01260",
+        "gene": "rplNA",
+        "status": "essential"
+      }
+    ],
+    "de740760c0dc3b0dddf0e9ee7fc9c81f311eee3523d93df26c9a10f050295c79": [
+      {
+        "locus_tag": "BSU14530",
+        "gene": "rnjA",
+        "status": "essential"
+      }
+    ],
+    "ded1dab80e6bb20865b91eafe070ed1a1864d4dc64044e3efb423b637f53c72f": [
+      {
+        "locus_tag": "BSU03130",
+        "gene": "nadE",
+        "status": "essential"
+      }
+    ],
+    "df120ccd4e060acfa19ac966909f73c51fb20186e13c93c01c680803d087c397": [
+      {
+        "locus_tag": "BSU00310",
+        "gene": "holB",
+        "status": "essential"
+      }
+    ],
+    "dfea79b0f9ae9c871f89a9f1d916d17dd51285861a8177bbe7f84cd3b658be60": [
+      {
+        "locus_tag": "BSU27960",
+        "gene": "rplU",
+        "status": "essential"
+      }
+    ],
+    "e03a612cdffd5c923289b2afaf51c360a763f8eae9c46cfcf38832949fa52e5e": [
+      {
+        "locus_tag": "BSU01420",
+        "gene": "rpsK",
+        "status": "essential"
+      }
+    ],
+    "e0882cf580668b5181faf0f48344f55b7a9c544adf5b8c85b81ec0591eec4ce7": [
+      {
+        "locus_tag": "BSU32710",
+        "gene": "sufC",
+        "status": "essential"
+      }
+    ],
+    "e178bca19dcc27699597c15ac9f28bc61821a58f203d6050bd09df0f255b60fa": [
+      {
+        "locus_tag": "BSU16770",
+        "gene": "dapA",
+        "status": "essential"
+      }
+    ],
+    "e17e0d8198424e80840b1726e0ac0010e8016dcd1a2d03d178e464c80cc9c29b": [
+      {
+        "locus_tag": "BSU09950",
+        "gene": "prsA",
+        "status": "essential"
+      }
+    ],
+    "e2075109f62cd8191c3e1c5df21969bbba9b7ccc4d3acaf03b004df6d44e7674": [
+      {
+        "locus_tag": "BSU34790",
+        "gene": "trxB",
+        "status": "essential"
+      }
+    ],
+    "e2b55039b4cc26ce6785c6f07cb16ec5d1ac953c6907f5e71cd466b3017e88be": [
+      {
+        "locus_tag": "BSU00280",
+        "gene": "tmk",
+        "status": "essential"
+      }
+    ],
+    "e34fde14b5275779b687cc408f95bb2131aa62f82255eb3e5278b04549f9b803": [
+      {
+        "locus_tag": "BSU36410",
+        "gene": "mbl",
+        "status": "essential"
+      }
+    ],
+    "e7404f91e509d095cd3d43f293acb2c701b1c4081751f161f122f24f168a1eac": [
+      {
+        "locus_tag": "BSU01780",
+        "gene": "glmS",
+        "status": "essential"
+      }
+    ],
+    "eb4cd8d3281ed52b16151f37123549a4398d1ad9a9572469004f7d39697c5546": [
+      {
+        "locus_tag": "BSU35720",
+        "gene": "tagF",
+        "status": "essential"
+      }
+    ],
+    "ebe1d42263c288e19d7cccbe0dba77e87a8280c5329df8c9f0e4a857ebca3e05": [
+      {
+        "locus_tag": "BSU16510",
+        "gene": "pyrH",
+        "status": "essential"
+      }
+    ],
+    "ec2ebe5929f1665823c53e6292451aee2933d650f93b64c874e407d7354857d0": [
+      {
+        "locus_tag": "BSU40550",
+        "gene": "ppaC",
+        "status": "essential"
+      }
+    ],
+    "ec8f3e24f12892cc708d056f5e56431a530833f0405911e9812a157dec0d9823": [
+      {
+        "locus_tag": "BSU35710",
+        "gene": "tagG",
+        "status": "essential"
+      }
+    ],
+    "edc1e2c354982e4328960c09a1c6a95dc39ff3c22645107f81bda4ad74dd6a98": [
+      {
+        "locus_tag": "BSU35530",
+        "gene": "tagO",
+        "status": "essential"
+      }
+    ],
+    "f0096127913da0d50cca3912bf85759c7be0b89c71ff305a8dfc8d0b933dc7d2": [
+      {
+        "locus_tag": "BSU01080",
+        "gene": "rpoC",
+        "status": "essential"
+      }
+    ],
+    "f116b07dda8742cc019b988a87a64172715bd18db21e8b988060b0d75c444c5b": [
+      {
+        "locus_tag": "BSU01410",
+        "gene": "rpsM",
+        "status": "essential"
+      }
+    ],
+    "f32e76df3ea3e088ded8c6c716da4ea1bd177299cab5d894ba3a2a0f14e017eb": [
+      {
+        "locus_tag": "BSU01000",
+        "gene": "secE",
+        "status": "essential"
+      }
+    ],
+    "f397ea0e563e38941c983b6ee7e99e0edabb4c9a296e633585ea0718814490fc": [
+      {
+        "locus_tag": "BSU30790",
+        "gene": "menE",
+        "status": "essential"
+      }
+    ],
+    "f3a22949cab6295875f0b37ab0d5292c22c66b7d0abdce14ec9d5fcc9f12806f": [
+      {
+        "locus_tag": "BSU15950",
+        "gene": "ftsY",
+        "status": "essential"
+      }
+    ],
+    "f475791ee876e74434e788938a1167f06a0c42c3e3b5ebbf7d694757c6070381": [
+      {
+        "locus_tag": "BSU01180",
+        "gene": "rplW",
+        "status": "essential"
+      }
+    ],
+    "f60b26d95cc088e00d4285b89cc2bc4655a61bdc2ba59c7278550c4114a8d51c": [
+      {
+        "locus_tag": "BSU15190",
+        "gene": "mraY",
+        "status": "essential"
+      }
+    ],
+    "f642568e015fae17933a19b4918c908767f74692c2fe68e4f33962acf79e780a": [
+      {
+        "locus_tag": "BSU28640",
+        "gene": "pheS",
+        "status": "essential"
+      }
+    ],
+    "f68883df448a8edc50a90a4c07aeea078bd612fc0a3161fad75973e8b602a0a4": [
+      {
+        "locus_tag": "BSU15220",
+        "gene": "murG",
+        "status": "essential"
+      }
+    ],
+    "fa8024e7f71a5b04a6d60c6ac55c2b95dfe8efb385384d830e5275f318ae35f5": [
+      {
+        "locus_tag": "BSU32680",
+        "gene": "iscU (sufU)",
+        "status": "essential"
+      }
+    ],
+    "fc201b62d1b6257f9cf62f88b6d2f22093900763a50b8511e6220414ed28e5de": [
+      {
+        "locus_tag": "BSU06690",
+        "gene": "gatB",
+        "status": "essential"
+      }
+    ],
+    "fd121677002c0faddaf4813c0c1473c6461057c5b1d0cad7a4ef348356ebc0f0": [
+      {
+        "locus_tag": "BSU35760",
+        "gene": "tagB",
+        "status": "essential"
+      }
+    ]
+  }
+}

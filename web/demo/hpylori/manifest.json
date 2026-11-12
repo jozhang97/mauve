@@ -1,0 +1,162 @@
+{
+  "id": "hpylori-six-v1",
+  "name": "H. pylori \u00b7 6-strain demo",
+  "created": "2026-11-12T19:19:33.418643+00:00",
+  "sampling": "Curated complete annotated chromosomes: 26695, J99, G27, HPAG1, P12, Shi470. Pinned RefSeq assemblies; plasmids excluded.",
+  "reference": "https://pmc.ncbi.nlm.nih.gov/articles/PMC2952849/",
+  "genomes": [
+    {
+      "id": 1,
+      "strain": "26695",
+      "accession": "GCF_000307795.1",
+      "organism": "Helicobacter pylori 26695",
+      "name": "H. pylori 26695 (NC_018939.1)",
+      "chromosome": "NC_018939.1",
+      "bases": 1667892,
+      "topology": "circular",
+      "annotations": "GCF_000307795.1.gbk.gz",
+      "genbank_sha256": "108f39630809abc4ac540a936d0de25efd2d863c08b6ddc25bd6efbcba8d9d01",
+      "sequence_sha256": "553030b2a7b2ef70d5edd5914f0c01e51e39183f9660bcc791a043a9b59315e7",
+      "download_url": "https://api.ncbi.nlm.nih.gov/datasets/v2/genome/accession/GCF_000307795.1/download?include_annotation_type=GENOME_GBFF",
+      "url": "https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_000307795.1/",
+      "excluded_records": [],
+      "input_file": "01-GCF_000307795.1.fasta",
+      "features": 3209
+    },
+    {
+      "id": 2,
+      "strain": "J99",
+      "accession": "GCF_000008785.1",
+      "organism": "Helicobacter pylori J99",
+      "name": "H. pylori J99 (NC_000921.1)",
+      "chromosome": "NC_000921.1",
+      "bases": 1643831,
+      "topology": "circular",
+      "annotations": "GCF_000008785.1.gbk.gz",
+      "genbank_sha256": "e92ed0445f11d17cfe4401173af81d6f387018d79a0536a18576087f1456fef3",
+      "sequence_sha256": "0bbb82e6b73b4c281da0f20f27893235593c11ce36fc73343365160e94d9bb1e",
+      "download_url": "https://api.ncbi.nlm.nih.gov/datasets/v2/genome/accession/GCF_000008785.1/download?include_annotation_type=GENOME_GBFF",
+      "url": "https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_000008785.1/",
+      "excluded_records": [],
+      "input_file": "02-GCF_000008785.1.fasta",
+      "features": 3152
+    },
+    {
+      "id": 3,
+      "strain": "G27",
+      "accession": "GCF_000021165.1",
+      "organism": "Helicobacter pylori G27",
+      "name": "H. pylori G27 (NC_011333.1)",
+      "chromosome": "NC_011333.1",
+      "bases": 1652982,
+      "topology": "circular",
+      "annotations": "GCF_000021165.1.gbk.gz",
+      "genbank_sha256": "ed73dcfcb730a5f56d0a5ba739e04ad6247e20bce1f500d08176d3698b976dba",
+      "sequence_sha256": "0ba0cbdf800839ff491f54b60a4544e8a5c430bfa39b71588ea2163382d87f2f",
+      "download_url": "https://api.ncbi.nlm.nih.gov/datasets/v2/genome/accession/GCF_000021165.1/download?include_annotation_type=GENOME_GBFF",
+      "url": "https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_000021165.1/",
+      "excluded_records": [
+        {
+          "accession": "NC_011334.1",
+          "bases": 10031
+        }
+      ],
+      "input_file": "03-GCF_000021165.1.fasta",
+      "features": 3195
+    },
+    {
+      "id": 4,
+      "strain": "HPAG1",
+      "accession": "GCF_000013245.1",
+      "organism": "Helicobacter pylori HPAG1",
+      "name": "H. pylori HPAG1 (NC_008086.1)",
+      "chromosome": "NC_008086.1",
+      "bases": 1596366,
+      "topology": "circular",
+      "annotations": "GCF_000013245.1.gbk.gz",
+      "genbank_sha256": "d7787b481a34495b5d7c9b2f236c2ed8ef485bc7a539d08dcc2205036a7bea41",
+      "sequence_sha256": "6ba7491f7786c7da392a3eea2c4da2516183dcad5ddbe835292632027b2353ed",
+      "download_url": "https://api.ncbi.nlm.nih.gov/datasets/v2/genome/accession/GCF_000013245.1/download?include_annotation_type=GENOME_GBFF",
+      "url": "https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_000013245.1/",
+      "excluded_records": [
+        {
+          "accession": "NC_008087.1",
+          "bases": 9370
+        }
+      ],
+      "input_file": "04-GCF_000013245.1.fasta",
+      "features": 3067
+    },
+    {
+      "id": 5,
+      "strain": "P12",
+      "accession": "GCF_000021465.1",
+      "organism": "Helicobacter pylori P12",
+      "name": "H. pylori P12 (NC_011498.1)",
+      "chromosome": "NC_011498.1",
+      "bases": 1673813,
+      "topology": "circular",
+      "annotations": "GCF_000021465.1.gbk.gz",
+      "genbank_sha256": "c14b15ecacf1bc9aa54e755dc7b8bfc30c6877c45f223ae0accec4811a6b89a3",
+      "sequence_sha256": "67f6296a55bc2f0900ad5fe3a189a57ad2bf851c6f2e9cfa9a133ae2f25f8d16",
+      "download_url": "https://api.ncbi.nlm.nih.gov/datasets/v2/genome/accession/GCF_000021465.1/download?include_annotation_type=GENOME_GBFF",
+      "url": "https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_000021465.1/",
+      "excluded_records": [
+        {
+          "accession": "NC_011499.1",
+          "bases": 10225
+        }
+      ],
+      "input_file": "05-GCF_000021465.1.fasta",
+      "features": 3211
+    },
+    {
+      "id": 6,
+      "strain": "Shi470",
+      "accession": "GCF_000020245.1",
+      "organism": "Helicobacter pylori Shi470",
+      "name": "H. pylori Shi470 (NC_010698.2)",
+      "chromosome": "NC_010698.2",
+      "bases": 1608548,
+      "topology": "circular",
+      "annotations": "GCF_000020245.1.gbk.gz",
+      "genbank_sha256": "f0b0179387aafcc5d368581b615ba756d3a7a4698f702c3207f33c5e922e7464",
+      "sequence_sha256": "6b87cb76401e345aa2270af368b581a095f66e130401c82ac4bc14cf87be1e9f",
+      "download_url": "https://api.ncbi.nlm.nih.gov/datasets/v2/genome/accession/GCF_000020245.1/download?include_annotation_type=GENOME_GBFF",
+      "url": "https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_000020245.1/",
+      "excluded_records": [],
+      "input_file": "06-GCF_000020245.1.fasta",
+      "features": 3126
+    }
+  ],
+  "alignment": {
+    "file": "alignment.xmfa.gz",
+    "command": [
+      "progressiveMauve",
+      "--output=alignment.xmfa",
+      "--output-guide-tree=guide.tree",
+      "--backbone-output=backbone.tsv",
+      "01-GCF_000307795.1.fasta",
+      "02-GCF_000008785.1.fasta",
+      "03-GCF_000021165.1.fasta",
+      "04-GCF_000013245.1.fasta",
+      "05-GCF_000021465.1.fasta",
+      "06-GCF_000020245.1.fasta"
+    ],
+    "executable_sha256": "145342b2c2747eb87f4abf075567f4df8145c1df815ded880d48340bd1a8f92e",
+    "engine": "progressiveMauve native",
+    "parameters": "Default full progressive alignment, including gapped alignment and refinement",
+    "sha256": "c91823a384b2f9f5b064b4f4807dee97671ba54b984c30e1a6cb33544d738d5b",
+    "bytes": 11868715,
+    "compressed_bytes": 2784862,
+    "blocks": 187,
+    "backbone": {
+      "file": "alignment.xmfa.bbcols.gz",
+      "sha256": "27bf15218fc1b74ba26e7f8e1e23dfe67820a4b650a9c3b8562743bdb9298fd1",
+      "bytes": 66890,
+      "compressed_bytes": 20552
+    }
+  },
+  "total_bases": 9843432,
+  "download_bytes": 9473521
+}

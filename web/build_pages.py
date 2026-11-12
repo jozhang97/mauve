@@ -52,7 +52,8 @@ def build(output, goatcounter_code=''):
     html = re.sub(r'((?:src|href)="\./static/[^"?]+\.(?:js|mjs|css))"',
                   lambda match: f'{match[1]}?v={version}"', html)
     (output / 'index.html').write_text(html)
-    shutil.copytree(ROOT / 'demo/ecoli', output / 'static/demo/ecoli')
+    for organism in ('ecoli', 'hpylori', 'bsubtilis'):
+        shutil.copytree(ROOT / 'demo' / organism, output / 'static/demo' / organism)
     (output / '.nojekyll').touch()
 
 if __name__ == '__main__':

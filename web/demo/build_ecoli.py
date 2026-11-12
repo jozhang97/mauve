@@ -124,7 +124,8 @@ def finalize(manifest):
     raw = raw.replace((str(WORK) + '/').encode(), b'')
     destination = DEST / 'alignment.xmfa.gz'
     destination.write_bytes(gzip.compress(raw, mtime=0))
-    manifest['seed'] = str(manifest['seed'])
+    if 'seed' in manifest:
+        manifest['seed'] = str(manifest['seed'])
     for genome in manifest['genomes']:
         genome['input_file'] = Path(genome.pop('fasta', genome.get('input_file', ''))).name
     alignment = manifest['alignment']
