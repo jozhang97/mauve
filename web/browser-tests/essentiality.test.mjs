@@ -53,3 +53,11 @@ test('invalid snapshots fail before attaching partial evidence or provenance', (
   assert.throws(() => annotateEssentiality(result, invalid), /Invalid essentiality/);
   assert.equal(JSON.stringify(result), original);
 });
+
+
+test('legacy CDS annotations report unavailable instead of zero essential matches', () => {
+  const result = {families:[{members:[{type:'CDS', name:'rplL'}]}]};
+  assert.throws(() => annotateEssentiality(result, snapshot), /checksums are missing/);
+  assert.equal(result.essentiality_source, undefined);
+  assert.equal(result.families[0].essentiality, undefined);
+});

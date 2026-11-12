@@ -26,6 +26,9 @@ export function annotateEssentiality(result, snapshot) {
       !r || typeof r.gene !== 'string' || typeof r.locus_tag !== 'string' || !['essential', 'nonessential', 'unclear'].includes(r.status)))
       throw Error('Invalid essentiality evidence');
   }
+  const codingGenes = result.families.flatMap(f => f.members).filter(m => m.type === 'CDS');
+  if (codingGenes.length && !codingGenes.some(m => m.sequence_sha256))
+    throw Error('CDS sequence checksums are missing. Reopen the bundled demo or reimport annotations, then recompute gene comparisons.');
   result.essentiality_source = snapshot.source;
   for (const family of result.families) {
     const evidence = new Map();
