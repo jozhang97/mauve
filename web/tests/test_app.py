@@ -74,6 +74,19 @@ def test_failed_import_is_atomic_and_demo_is_reusable(tmp_path):
     first = client.post('/api/demo')
     assert first.status_code == 200
     assert client.post('/api/demo').json()['id'] == first.json()['id']
+    # Reproduce a saved demo imported before CDS checksums existed.
+    import sqlite3
+    import json
+    aid = first.json()['id']
+    with sqlite3.connect(tmp_path / 'alignments.sqlite3') as db:
+        db.execute("UPDATE annotation_sources SET metadata=json_remove(metadata, '$.sequence_hash_version') WHERE alignment_id=? AND genome_id=1", (aid,))
+        db.execute("UPDATE features SET data=json_remove(data, '$.sequence_sha256') WHERE alignment_id=? AND genome_id=1", (aid,))
+    assert client.post('/api/demo').json()['id'] == aid
+    data = client.get(f'/api/alignments/{aid}/gene-input').json()
+    source = next(s for s in data['sources'] if s['genome_id'] == 1)
+    assert source['metadata']['sequence_hash_version'] == 1
+    assert sum(bool(f.get('sequence_sha256')) for f in source['features']) > 3000
+
 
 
 def test_upload_limit(tmp_path, monkeypatch):

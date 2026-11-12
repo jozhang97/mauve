@@ -27,7 +27,7 @@ self.onmessage = async ({data: {aid, local, base, options}}) => {
     const result = await analyzeGenes(input, load, options, progress => self.postMessage({progress}));
     try {
       const response = await fetch(new URL('../essentiality-ecoli.json', import.meta.url));
-      if (!response.ok) throw Error('snapshot unavailable');
+      if (!response.ok) throw Error(`snapshot request failed (HTTP ${response.status})`);
       annotateEssentiality(result, await response.json());
     } catch (error) {
       result.essentiality_error = `Essentiality unavailable: ${error.message}`;

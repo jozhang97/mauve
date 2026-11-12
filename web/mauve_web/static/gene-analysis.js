@@ -127,6 +127,8 @@
     for (const [label, key] of [['Pan families', 'pan'], ['Core families', 'core'], ['Single-copy core', 'single_copy_core'], ['Accessory families', 'accessory'], ['Genome-specific families', 'genome_specific'], ['Families with duplicates', 'duplicated_families']]) {
       const card = document.createElement('div'); card.append(text('strong', number(result[key])), text('span', label)); el('gene-pan-summary').append(card);
     }
+    el('gene-essentiality-error').hidden = Boolean(result.essentiality_source);
+    el('gene-essentiality-error').textContent = result.essentiality_error || 'Essentiality annotations were not returned. Reload the page and recompute gene comparisons.';
     const essentialFamilies = result.families.filter(essential);
     for (const [label, families] of [['Families with essential reference evidence', essentialFamilies], ['Core families with essential reference evidence', essentialFamilies.filter(f => f.genomes === result.genomes.length)], ['Accessory families with essential reference evidence', essentialFamilies.filter(f => f.genomes < result.genomes.length)]]) {
       const card = document.createElement('div'); card.dataset.essentiality = 'essential';

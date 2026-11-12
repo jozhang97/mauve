@@ -107,5 +107,7 @@ def test_essentiality_import_filter_and_export(analysis_site, browser):
     assert page.locator('#gene-essentiality-filter').input_value() == 'unknown'
     assert page.locator('#gene-family-core').is_checked()
     assert 'Essentiality unavailable' in page.locator('#gene-essentiality-status').inner_text()
+    assert 'HTTP 503' in page.locator('#gene-essentiality-error').inner_text()
+    assert page.locator('#gene-pan-summary [data-essentiality=essential] strong').all_text_contents() == ['N/A', 'N/A', 'N/A']
     assert page.locator('#gene-family-table tbody tr').count() == 3
     context.close()

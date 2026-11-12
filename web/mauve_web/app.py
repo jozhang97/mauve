@@ -127,6 +127,7 @@ def create_app(data_dir=None, aligner_path=None):
         metadata = {k: v for k, v in parsed.items() if k != 'features'}
         metadata['feature_count'] = len(parsed['features'])
         metadata['analysis_version'] = 1
+        metadata['sequence_hash_version'] = 1
         # A complete validated import replaces annotations atomically for this genome.
         with closing(sqlite3.connect(database, timeout=30)) as db, db:
             db.execute('DELETE FROM features WHERE alignment_id=? AND genome_id=?', (aid, gid))
@@ -273,7 +274,8 @@ def create_app(data_dir=None, aligner_path=None):
                     with gzip.open(folder / manifest['alignment']['backbone']['file'], 'rb') as source:
                         save_backbone(alignment['id'], source.read())
                 for genome in manifest['genomes']:
-                    if not query('SELECT genome_id FROM annotation_sources WHERE alignment_id=? AND genome_id=?', (alignment['id'], genome['id'])):
+                    saved = query('SELECT metadata FROM annotation_sources WHERE alignment_id=? AND genome_id=?', (alignment['id'], genome['id']))
+                    if not saved or not json.loads(saved[0]['metadata']).get('sequence_hash_version'):
                         with gzip.open(folder / genome['annotations'], 'rb') as source:
                             save_annotations(alignment['id'], genome['id'], source.read(), f"{genome['chromosome']}.gbk", False)
                 return alignment
