@@ -44,6 +44,8 @@ def test_replication_overlay(analysis_site, browser):
     page.wait_for_function('window.mauveOriginAnalysis?.result?.genes.length === 2')
     assert page.locator('#origin-fractions tbody tr').count() == 4
     assert page.locator('#origin-fractions tbody tr').first.locator('td').all_text_contents() == ['core', '2', '50.0% (1)', '50.0% (1)', '0']
+    assert page.locator('#origin-fraction-chart rect[data-group="core"]').evaluate_all('nodes=>nodes.map(n=>Number(n.dataset.percent))') == [50, 50]
+    assert page.locator('#origin-fraction-chart rect[data-group="accessory"]').count() == 0
     assert page.locator('#origin-distances svg rect').count() == 60
     page.locator('#origin-histogram-scale').select_option('percent')
     assert page.locator('#origin-distances svg').get_attribute('aria-label').endswith('percent within each gene set')

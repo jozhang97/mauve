@@ -454,13 +454,16 @@
               <p id="origin-essentiality-status" class="small" role="status"></p>
               <h3>Leading and lagging fractions</h3>
               <p class="small">Fractions count gene copies and use classified copies as the denominator. Pan = core + accessory copies. All-genome fractions pool copies, so larger genomes contribute more. Unknown origins are excluded; genes crossing oriC or the estimated terminus are unclassified. Leading means co-oriented transcription, assuming bidirectional replication and a terminus opposite oriC.</p>
-              <div id="origin-fractions" class="gene-table-scroll"></div>
+              <div id="origin-fraction-chart"></div>
+              <details><summary>Fraction counts and denominators</summary><div id="origin-fractions" class="gene-table-scroll"></div></details>
               <h3>Gene distance to oriC</h3>
               <label>Histogram scale <select id="origin-histogram-scale"><option value="count">Gene counts</option><option value="percent">% within each gene set</option></select></label>
               <p class="small">Teal: core; orange: accessory; purple: essential reference matches (overlapping subset). Twenty equal-width bins. In percentage mode, each bin is divided by the total copies within its own gene set in the selected scope, so each nonempty distribution sums to 100%. Distance is the shorter path around the chromosome from oriC to the midpoint along annotated gene segments; it ranges from 0 to 50% of chromosome length.</p>
               <div id="origin-distances"></div>
               <h3>Variation in core-family distance and position across genomes</h3>
               <label>Measure <select id="origin-range-metric"><option value="position">Circular positional separation</option><option value="distance">Distance-to-oriC range</option></select></label>
+              <label>Histogram scale <select id="origin-range-scale"><option value="count">Family counts</option><option value="percent">% within each family set (normalized)</option></select></label>
+              <p class="small">Normalized mode divides each bin by the number of usable families in its own series. Each nonempty series sums to 100%, allowing comparison of distribution shapes despite different set sizes. Legend counts show the original sample sizes.</p>
               <p class="small">Teal: all core families; purple: essential-core subset. Distance range ignores chromosome arm; positional separation accounts for arm. A shift from +20% to −20% gives 0% distance range but 40% positional separation; +49% to −49% gives 2% positional separation.</p>
               <p id="origin-range-status" class="small"></p>
               <div id="origin-ranges"></div>

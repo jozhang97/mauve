@@ -109,6 +109,18 @@ def test_essentiality_import_filter_and_export(analysis_site, browser):
     assert page.locator('#origin-ranges .histogram-legend [data-legend-series]').count() == 2
     assert 'Essential-core families (n=1)' in page.locator('#origin-ranges .histogram-legend').text_content()
     assert page.locator('.histogram-key i').count() == 2
+    page.locator('#origin-range-scale').select_option('percent')
+    for metric in ['position', 'distance']:
+        page.locator('#origin-range-metric').select_option(metric)
+        assert series_total('origin-ranges', 'Core families') == 100
+        assert series_total('origin-ranges', 'Essential-core families') == 100
+        assert page.locator('#origin-ranges svg').get_attribute('aria-label').endswith('percent within each gene set')
+        assert 'Core families (n=3)' in page.locator('#origin-ranges .histogram-legend').text_content()
+        assert 'Essential-core families (n=1)' in page.locator('#origin-ranges .histogram-legend').text_content()
+    page.locator('#origin-range-scale').select_option('count')
+    assert series_total('origin-ranges', 'Core families') == 3
+    page.locator('#origin-range-metric').select_option('position')
+
     assert series_total('origin-ranges', 'Essential-core families') == 1
     page.locator('#origin-range-metric').select_option('distance')
     assert series_total('origin-ranges', 'Essential-core families') == 1

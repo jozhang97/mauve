@@ -38,6 +38,34 @@ function plot(target,series,maximum,xLabel,percent=false) {
   });
   el(target).replaceChildren(svg);
 }
+function fractionChart(groups) {
+  const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+  svg.setAttribute('viewBox',`0 0 820 ${80+groups.length*65}`);
+  svg.setAttribute('role','img');
+  svg.setAttribute('aria-label','Leading and lagging percentages of classified gene copies by gene set');
+  const add=(tag,attrs,text)=>{const n=document.createElementNS(svg.namespaceURI,tag);for(const [k,v]of Object.entries(attrs))n.setAttribute(k,v);if(text!==undefined)n.textContent=text;svg.append(n);return n;};
+  for(const [i,label,color] of [[0,'Leading / co-oriented','#168b85'],[1,'Lagging / head-on','#b66b24']]){
+    add('rect',{x:180+i*260,y:7,width:12,height:12,fill:color});
+    add('text',{x:199+i*260,y:18,fill:'currentColor','font-size':12},label);
+  }
+  groups.forEach((g,i)=>{
+    const y=40+i*65,total=g.leading+g.lagging;
+    add('text',{x:170,y:y+20,'text-anchor':'end',fill:'currentColor','font-size':12},g.name==='essential reference matches'?'Essential matches':g.name);
+    if(!total)add('text',{x:180,y:y+20,fill:'currentColor','font-size':12},'N/A — no classified copies');
+    let x=180;
+    for(const [label,count,color] of [['Leading',g.leading,'#168b85'],['Lagging',g.lagging,'#b66b24']]){
+      if(!total||!count)continue;
+      const percent=100*count/total,width=600*count/total;
+      const bar=add('rect',{x,y,width,height:30,fill:color,'data-group':g.name,'data-strand':label,'data-percent':percent});
+      const title=document.createElementNS(svg.namespaceURI,'title');title.textContent=`${g.name}: ${label} ${percent.toFixed(1)}% (${count.toLocaleString()} / ${total.toLocaleString()} classified copies)`;bar.append(title);
+      if(width>=45)add('text',{x:x+width/2,y:y+20,'text-anchor':'middle',fill:'white','font-size':12},`${percent.toFixed(1)}%`);
+      x+=width;
+    }
+    add('text',{x:180,y:y+46,fill:'currentColor','font-size':11},`${total.toLocaleString()} classified`);
+  });
+  for(const p of [0,25,50,75,100])add('text',{x:180+6*p,y:65+groups.length*65,'text-anchor':'middle',fill:'currentColor','font-size':11},`${p}%`);
+  el('origin-fraction-chart').replaceChildren(svg);
+}
 function refresh() {
   const result=window.mauveGeneAnalysis?.result;
   if(result===cachedResult && state.sources===cachedSources && state.alignment===cachedAlignment && state.reference===cachedReference)return;
@@ -56,17 +84,19 @@ function render() {
   }
   const genes=output.genes.filter(g=>gid==='all'||String(g.genome_id)===gid);
   el('origin-analysis-status').textContent=`Origins available for ${output.eligible.length}/${state.alignment.genomes.length} genomes. ${output.excluded.length?'Excluded: '+output.excluded.map(g=>g.name).join('; ')+'. ':''}${genes.length.toLocaleString()} gene copies in the selected scope. Core/accessory membership uses all loaded genomes. Cross-genome ranges always use all eligible genomes, regardless of the genome selector.`;
-  const rows=[];
+  const rows=[],fractionGroups=[];
   for(const category of ['core','accessory','pan','essential reference matches']){
     const group=genes.filter(g=>category==='essential reference matches'?essential(g):category==='pan'||g.category===category);
     const leading=group.filter(g=>g.replication==='co-oriented').length,lagging=group.filter(g=>g.replication==='head-on').length;
     const total=leading+lagging, percent=n=>total?`${(100*n/total).toFixed(1)}% (${n.toLocaleString()})`:'N/A';
     rows.push([category,group.length.toLocaleString(),percent(leading),percent(lagging),(group.length-total).toLocaleString()]);
+    fractionGroups.push({name:category,leading,lagging,unknown:group.length-total});
   }
   el('origin-essentiality-status').textContent=cachedResult.essentiality_source
     ? `${genes.filter(essential).length.toLocaleString()} gene copies in this scope have essential reference evidence. Purple series overlap core/accessory sets. Distance and strand summaries count only copies with their own sequence match; variation plots use core families with evidence in at least one member and compare all usable members. Essentiality is not established in these strains.`
     : (cachedResult.essentiality_error || 'Essentiality evidence unavailable; recompute gene comparisons to load the reference annotations.');
   el('origin-fractions').replaceChildren(table(['Gene set','Gene copies','Leading / co-oriented','Lagging / head-on','Unknown / boundary'],rows));
+  fractionChart(fractionGroups);
   const distance=g=>normalized?g.distance_fraction*100:g.distance_bp/1000;
   const maximum=normalized?50:genes.reduce((n,g)=>Math.max(n,distance(g)),1);
   plot('origin-distances',[...['core','accessory'].map(category=>({name:category,color:colors[category],values:genes.filter(g=>g.category===category).map(distance)})),{name:'essential reference matches',color:colors.essential,values:genes.filter(essential).map(distance)}],maximum,`Shortest circular midpoint distance to oriC (${normalized?'% chromosome':'kb'})`,el('origin-histogram-scale').value==='percent');
@@ -79,7 +109,7 @@ function render() {
   plot('origin-ranges',[
     {name:'Core families',color:colors.core,values},
     {name:'Essential-core families',color:colors.essential,values:plottedFamilies.filter(r=>r.essential_reference).map(measurement)}
-  ],rangeMaximum,positional?'Maximum circular separation (% chromosome)':`Distance-to-oriC range (${normalized?'percentage points of chromosome':'kb'})`);
+  ],rangeMaximum,positional?'Maximum circular separation (% chromosome)':`Distance-to-oriC range (${normalized?'percentage points of chromosome':'kb'})`,el('origin-range-scale').value==='percent');
   const ambiguous=output.orientations.filter(o=>output.eligible.includes(o.genome_id)&&o.direction===null);
   const referenceName=state.alignment.genomes.find(g=>g.id===output.reference)?.name||'unavailable';
   el('origin-range-status').textContent=`${positionFamilies.length.toLocaleString()} core families compared; ${positionFamilies.filter(r=>r.essential_reference).length} with essential reference evidence; ${(cachedResult.core-positionFamilies.length).toLocaleString()} unavailable (fewer than two usable genome positions). Reference: ${referenceName}. ${ambiguous.length} origin-eligible genome(s) excluded for ambiguous alignment orientation. Includes positions near oriC and the terminus. ${positionFamilies.filter(r=>r.duplicated).length} families use circular means of duplicate copies within each genome. Cross-genome separation always uses normalized chromosome positions, regardless of distance units above.`;
@@ -90,11 +120,11 @@ function render() {
   el('origin-range-table').replaceChildren(table(['Core family','Example gene','Reference essentiality','Usable genomes (distance / position)','Duplicate copies?',`Distance-to-oriC range (${normalized?'% points':'kb'})`,'Maximum circular separation (%)','Position by genome (% from oriC)'],families.slice(0,100).map(r=>[r.family,r.name,r.reference_essentiality,`${r.genomes} / ${r.position_genomes}`,r.duplicated?'yes':'no',(normalized?r.range_fraction*100:r.range_bp/1000).toFixed(3),r.position_range_fraction===null?'N/A':(r.position_range_fraction*100).toFixed(3),r.means.map(m=>`#${m.genome_id}: ${m.circular_position_fraction===null?'N/A':(m.circular_position_fraction*100).toFixed(2)}`).join('; ')])));
   el('origin-table-status').textContent=`Showing ${Math.min(100,families.length)} of ${families.length} matching families, largest ${positional?'separation':'distance range'} first. Positions run from 0 to 100% around the chromosome from oriC. Export includes all positions, exclusions, and orientation support.`;
 }
-for(const id of ['origin-unit','origin-genome','origin-histogram-scale','origin-range-metric'])el(id).onchange=render;
+for(const id of ['origin-unit','origin-genome','origin-histogram-scale','origin-range-metric','origin-range-scale'])el(id).onchange=render;
 el('origin-family-search').oninput=render;
 el('export-origin-analysis').onclick=()=>{
   if(!output)return;
-  const url=URL.createObjectURL(new Blob([JSON.stringify({essentiality_source:cachedResult.essentiality_source,definitions:{essential:'Gene copies with essential reference sequence matches; essential-core range families have evidence in at least one member. Overlaps core/accessory sets; not measured essentiality in the loaded strains.',distance:'Shortest circular distance to midpoint along annotated gene segments',range:'Radial range: max minus min of per-genome mean distances to oriC',position_range:'Maximum pairwise shortest circular distance between normalized genome positions; fractions of chromosome length',copies:'Per-genome circular mean for positions (undefined for balanced opposing copies); arithmetic mean for radial distances',strand:'Bidirectional replication; terminus opposite oriC',core:'Present in every loaded genome',orientation:'Dominant relative block strand weighted by alignment columns; at least 80% support required'},...output},null,2)],{type:'application/json'}));
+  const url=URL.createObjectURL(new Blob([JSON.stringify({essentiality_source:cachedResult.essentiality_source,definitions:{essential:'Gene copies with essential reference sequence matches; essential-core range families have evidence in at least one member. Overlaps core/accessory sets; not measured essentiality in the loaded strains.',distance:'Shortest circular distance to midpoint along annotated gene segments',range:'Radial range: max minus min of per-genome mean distances to oriC',position_range:'Maximum pairwise shortest circular distance between normalized genome positions; fractions of chromosome length',copies:'Per-genome circular mean for positions (undefined for balanced opposing copies); arithmetic mean for radial distances',strand:'Bidirectional replication; terminus opposite oriC',core:'Present in every loaded genome',orientation:'Dominant relative block strand weighted by alignment columns; at least 80% support and 50% supporting span coverage of both chromosomes required'},...output},null,2)],{type:'application/json'}));
   const a=node('a');a.href=url;a.download='origin-gene-analysis.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
 };
 window.addEventListener('mauve-gene-analysis',refresh);
