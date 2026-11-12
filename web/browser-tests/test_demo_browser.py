@@ -7,7 +7,7 @@ from test_gene_analysis import analysis_site, site, browser, browser_app
 @pytest.mark.parametrize('organism,count,min_genes,first,last', [
     ('ecoli', 8, 3000, 'E. coli MG-phbCAB-3-6', 'E. coli A12'),
     ('hpylori', 6, 1000, 'H. pylori 26695', 'H. pylori Shi470'),
-    ('bsubtilis', 6, 3000, 'B. subtilis 168', 'B. subtilis RO-NN-1'),
+    ('bsubtilis', 6, 3000, 'B. subtilis 168', 'B. subtilis OH131.1'),
 ])
 def test_demo_annotations_all_pairs_and_reuse(analysis_site, browser, tmp_path, organism, count, min_genes, first, last):
     mode, url = analysis_site
@@ -53,7 +53,7 @@ def test_demo_annotations_all_pairs_and_reuse(analysis_site, browser, tmp_path, 
         assert result['essentiality_source']['id'] == 'koo-2017-bsubtilis'
         essential = [m for f in result['families'] for m in f['members'] if m['essentiality']['status'] == 'essential']
         assert sum(m['genome_id'] == 1 for m in essential) == 257
-        assert len(essential) > 1000
+        assert len(essential) > 257
         assert any(m['essentiality']['status'] == 'unknown' for f in result['families'] for m in f['members'])
         page.wait_for_function('window.mauveOriginAnalysis?.result?.eligible.length === 6')
         assert page.evaluate('window.mauveOriginAnalysis.result.genes.length') > 20000

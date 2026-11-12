@@ -73,8 +73,8 @@ Rebuild the frozen evidence from the original reference GenBank record
 web/.venv/bin/python web/update_hpylori_evidence.py --reference /path/to/AE000511.1.gbk --doric /path/to/shards
 ```
 
-The **Open B. subtilis demo** button loads six curated strains: 168, NCIB 3610,
-PY79, QB928, BSn5, and RO-NN-1. Complete circular chromosomes include
+The **Open B. subtilis demo** button loads six diversity-selected strains: 168, RO-NN-1,
+XF-1, SG6, BSn5, and OH131.1. Complete circular chromosomes include
 GenBank annotations and a full progressiveMauve alignment with conservation
 backbone; plasmids are excluded. Pinned assemblies, checksums, and excluded
 records are recorded in `demo/bsubtilis/manifest.json`. Rebuild with:
@@ -82,6 +82,23 @@ records are recorded in `demo/bsubtilis/manifest.json`. Rebuild with:
 ```sh
 web/.venv/bin/python web/demo/build_bsubtilis.py --align
 ```
+
+The panel replaces the closely related NCIB 3610, PY79, and QB928 tracks with
+XF-1, SG6, and OH131.1. A maximin selection anchored on 168 uses canonical circular
+21-mer sketches across 14 pinned candidates, with those three excluded from
+selection. This is a curated pool, not an exhaustive species-wide sample.
+`demo/bsubtilis/diversity.json` records the candidate accessions/checksums,
+similarity matrix, selection, and comparison with the original panel. Estimated
+median pairwise k-mer Jaccard similarity decreases from 0.629 to 0.538; the
+closest pair decreases from 0.999 to 0.680. These are sequence-sketch statistics,
+not ANI or rearrangement counts. Reproduce selection (requires NumPy) with:
+
+```sh
+web/.venv/bin/python web/demo/measure_bsubtilis_diversity.py --doric /path/to/shards
+```
+
+The updated panel uses a new demo ID and name, so reopening imports the new
+alignment separately and preserves previously saved versions in the library.
 
 The B. subtilis demo includes the 257 essential-gene calls from Koo et al.
 (2017), Table S3 A, for strain 168 grown in LB at 37 °C. Calls attach only to

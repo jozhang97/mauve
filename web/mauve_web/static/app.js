@@ -1177,7 +1177,7 @@ $("next-difference").onclick = safely(async () => {
 const demoButtons = ["demo", "welcome-demo", "demo-hpylori", "welcome-demo-hpylori", "demo-bsubtilis", "welcome-demo-bsubtilis"];
 function openDemo(organism = "ecoli") {
   return safely(async () => {
-    const name = organism === "bsubtilis" ? "six-strain B. subtilis" : organism === "hpylori" ? "six-strain H. pylori" : "eight-strain E. coli";
+    const name = organism === "bsubtilis" ? "diverse six-strain B. subtilis" : organism === "hpylori" ? "six-strain H. pylori" : "eight-strain E. coli";
     notice(`Opening the ${name} demo and its annotations…`);
     for (const id of demoButtons) $(id).disabled = true;
     try {

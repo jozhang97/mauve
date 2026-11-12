@@ -13,7 +13,8 @@ ROOT = Path(__file__).resolve().parents[1] / 'demo/bsubtilis'
 def test_curated_chromosomes_and_alignment():
     manifest = json.loads((ROOT / 'manifest.json').read_text())
     genomes = manifest['genomes']
-    assert [g['strain'] for g in genomes] == ['168', 'NCIB 3610', 'PY79', 'QB928', 'BSn5', 'RO-NN-1']
+    assert [g['strain'] for g in genomes] == ['168', 'RO-NN-1', 'XF-1', 'SG6', 'BSn5', 'OH131.1']
+    assert manifest['id'] == 'bsubtilis-diverse-six-v2'
     assert [g['id'] for g in genomes] == list(range(1, 7))
     assert len({g['accession'] for g in genomes}) == 6
     for genome in genomes:
@@ -72,6 +73,28 @@ def test_reference_evidence_and_origin_regions():
             assert len(matches) == 257
         if genome['strain'] == 'BSn5':
             assert origin['start'] > 2_000_000
+
+
+def test_diverse_panel_matches_selection_and_reduces_redundancy():
+    import itertools
+    import statistics
+    manifest = json.loads((ROOT / 'manifest.json').read_text())
+    report = json.loads((ROOT / manifest['diversity']).read_text())
+    assert [g['strain'] for g in manifest['genomes']] == report['selected']
+    assert report['selected'][0] == '168'
+    assert not set(report['excluded_from_selection']) & set(report['selected'])
+    assert report['k'] == 21 and report['sketch_size'] == 4096
+    for genome in manifest['genomes']:
+        candidate, = [c for c in report['candidates'] if c['strain'] == genome['strain']]
+        for key in ('accession', 'chromosome', 'sequence_sha256'):
+            assert candidate[key] == genome[key]
+    for panel in ('previous', 'selected'):
+        values = [report['similarity'][a][b] for a, b in itertools.combinations(report[panel], 2)]
+        assert report['comparison'][panel]['median_pairwise_similarity'] == statistics.median(values)
+        assert report['comparison'][panel]['maximum_pairwise_similarity'] == max(values)
+    assert report['comparison']['previous']['maximum_pairwise_similarity'] > 0.99
+    assert report['comparison']['selected']['maximum_pairwise_similarity'] < 0.7
+    assert report['comparison']['selected']['median_pairwise_similarity'] < report['comparison']['previous']['median_pairwise_similarity']
 
 
 def test_saved_server_demo_refreshes_origin_evidence(tmp_path):

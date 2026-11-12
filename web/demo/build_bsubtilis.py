@@ -19,18 +19,18 @@ import build_ecoli as builder
 
 DEST = Path(__file__).resolve().parent / 'bsubtilis'
 WORK = Path('/tmp/mauve-bsubtilis')
-STRAINS = [('168', 'GCF_000009045.1'), ('NCIB 3610', 'GCF_002055965.1'),
-           ('PY79', 'GCF_000497485.1'), ('QB928', 'GCF_000293765.1'),
-           ('BSn5', 'GCF_000186745.1'), ('RO-NN-1', 'GCF_000227485.1')]
+STRAINS = [('168', 'GCF_000009045.1'), ('RO-NN-1', 'GCF_000227485.1'),
+           ('XF-1', 'GCF_000338735.1'), ('SG6', 'GCF_000782835.1'),
+           ('BSn5', 'GCF_000186745.1'), ('OH131.1', 'GCF_000706705.1')]
 
 
 def prepare():
     DEST.mkdir(exist_ok=True)
     WORK.mkdir(exist_ok=True)
-    manifest = {'id': 'bsubtilis-six-v1', 'name': 'B. subtilis · 6-strain demo',
+    manifest = {'id': 'bsubtilis-diverse-six-v2', 'name': 'B. subtilis · diverse 6-strain demo',
         'created': datetime.now(timezone.utc).isoformat(),
-        'sampling': 'Curated complete annotated chromosomes: 168, NCIB 3610, PY79, QB928, BSn5, RO-NN-1. Pinned RefSeq assemblies; plasmids excluded.',
-        'reference': 'https://www.ncbi.nlm.nih.gov/datasets/genome/?taxon=1423', 'genomes': []}
+        'sampling': 'Diversity-selected complete annotated chromosomes: 168, RO-NN-1, XF-1, SG6, BSn5, OH131.1. Maximin canonical 21-mer sketch selection anchored on 168 from 11 candidates after excluding NCIB 3610, PY79 and QB928; see diversity.json. Pinned RefSeq assemblies; plasmids excluded.',
+        'reference': 'https://www.ncbi.nlm.nih.gov/datasets/genome/?taxon=1423', 'diversity': 'diversity.json', 'genomes': []}
     previous = json.loads((DEST / 'manifest.json').read_text()) if (DEST / 'manifest.json').exists() else {}
     with httpx.Client(timeout=180, follow_redirects=True, headers={'User-Agent': 'MauveExplorer demo builder'}) as client:
         for gid, (strain, accession) in enumerate(STRAINS, 1):

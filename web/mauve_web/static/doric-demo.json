@@ -391,6 +391,93 @@
         ],
         "source": "https://tubic.org/doric/download/filtered.csv"
       }
+    ],
+    "NC_020244.1": [
+      {
+        "id": "ORI97227895",
+        "start": 1967,
+        "end": 2152,
+        "length": 4061186,
+        "sha256": "583b9dd92dc0227799c58143ce4d8a2e336106d3535605420bed7cabc08e8bc4",
+        "anchor": "oriC2 region start",
+        "publication": "https://pubmed.ncbi.nlm.nih.gov/8918236/",
+        "note": "Bipartite B. subtilis origin. Anchor is the start of the sequence-verified DoriC oriC2 region downstream of dnaA, not a resolved initiation nucleotide. Matching upstream regions are retained; regions crossing coordinate 1 wrap around the chromosome.",
+        "regions": [
+          {
+            "id": "ORI97227510",
+            "start": 4061186,
+            "end": 625,
+            "reported_start": 4061186,
+            "sequence_sha256": "2248b93a894802f8b99af174114fc403deceaa5bd6ba306870f762074a7e5253"
+          },
+          {
+            "id": "ORI97227895",
+            "start": 1967,
+            "end": 2152,
+            "reported_start": 1967,
+            "sequence_sha256": "eb70dfbad47761d5e582d7870da97b8fda2dfc77fa70c448edd3cab12758a696"
+          }
+        ],
+        "source": "https://tubic.org/doric/download/filtered.csv"
+      }
+    ],
+    "NZ_CP009796.1": [
+      {
+        "id": "ORI97228053",
+        "start": 4063412,
+        "end": 4063599,
+        "length": 4079669,
+        "sha256": "be6b055add7be81d4234f9e8f1a5a9d0fd0372ad105d9987425c5e757e712650",
+        "anchor": "oriC2 region start",
+        "publication": "https://pubmed.ncbi.nlm.nih.gov/8918236/",
+        "note": "Bipartite B. subtilis origin. Anchor is the start of the sequence-verified DoriC oriC2 region downstream of dnaA, not a resolved initiation nucleotide. Matching upstream regions are retained; regions crossing coordinate 1 wrap around the chromosome.",
+        "regions": [
+          {
+            "id": "ORI97011417",
+            "start": 4061445,
+            "end": 4062070,
+            "reported_start": 4061445,
+            "sequence_sha256": "ec12f8829ce1c6459f9ddd9a784e97d3c6eed0d9fef6af45b865ce81e76adca6"
+          },
+          {
+            "id": "ORI97228053",
+            "start": 4063412,
+            "end": 4063599,
+            "reported_start": 4063412,
+            "sequence_sha256": "be09935afff5208cae6f49d48523ee51bafcfaf41b5019937983916636df62ed"
+          }
+        ],
+        "source": "https://tubic.org/doric/download/filtered.csv"
+      }
+    ],
+    "NZ_CP007409.1": [
+      {
+        "id": "ORI97228027",
+        "start": 1751,
+        "end": 1938,
+        "length": 4039155,
+        "sha256": "8d5f6a0eb36196d75494d7f1d6d3bd3ecc346da888bc149ed47b91d8f7ac937f",
+        "anchor": "oriC2 region start",
+        "publication": "https://pubmed.ncbi.nlm.nih.gov/8918236/",
+        "note": "Bipartite B. subtilis origin. Anchor is the start of the sequence-verified DoriC oriC2 region downstream of dnaA, not a resolved initiation nucleotide. Matching upstream regions are retained; regions crossing coordinate 1 wrap around the chromosome.",
+        "regions": [
+          {
+            "id": "ORI97011020",
+            "start": 4038813,
+            "end": 409,
+            "reported_start": 4038813,
+            "sequence_sha256": "d5738a2a615d15abadb1b6e8db5ff475950bbd8a43d90112e72dc389dad8c7ee"
+          },
+          {
+            "id": "ORI97228027",
+            "start": 1751,
+            "end": 1938,
+            "reported_start": 1751,
+            "sequence_sha256": "be09935afff5208cae6f49d48523ee51bafcfaf41b5019937983916636df62ed"
+          }
+        ],
+        "source": "https://tubic.org/doric/download/filtered.csv"
+      }
     ]
   },
   "hpylori_policy": {
