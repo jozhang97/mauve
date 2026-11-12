@@ -718,7 +718,12 @@ For positional variation, gene midpoints are rotated to oriC, divided by chromos
 length, and normalized to the overview reference's whole-chromosome orientation
 (or the first origin-eligible genome if the reference lacks an origin). Relative
 block strands are weighted by alignment-column count; at least 80% must support
-one orientation. Ambiguous genomes are excluded from position comparisons. Each
+one orientation, and blocks supporting that orientation must span at least 50%
+of both chromosomes (union of coordinate spans; overlaps count once). These are
+conservative heuristics, not statistical confidence scores. Coverage and exclusion
+reasons appear in the orientation evidence table and export. Known unidirectional
+origins remain eligible for distances and positions, with unknown leading/lagging
+classification. Ambiguous genomes are excluded from position comparisons. Each
 core family contributes its maximum pairwise shortest circular separation, from
 0 to 50% of chromosome length, across at least two usable genomes. Thus +20% vs
 -20% gives 40%, whereas +49% vs -49% gives 2%. Positions near oriC and the terminus

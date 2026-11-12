@@ -21,17 +21,35 @@ export function histogram(values, maximum, count=20) {
   for (const value of values) if (Number.isFinite(value) && value>=0 && value<=maximum) bins[Math.min(count-1,Math.floor(value/maximum*count))].count++;
   return bins;
 }
-export function chromosomeOrientations(genomes, blocks, reference) {
+function coveredFraction(intervals, record) {
+  if(!record)return 0;
+  let bases=0,end=record.start-1;
+  for(const [a,b] of intervals.sort((a,b)=>a[0]-b[0])) {
+    const start=Math.max(a,record.start),stop=Math.min(b,record.end);
+    if(stop>=start){bases+=Math.max(0,stop-Math.max(end,start-1));end=Math.max(end,stop);}
+  }
+  return bases/(record.end-record.start+1);
+}
+export function chromosomeOrientations(genomes, blocks, reference, records=new Map()) {
   return genomes.map(g=>{
     if(g.id===reference)return {genome_id:g.id,direction:1,support:1,columns:0};
     let same=0,opposite=0;
+    const spans={same:[[],[]],opposite:[[],[]]};
     for(const block of blocks){
       const a=block.members.find(m=>m.genome_id===reference),b=block.members.find(m=>m.genome_id===g.id);
       if(!a||!b||!['+','-'].includes(a.strand)||!['+','-'].includes(b.strand))continue;
+      if(![a.start,a.end,b.start,b.end].every(Number.isSafeInteger)||a.start<1||b.start<1||a.end<a.start||b.end<b.start||!Number.isFinite(block.columns)||block.columns<=0)continue;
+      const group=a.strand===b.strand?'same':'opposite';
+      spans[group][0].push([a.start,a.end]);spans[group][1].push([b.start,b.end]);
       if(a.strand===b.strand)same+=block.columns;else opposite+=block.columns;
     }
     const columns=same+opposite,support=columns?Math.max(same,opposite)/columns:0;
-    return {genome_id:g.id,direction:support>=0.8?(same>opposite?1:-1):null,support,columns};
+    const winner=same>opposite?'same':'opposite';
+    const reference_coverage=coveredFraction(spans[winner][0],records.get(reference));
+    const genome_coverage=coveredFraction(spans[winner][1],records.get(g.id));
+    const sufficient=reference_coverage>=0.5&&genome_coverage>=0.5;
+    return {genome_id:g.id,direction:support>=0.8&&sufficient?(same>opposite?1:-1):null,support,columns,
+      reference_coverage,genome_coverage,reason:!sufficient?'Insufficient chromosome coverage':support<0.8?'Conflicting orientations':null};
   });
 }
 export function circularMean(values) {
@@ -55,12 +73,14 @@ export function analyzeOrigins(result, sources, genomes, replication, options={}
   for (const genome of genomes) {
     const records=sources.find(s=>s.genome_id===genome.id)?.metadata.records;
     const record=records?.length===1 ? records[0] : null;
+    const normalized=['rotated','already at oriC'].includes(genome.ori_normalization?.status);
+    const origin=normalized?1:record?.replication_origin;
+    if(!record||record.topology!=='circular'||!Number.isSafeInteger(origin)||origin<record.start||origin>record.end){excluded.push({id:genome.id,name:genome.name});continue;}
     const model=replication.model(record,genome.ori_normalization);
-    if (!model) { excluded.push({id:genome.id,name:genome.name}); continue; }
-    eligible.set(genome.id,{genome,record,model,length:record.end-record.start+1});
+    eligible.set(genome.id,{genome,record,origin,model,length:record.end-record.start+1});
   }
   const reference=eligible.has(options.reference)?options.reference:[...eligible.keys()][0];
-  const orientations=chromosomeOrientations(genomes,options.blocks||[],reference);
+  const orientations=chromosomeOrientations(genomes,options.blocks||[],reference,new Map([...eligible].map(([id,s])=>[id,s.record])));
   const directions=new Map(orientations.map(o=>[o.genome_id,o.direction]));
   const genes=[], ranges=[];
   for (const family of result.families) {
@@ -71,7 +91,7 @@ export function analyzeOrigins(result, sources, genomes, replication, options={}
       if (!source || gene.record!==source.record.name) continue;
       const position=midpoint(gene);
       if (position===null) continue;
-      const clockwise=((position-source.model.origin)%source.length+source.length)%source.length;
+      const clockwise=((position-source.origin)%source.length+source.length)%source.length;
       const bp=Math.min(clockwise,source.length-clockwise), fraction=bp/source.length;
       const direction=directions.get(gene.genome_id);
       const classification=replication.classify(source.model,gene.parts);
@@ -92,5 +112,7 @@ export function analyzeOrigins(result, sources, genomes, replication, options={}
         range_fraction:Math.max(...means.map(m=>m.fraction))-Math.min(...means.map(m=>m.fraction)),means});
     }
   }
-  return {genes,ranges,eligible:[...eligible.keys()],excluded,orientations,reference};
+  return {genes,ranges,eligible:[...eligible.keys()],excluded,orientations,reference,
+    orientation_policy:{minimum_column_agreement:0.8,minimum_supporting_span_coverage:0.5,
+      coverage:'Union of supporting block coordinate spans on each chromosome; overlaps counted once'}};
 }

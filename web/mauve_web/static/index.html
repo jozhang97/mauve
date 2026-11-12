@@ -465,7 +465,7 @@
               <p id="origin-range-status" class="small"></p>
               <div id="origin-ranges"></div>
               <details><summary>Position comparison method &amp; orientation evidence</summary>
-                <p class="small">A genome needs a known oriC and at least 80% agreement among shared alignment columns on chromosome orientation relative to the reference selected in the overview. At least two usable genomes are required per family. Duplicate copies use their circular mean within each genome; balanced opposing copies have no unique mean and are excluded. Positions near oriC and the terminus are included. Separation describes positional variation, not an ancestral movement distance.</p>
+                <p class="small">A genome needs a known oriC and at least 80% agreement among shared alignment columns on chromosome orientation relative to the reference. Supporting blocks must span at least 50% of both chromosomes, counting overlapping spans once. These are conservative orientation thresholds, not statistical confidence scores. At least two usable genomes are required per family. Duplicate copies use their circular mean within each genome; balanced opposing copies have no unique mean and are excluded. Positions near oriC and the terminus are included. Unidirectional origins support distance and position comparisons but remain unclassified for leading/lagging. Separation describes positional variation, not an ancestral movement distance.</p>
                 <div id="origin-orientations" class="gene-table-scroll"></div>
               </details>
               <label>Find core family or gene <input id="origin-family-search" type="search" /></label>

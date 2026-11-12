@@ -28,7 +28,7 @@ test('histogram includes zero and terminal boundary and preserves empty bins',()
 test('orientation normalization separates reverse complements from real arm disagreement',()=>{
   const genomes=[1,2,3].map(id=>({id,name:String(id)}));
   const sources=genomes.map(g=>({genome_id:g.id,metadata:{records:[{name:'chr',start:1,end:100,topology:'circular',replication_origin:1}]}}));
-  const blocks=[{columns:100,members:[{genome_id:1,strand:'+'},{genome_id:2,strand:'-'},{genome_id:3,strand:'+'}]}];
+  const blocks=[{columns:100,members:[{genome_id:1,strand:'+'},{genome_id:2,strand:'-'},{genome_id:3,strand:'+'}].map(m=>({...m,start:1,end:100}))}];
   const gene=(genome_id,start,strand='+')=>({genome_id,record:'chr',parts:[{start,end:start+2,strand}],strand});
   const families=[{id:'stable',genomes:3,members:[gene(1,20),gene(2,80,'-'),gene(3,20)]},
     {id:'switch',genomes:3,members:[gene(1,20),gene(2,80,'-'),gene(3,80)]},
@@ -37,15 +37,38 @@ test('orientation normalization separates reverse complements from real arm disa
   assert.ok(out.ranges[0].position_range_fraction<1e-12);
   assert.ok(Math.abs(out.ranges[1].position_range_fraction-0.4)<1e-12);
   assert.equal(out.ranges[2].position_genomes,3);
-  const ambiguous=chromosomeOrientations(genomes,[...blocks,{columns:90,members:[{genome_id:1,strand:'+'},{genome_id:2,strand:'+'}]}],1);
+  const ambiguous=chromosomeOrientations(genomes,[...blocks,{columns:90,members:[{genome_id:1,strand:'+'},{genome_id:2,strand:'+'}].map(m=>({...m,start:1,end:90}))}],1,new Map(sources.map(s=>[s.genome_id,s.metadata.records[0]])));
   assert.equal(ambiguous[1].direction,null);
+  assert.equal(ambiguous[1].reason,'Conflicting orientations');
+});
+test('orientation requires unique coverage of half of both chromosomes',()=>{
+  const genomes=[{id:1},{id:2}],records=new Map(genomes.map(g=>[g.id,{start:1,end:1000}]));
+  const block=(start,end)=>({columns:end-start+1,members:genomes.map(g=>({genome_id:g.id,start,end,strand:g.id===1?'+':'-'}))});
+  const check=blocks=>chromosomeOrientations(genomes,blocks,1,records)[1];
+  assert.equal(check([block(1,1)]).direction,null);
+  assert.equal(check(Array(100).fill(block(1,100))).genome_coverage,0.1);
+  assert.equal(check(Array(100).fill(block(1,100))).direction,null);
+  assert.equal(check([block(1,250),block(751,1000)]).direction,-1);
+  records.set(2,{start:1,end:2000});
+  assert.equal(check([block(1,500)]).direction,null);
+});
+test('unidirectional origins retain distance and position results without strand classification',()=>{
+  const genomes=[{id:1},{id:2}];
+  const sources=genomes.map(g=>({genome_id:g.id,metadata:{records:[{name:'chr',start:1,end:1000,topology:'circular',replication_origin:1,replication_direction:g.id===1?'LEFT':'RIGHT'}]}}));
+  const result={genomes,families:[{id:'F1',genomes:2,members:genomes.map(g=>({genome_id:g.id,record:'chr',strand:'+',parts:[{start:g.id*100,end:g.id*100+2,strand:'+'}]}))}]};
+  const blocks=[{columns:1000,members:genomes.map(g=>({genome_id:g.id,start:1,end:1000,strand:'+'}))}];
+  const out=analyzeOrigins(result,sources,genomes,globalThis.mauveReplication,{blocks,reference:1});
+  assert.deepEqual(out.eligible,[1,2]);
+  assert.equal(out.ranges[0].range_bp,100);
+  assert.ok(Math.abs(out.ranges[0].position_range_fraction-0.1)<1e-12);
+  assert.ok(out.genes.every(g=>g.replication==='unknown'));
 });
 test('duplicate copies use a circular mean per genome',()=>{
   const genomes=[1,2].map(id=>({id,name:String(id)}));
   const sources=genomes.map(g=>({genome_id:g.id,metadata:{records:[{name:'chr',start:1,end:100,topology:'circular',replication_origin:1}]}}));
   const gene=(genome_id,start)=>({genome_id,record:'chr',parts:[{start,end:start+2,strand:'+'}]});
   const result={genomes,families:[{id:'duplicate',genomes:2,members:[gene(1,20),gene(2,20),gene(2,80)]}]};
-  const out=analyzeOrigins(result,sources,genomes,globalThis.mauveReplication,{reference:1,blocks:[{columns:100,members:[{genome_id:1,strand:'+'},{genome_id:2,strand:'+'}]}]});
+  const out=analyzeOrigins(result,sources,genomes,globalThis.mauveReplication,{reference:1,blocks:[{columns:100,members:[{genome_id:1,strand:'+'},{genome_id:2,strand:'+'}].map(m=>({...m,start:1,end:100}))}]});
   assert.equal(out.ranges[0].position_genomes,2);
   assert.ok(Math.abs(out.ranges[0].position_range_fraction-0.2)<1e-12);
 });
@@ -64,7 +87,7 @@ test('essential family ranges retain family evidence without assigning it to unm
   const sources=genomes.map(g=>({genome_id:g.id,metadata:{records:[{name:'chr',start:1,end:100,topology:'circular',replication_origin:1}]}}));
   const members=genomes.map(g=>({genome_id:g.id,record:'chr',strand:'+',parts:[{start:20,end:30,strand:'+'}],essentiality:{status:g.id===1?'essential':'unknown'}}));
   const result={genomes,families:[{id:'F1',genomes:2,essentiality:{status:'essential'},members}]};
-  const out=analyzeOrigins(result,sources,genomes,globalThis.mauveReplication,{reference:1,blocks:[{columns:100,members:[{genome_id:1,strand:'+'},{genome_id:2,strand:'+'}]}]});
+  const out=analyzeOrigins(result,sources,genomes,globalThis.mauveReplication,{reference:1,blocks:[{columns:100,members:[{genome_id:1,strand:'+'},{genome_id:2,strand:'+'}].map(m=>({...m,start:1,end:100}))}]});
   assert.equal(out.ranges[0].essential_reference,true);
   assert.equal(out.ranges[0].reference_essentiality,'essential');
   assert.equal(out.ranges[0].position_genomes,2);
