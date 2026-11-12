@@ -46,7 +46,7 @@ def test_all_pairs_core_pan_and_exports(analysis_site, browser, tmp_path):
     page.locator('#run-gene-analysis').click()
     page.wait_for_function('document.querySelector("#gene-analysis-status").textContent.startsWith("Computed 3 pairs")')
     assert page.locator('#gene-heatmap tbody tr').count() == 3
-    assert page.locator('#gene-pan-summary strong').all_text_contents() == ['5', '3', '3', '2', '2', '0']
+    assert page.locator('#gene-pan-summary strong').all_text_contents() == ['5', '3', '3', '2', '2', '0', '0', '0', '0']
     assert page.locator('#gene-family-table tbody tr').count() == 5
     page.evaluate('selectBlock(1)')
     page.wait_for_function('state.features.length === 11')

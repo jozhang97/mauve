@@ -160,7 +160,7 @@ export async function analyzeGenes({genomes, sources, blocks}, loadMember, optio
     if (!families.has(id)) families.set(id, {id: `F${families.size + 1}`, members: []});
     const family = families.get(id); gene.family = family.id;
     family.members.push({genome_id: gene.genome_id, id: gene.id, name: gene.name, locus_tag: gene.locus_tag,
-      type: gene.type, order: gene.order, parts: gene.parts, record: gene.record, start: gene.start, end: gene.end, strand: gene.strand});
+      sequence_sha256: gene.sequence_sha256, type: gene.type, order: gene.order, parts: gene.parts, record: gene.record, start: gene.start, end: gene.end, strand: gene.strand});
   }
   const chromosomes = new Map();
   for (const genome of genomes) {

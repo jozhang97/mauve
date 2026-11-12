@@ -92,3 +92,17 @@ test('core filtering never mutates block strands, positions, or selected-block d
   }
   assert.equal(JSON.stringify({result,blocks}),snapshot);
 });
+
+test('essential filtering requires each copy own evidence and intersects core families before indexing blocks', () => {
+  const input=structuredClone(result);
+  input.families[0].essentiality={status:'essential'};
+  input.families[0].members[0].essentiality={status:'essential'};
+  input.families[1].members[0].essentiality={status:'essential'};
+  const all=coreIndex(input,blocks,{core:false,essential:true});
+  assert.deepEqual([...all.geneKeys],['1:same-id','1:accessory']);
+  assert.deepEqual([...all.blockIds],[1,2,3,4]);
+  const core=coreIndex(input,blocks,{core:true,essential:true});
+  assert.deepEqual([...core.geneKeys],['1:same-id']);
+  assert.deepEqual([...core.blockIds],[1,3,4]);
+  assert.ok(!all.geneKeys.has('2:same-id'));
+});

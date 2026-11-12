@@ -8,10 +8,12 @@
     <script src="./static/theme.js"></script>
     <link rel="stylesheet" href="./static/style.css" />
     <script src="./static/track-geometry.js" defer></script>
+    <script src="./static/replication.js" defer></script>
     <script src="./static/conservation-view.js" defer></script>
     <script src="./static/app.js" defer></script>
     <script src="./static/gene-analysis.js" defer></script>
     <script src="./static/rank-view.mjs" type="module"></script>
+    <script src="./static/origin-view.mjs" type="module"></script>
     <script src="./static/jobs.js" defer></script>
     <script src="./static/ncbi.js" defer></script>
   </head>
@@ -278,6 +280,7 @@
         <nav class="explorer-nav" aria-label="Alignment sections">
           <button data-section="overview-panel" class="current" aria-current="location">Overview</button>
           <button data-section="gene-analysis-panel">Gene comparisons</button>
+          <button data-section="origin-analysis-panel">Genes &amp; oriC</button>
           <button data-section="sequence-panel">Sequence</button>
           <button data-section="annotations-panel">Genes &amp; features</button>
           <span id="selection-status">No block selected</span>
@@ -340,6 +343,7 @@
             <span id="range"></span>
           </div>
           <div class="reference-bar">
+            <button id="start-at-oric" type="button" title="Rotate circular chromosome views so known oriC positions appear at the left edge. Keeps native coordinates; no realignment needed.">Start tracks at oriC</button>
             <label for="reference-genome">Compare with</label><select id="reference-genome" aria-label="Comparison reference"></select>
             <button id="focus-reference" disabled title="Focus the selected block at the reference genome’s coordinates">Focus reference region</button>
             <label for="track-sort">Track order</label><select id="track-sort">
@@ -355,7 +359,11 @@
                 <label class="check" title="Shift tracks to line up corresponding positions in the clicked block, keeping chromosome orientation and zoom. Annotated circular chromosomes wrap at their origin."><input type="checkbox" id="align-tracks" /> Align tracks on block click</label>
                 <label class="check" title="Align and reverse tracks where necessary so the selected block follows the reference direction."><input type="checkbox" id="orient-tracks" /> Orient tracks to selected block</label>
                 <label class="check"><input type="checkbox" id="show-annotations" checked /> Selected block annotations</label>
+                <label class="check"><input type="checkbox" id="show-replication" /> Replication directions &amp; gene colors</label>
+                <label class="check"><input type="checkbox" id="show-gc-skew" /> GC skew</label>
                 <label class="check" title="Show only genes in families present in every loaded genome, including hidden tracks, and blocks overlapping those genes. Includes all copies of core families."><input type="checkbox" id="core-genes-only" /> Core family genes only</label>
+                <label class="check" title="Purple outlines mark CDS with their own essential reference sequence match; replication fill colors remain visible."><input type="checkbox" id="highlight-essential" /> Highlight essential reference matches</label>
+                <label class="check" title="Show only gene copies with their own essential reference sequence match and blocks overlapping those copies. Combine with Core family genes only to restrict this to core families."><input type="checkbox" id="essential-genes-only" /> Essential reference genes only</label>
                 <label class="check"><input type="checkbox" id="show-conservation" checked /> Conservation profiles</label>
                 <button id="import-backbone" type="button">Import backbone (.bbcols)</button><input id="backbone-file" type="file" accept=".bbcols,.txt" hidden />
                 <label class="check"><input type="checkbox" id="show-identity" checked /> Selected block identity</label>
@@ -374,6 +382,8 @@
             <span id="selection-feedback-text"></span><button id="reveal-selected">Reveal selected block</button>
           </div>
           <div id="tracks"></div>
+          <p id="replication-status" class="small" hidden>Teal: genes co-oriented with replication; orange: head-on; gray: unknown or crossing a boundary; purple: selected feature. Fork directions assume bidirectional replication. Dashed ter is estimated opposite oriC. GC skew: (G − C)/(G + C) in non-overlapping windows; positive above the zero line. Reimport GenBank annotations to add missing origin or skew data.</p>
+          <p id="essential-genes-status" class="small" role="status" hidden></p>
           <p id="core-genes-status" class="small" role="status" hidden></p>
           <p id="feature-limit" class="small feature-status" hidden></p>
           <div class="plot-footer">
@@ -421,10 +431,45 @@
               <h3>Core / pan genome</h3><div id="gene-pan-summary" class="gene-pan-summary"></div>
               <p class="small">Core: present in every genome. Accessory: present in fewer than all genomes. Genome-specific families are part of the accessory genome. Counts depend on matching thresholds and annotation coverage.</p>
               <div id="gene-genome-counts" class="gene-table-scroll"></div>
-              <h4>Family occupancy</h4><div id="gene-occupancy" class="gene-occupancy"></div>
+              <p class="small">Essential reference matches overlap core and accessory families. Family counts require evidence in at least one member; per-genome counts require that gene copy’s own sequence match. Unknown evidence does not imply nonessentiality.</p>
+              <h4>Family occupancy</h4><div class="small histogram-key" aria-label="Family occupancy legend"><span><i style="background:#168b85" aria-hidden="true"></i>All families</span><span><i style="background:#8b4fba" aria-hidden="true"></i>Essential reference evidence (overlapping subset)</span></div><div id="gene-occupancy" class="gene-occupancy"></div>
               <h4>Family presence / copy counts</h4>
-              <div class="gene-analysis-controls"><label>Find family or gene <input type="search" id="gene-family-search" /></label><button id="gene-family-prev">Previous</button><button id="gene-family-next">Next</button><span id="gene-family-page" class="small"></span></div>
+              <div class="gene-analysis-controls"><label>Find family or gene <input type="search" id="gene-family-search" /></label><label>Reference essentiality <select id="gene-essentiality-filter"><option value="">All families (unfiltered)</option><option value="essential">Essential</option><option value="nonessential">Nonessential</option><option value="unclear">Unclear</option><option value="unknown">Unknown</option></select></label><label><input type="checkbox" id="gene-family-core" /> Core families only</label><button id="gene-family-prev">Previous</button><button id="gene-family-next">Next</button><span id="gene-family-page" class="small"></span></div>
+              <p id="gene-essentiality-status" class="small" role="status"></p>
               <div id="gene-family-table" class="gene-table-scroll"></div>
+            </div>
+          </div>
+        </section>
+        <section class="panel" id="origin-analysis-panel">
+          <div class="panel-heading"><div><div class="eyebrow">REPLICATION &amp; GENE CONTENT</div><h2>Genes relative to oriC</h2></div></div>
+          <div class="gene-analysis-body">
+            <p id="origin-analysis-status" class="small" role="status"></p>
+            <div id="origin-results" hidden>
+              <div class="gene-analysis-controls">
+                <label>Gene scope <select id="origin-genome"><option value="all">All eligible genomes</option></select></label>
+                <label>Distance units <select id="origin-unit"><option value="percent">% chromosome length</option><option value="kb">kb</option></select></label>
+                <button id="export-origin-analysis">Export origin analysis</button>
+              </div>
+              <p id="origin-essentiality-status" class="small" role="status"></p>
+              <h3>Leading and lagging fractions</h3>
+              <p class="small">Fractions count gene copies and use classified copies as the denominator. Pan = core + accessory copies. All-genome fractions pool copies, so larger genomes contribute more. Unknown origins are excluded; genes crossing oriC or the estimated terminus are unclassified. Leading means co-oriented transcription, assuming bidirectional replication and a terminus opposite oriC.</p>
+              <div id="origin-fractions" class="gene-table-scroll"></div>
+              <h3>Gene distance to oriC</h3>
+              <label>Histogram scale <select id="origin-histogram-scale"><option value="count">Gene counts</option><option value="percent">% within each gene set</option></select></label>
+              <p class="small">Teal: core; orange: accessory; purple: essential reference matches (overlapping subset). Twenty equal-width bins. In percentage mode, each bin is divided by the total copies within its own gene set in the selected scope, so each nonempty distribution sums to 100%. Distance is the shorter path around the chromosome from oriC to the midpoint along annotated gene segments; it ranges from 0 to 50% of chromosome length.</p>
+              <div id="origin-distances"></div>
+              <h3>Variation in core-family distance and position across genomes</h3>
+              <label>Measure <select id="origin-range-metric"><option value="position">Circular positional separation</option><option value="distance">Distance-to-oriC range</option></select></label>
+              <p class="small">Teal: all core families; purple: essential-core subset. Distance range ignores chromosome arm; positional separation accounts for arm. A shift from +20% to −20% gives 0% distance range but 40% positional separation; +49% to −49% gives 2% positional separation.</p>
+              <p id="origin-range-status" class="small"></p>
+              <div id="origin-ranges"></div>
+              <details><summary>Position comparison method &amp; orientation evidence</summary>
+                <p class="small">A genome needs a known oriC and at least 80% agreement among shared alignment columns on chromosome orientation relative to the reference selected in the overview. At least two usable genomes are required per family. Duplicate copies use their circular mean within each genome; balanced opposing copies have no unique mean and are excluded. Positions near oriC and the terminus are included. Separation describes positional variation, not an ancestral movement distance.</p>
+                <div id="origin-orientations" class="gene-table-scroll"></div>
+              </details>
+              <label>Find core family or gene <input id="origin-family-search" type="search" /></label>
+              <p id="origin-table-status" class="small"></p>
+              <div id="origin-range-table" class="gene-table-scroll"></div>
             </div>
           </div>
         </section>

@@ -1,5 +1,8 @@
 """GenBank annotations in the same 1-based coordinate system as XMFA."""
 from io import StringIO
+import hashlib
+import json
+from pathlib import Path
 import warnings
 
 from Bio import BiopythonParserWarning, SeqIO
@@ -86,10 +89,36 @@ def parse_genbank(text, members, concatenate=False, rotation=0):
                              'product': value('product'), 'note': value('note'), 'record': record.id,
                              'pseudo': 'pseudo' in qualifiers or 'pseudogene' in qualifiers,
                              'experiment': value('experiment'), 'inference': value('inference'),
+                             'sequence_sha256': hashlib.sha256(str(feature.extract(record.seq)).upper().encode()).hexdigest()
+                             if feature.type == 'CDS' and not any(p['fuzzy'] for p in parts) else '',
                              'start': min(p['start'] for p in parts), 'end': max(p['end'] for p in parts),
                              'strand': '+' if feature.location.strand == 1 else '-' if feature.location.strand == -1 else '.',
                              'location': str(feature.location), 'parts': parts})
         offset += len(record)
     if not features:
         raise ValueError('No non-source annotations were found in this GenBank file.')
+    for contig, record in zip(contigs, records):
+        origins = [f for f in features if f['record'] == record.id and f['type'] == 'rep_origin']
+        if len(origins) == 1 and not any(p['fuzzy'] for p in origins[0]['parts']):
+            parts = origins[0]['parts']
+            contig['replication_origin'] = (parts[-1] if parts[0]['strand'] == '-' else parts[0])['start']
+            original = next(f for f in record.features if f.type == 'rep_origin')
+            contig['replication_direction'] = ''.join(original.qualifiers.get('direction', []))
+        elif not origins:
+            snapshot = json.loads((Path(__file__).parent / 'static/doric-demo.json').read_text())
+            digest = hashlib.sha256(str(record.seq).upper().encode()).hexdigest()
+            matches = [m for m in snapshot['records'].get(record.id, [])
+                       if m['length'] == len(record) and m.get('sha256') == digest]
+            if len(matches) == 1:
+                contig['replication_origin'] = contig['start'] + matches[0]['start'] - 1
+                contig['replication_origin_source'] = 'DoriC (sequence verified)'
+        window = max(1, (len(record) + 199) // 200)
+        contig['gc_skew'] = []
+        dna = str(record.seq).upper()
+        for start in range(0, len(record), window):
+            segment = dna[start:start + window]
+            g, c = segment.count('G'), segment.count('C')
+            contig['gc_skew'].append({'start': contig['start'] + start,
+                                      'end': contig['start'] + start + len(segment) - 1,
+                                      'value': (g - c) / (g + c) if g + c else None})
     return {'features': features, 'records': contigs, 'length': len(sequence), 'verified_bases': comparable}

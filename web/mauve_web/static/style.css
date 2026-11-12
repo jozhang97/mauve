@@ -1160,3 +1160,7 @@ select:focus-visible, summary:focus-visible { outline: 3px solid var(--focus); o
 .gene-search-marker { cursor: pointer; }
 .gene-search-marker:focus { outline: none; stroke: var(--text); stroke-width: 3; }
 #overview-gene-results button[aria-pressed="true"] { border-color: var(--feature-selected); box-shadow: inset 3px 0 var(--feature-selected); }
+
+.histogram-key { display: flex; flex-wrap: wrap; gap: 8px 24px; margin: 8px 0; }
+.histogram-key span { display: inline-flex; align-items: center; gap: 6px; }
+.histogram-key i { display: inline-block; width: 12px; height: 10px; }

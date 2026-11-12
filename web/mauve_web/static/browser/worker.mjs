@@ -1,3 +1,4 @@
+import {hashCodingSequences} from './essentiality.mjs';
 import {buildConservation, sampleConservation, parseBackbone} from './conservation.mjs';
 import {Store, MemberCache} from './store.mjs';
 import {parseXMFA, metadata, columnSlice, coordinateColumn, profileMember, basename} from './core.mjs';
@@ -64,9 +65,20 @@ async function importAnnotations(aid, gid, blob, name, concatenate) {
   if (blob.size > 50 * 1024 * 1024) throw Error('GenBank files must be at most 50 MiB.');
   const rotation = a.genomes.find(g => g.id === gid)?.ori_normalization?.offset || 0;
   const parsed = annotationData(await parseRecords(blob), concatenate, rotation); let verified = 0;
+  if (!rotation && parsed.records.length === 1 && !parsed.features.some(f => f.type === 'rep_origin')) {
+    const snapshot = await fetch(new URL('../doric-demo.json', import.meta.url)).then(r => r.json());
+    const digest = [...new Uint8Array(await crypto.subtle.digest('SHA-256', parsed.sequence))].map(b => b.toString(16).padStart(2, '0')).join('');
+    const record = parsed.records[0];
+    const matches = (snapshot.records[record.name] || []).filter(m => m.length === parsed.sequence.length && m.sha256 === digest);
+    if (matches.length === 1) {
+      record.replication_origin = matches[0].start;
+      record.replication_origin_source = 'DoriC (sequence verified)';
+    }
+  }
   for (const b of await store.all('blocks', store.range(aid))) if (b.members.some(m => m.genome_id === gid)) verified += verifyMember(await cache.get(aid, b.id, gid), parsed.sequence);
   if (!verified) throw Error('No unambiguous aligned bases are available to verify this GenBank sequence.');
-  const metadata = {records: parsed.records, length: parsed.length, verified_bases: verified, feature_count: parsed.features.length, analysis_version: 1};
+  await hashCodingSequences(parsed);
+  const metadata = {sequence_hash_version: 1, records: parsed.records, length: parsed.length, verified_bases: verified, feature_count: parsed.features.length, analysis_version: 1};
   const features = parsed.features.map((f, i) => ({...f, id: `${gid}:${i}`, genome_id: gid})).sort((a, b) => a.start - b.start);
   await store.put('annotations', [aid, gid], {genome_id: gid, name: basename(name), metadata, features}); return metadata;
 }
@@ -112,7 +124,7 @@ async function route(path, options = {}) {
       }
       if (manifest.alignment.backbone && !await store.get('artifacts', [a.id, 'conservation-backbone']))
         await saveBackbone(a, await compressed(manifest.alignment.backbone.file));
-      for (const genome of manifest.genomes) if (!await store.get('annotations', [a.id, genome.id])) {
+      for (const genome of manifest.genomes) if (!(await store.get('annotations', [a.id, genome.id]))?.metadata.sequence_hash_version) {
         progress(`Loading E. coli annotations ${genome.id}/${manifest.genomes.length}: ${genome.strain}…`);
         await importAnnotations(a.id, genome.id, await compressed(genome.annotations), `${genome.chromosome}.gbk`, false);
       }

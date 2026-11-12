@@ -705,6 +705,54 @@ The XMFA parser accepts aligned DNA (including IUPAC ambiguity codes), validates
 
 ## Fresh original-versus-current engine benchmark
 
+After **Compute all pairs**, **Genes relative to oriC** reports core/accessory/pan
+gene-copy leading/lagging fractions, core/accessory distance histograms, and one
+cross-genome maximum circular positional separation per core family. Core membership uses every loaded
+genome, including those without a known origin. Analyses include only single
+circular chromosomes with known origins; excluded genomes are named. Distances
+use the midpoint along annotated gene segments and the shorter circular path to
+oriC, in kb or percent of chromosome length. Fractions use classified copies as
+their denominator and report unknown/boundary copies separately.
+
+For positional variation, gene midpoints are rotated to oriC, divided by chromosome
+length, and normalized to the overview reference's whole-chromosome orientation
+(or the first origin-eligible genome if the reference lacks an origin). Relative
+block strands are weighted by alignment-column count; at least 80% must support
+one orientation. Ambiguous genomes are excluded from position comparisons. Each
+core family contributes its maximum pairwise shortest circular separation, from
+0 to 50% of chromosome length, across at least two usable genomes. Thus +20% vs
+-20% gives 40%, whereas +49% vs -49% gives 2%. Positions near oriC and the terminus
+remain included. Duplicated families use the circular mean of copy positions per
+genome; balanced opposing copies have no unique mean and that genome is excluded
+for the family. The family table and JSON export include per-genome positions,
+usable genome counts, maximum separations, and orientation evidence. The legacy
+radial max-minus-min ranges remain in the JSON as `range_fraction` and `range_bp`;
+the **Measure** dropdown selects either circular positional separation (default)
+or distance-to-oriC range in one histogram. The distance range follows the distance
+unit selector; positional separation always uses normalized chromosome units.
+Each measure includes all families eligible for that measure. Essential-core
+subsets are also shown. Both metrics remain in
+the family table, including radial-only results. Results are independent of
+viewport and track orientation and describe variation rather than ancestral travel.
+
+The overview's **Display & filters** offers **Replication directions & gene colors**
+and the toolbar's **Start tracks at oriC** rotates chromosome views to put known
+origins at the left edge, keeping native coordinates without rerunning alignment.
+Chromosomes without a known origin remain unshifted. Clicking a block with track
+alignment enabled can subsequently align views to that block instead.
+The display settings also offer replication overlays
+and **GC skew**. Replication strips use a single circular annotated chromosome's
+`rep_origin`, or successful oriC normalization provenance. Forks are assumed
+bidirectional; the dashed terminus is estimated half a chromosome from oriC.
+Teal genes are co-oriented with replication, orange genes are head-on, and gray
+genes have unknown orientation or cross a replication boundary. Selected features
+remain purple. These classifications use native coordinates even in reversed views.
+Explicitly unidirectional origins and multiple-record genomes are not classified.
+GC skew is (G-C)/(G+C) in up to 200 non-overlapping windows per record, calculated
+from the full imported sequence, including unaligned bases. Windows without G or C
+are omitted. Reimport GenBank annotations to populate these fields in older imports.
+Skew is shown as evidence, not used automatically to assign origins or termini.
+
 A fresh comparison of the original release against the current V7 engine used
 three alternating runs per engine per workload, each in a new Node process on
 an Apple M4 Max running on battery power. Times below are median alignment
@@ -785,3 +833,68 @@ Rank heatmaps use a fixed −1 to +1 scale: orange for negative, blue for positi
 Selecting a block from the list realigns it even when it is already selected (for example, after Fit all). Double-click focus waits for the selected block to finish loading and aligning before zooming; later selections supersede older requests.
 
 Track geometry and core-block membership are shared DOM-independent functions in `mauve_web/static/track-geometry.js`. Run `node --test browser-tests/track-geometry.test.mjs` from `web/` for reverse-coordinate, drawing-edge, circular coverage, block/reference switching, and core-filter tests. Circular coverage checks 240 combinations of orientation, offset, viewport origin, and span against individual native bases. Browser regressions in `test_track_orientation.py` additionally cover core-filter toggling, reselecting after Fit all, delayed double-click navigation, and rapid competing block selections in both static and server modes.
+
+### Reference gene essentiality
+
+Gene comparisons include a **Reference essentiality (sequence match)** column,
+an evidence filter, and a core-family filter. Hover over a call to see the
+reference genes. The family summary retains all distinct assay calls; member
+calls and provenance are included in TSV and JSON exports. A family match does
+not assign evidence to unmatched members. Unknown means no matching evidence;
+unclear is an ambiguous assay call, not a conditional-essential designation.
+
+The bundled snapshot uses Galaxy Training Network's frozen TSV transcription of
+[Goodall et al. (2018)](https://doi.org/10.1128/mBio.02096-17), published at
+[Zenodo](https://zenodo.org/records/3382053). The study uses TraDIS in E. coli
+K-12 BW25113. **The TSV does not specify its library/condition subset**; the UI
+retains this limitation rather than claiming essentiality across conditions.
+The transcription contains 4,313 calls (356 essential, 3,802 nonessential,
+155 unclear); it should not be confused with the paper's 358-essential TL set.
+Goodall et al.'s source material is CC BY 4.0; this snapshot reformats it and
+adds reference sequence mappings.
+
+The builder maps unique table gene names to unique CDS gene names/synonyms in
+CP009273.1, excluding pseudogenes, fuzzy locations, ambiguous sequences, and
+missing or ambiguous mappings. The current snapshot contains 4,012 mapped
+records: 344 essential, 3,522 nonessential, 146 unclear; 301 input rows are
+excluded. The frozen TSV lives in `data/essentiality/`; the JSON retains source
+links and checksums for both the table and reference chromosome.
+
+Annotation imports retain full CDS SHA-256 checksums in biological strand and
+compound-part order. The gene worker matches these to the bundled snapshot
+without external requests. An identical CDS match is **reference assay
+evidence**, not a measurement of essentiality in the user's strain and not
+proof of orthology. Sequence variants remain unknown. Older annotations need
+reimporting; reopening the bundled demo upgrades its annotations automatically.
+Snapshot load failure leaves gene comparisons available and displays an
+explicit essentiality-unavailable message.
+
+To rebuild, obtain the GenBank record CP009273.1 (including sequence) from NCBI,
+then run from the repository root:
+
+```sh
+web/.venv/bin/python web/update_essentiality.py --reference /path/to/CP009273.1.gbk
+```
+
+The checksum matcher runs in both standalone browser and Python server modes.
+
+Essential reference evidence also appears in the core/pan summary (all, core,
+and accessory family counts), per-genome gene-copy counts, the family-occupancy
+chart, and individual CDS details/tooltips. In **Genes relative to oriC**, purple
+series show essential reference matches in the distance histogram and an
+essential-core subsets for both measures in the combined variation histogram; the leading/lagging table
+includes the matching copies, and the family-position table retains reference
+calls. Purple subsets overlap the existing gene sets. Copy-level summaries
+require each copy's own sequence match; family-level subsets require evidence
+in at least one member and compare all usable members. Percentage distance
+histograms normalize each gene set independently. Origin exports retain these
+calls, subset flags, and source provenance.
+
+Overview **Display & filters** includes **Highlight essential reference matches**
+(purple CDS outlines, retaining replication fill colors) and **Essential reference
+genes only** (matching gene copies and overlapping blocks). Combining the latter
+with the core-family filter intersects both criteria at the gene-copy level;
+evidence is never propagated to unmatched family members. Pending and unavailable
+annotation states are reported explicitly. Histogram legends include series
+colors and sample counts, including zero-count series; the family-occupancy
+chart also has a color-swatch legend.

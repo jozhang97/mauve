@@ -240,14 +240,20 @@ function visibleBlocks() {
   return state.blocks.filter(b => b.columns >= minimum
     && (!shared || b.members.length > 1)
     && (!isolated || selected === b.id)
-    && (!$("core-genes-only").checked || !window.mauveGeneAnalysis?.result || coreBlockIds.has(b.id)));
+    && (!$("core-genes-only").checked || !window.mauveGeneAnalysis?.result || coreBlockIds.has(b.id))
+    && (!$("essential-genes-only").checked || !window.mauveGeneAnalysis?.result || essentialBlockIds.has(b.id)));
 }
 let coreGeneKeys = new Set(), coreBlockIds = new Set();
+let essentialGeneKeys = new Set(), essentialBlockIds = new Set();
 function refreshCoreGenes() {
   const result = window.mauveGeneAnalysis?.result;
   const index = window.mauveTrackGeometry.coreIndex(result, state.blocks);
   coreGeneKeys = index.geneKeys;
   coreBlockIds = index.blockIds;
+  const essentialIndex = window.mauveTrackGeometry.coreIndex(result, state.blocks, {core: $("core-genes-only").checked, essential: true});
+  essentialGeneKeys = essentialIndex.geneKeys; essentialBlockIds = essentialIndex.blockIds;
+  if ($("essential-genes-only").checked && result && essentialBlockIds.size && $("isolate-block").checked && !essentialBlockIds.has(state.selected))
+    $("isolate-block").checked = false;
   if ($("core-genes-only").checked && result && coreBlockIds.size) {
     // An isolated accessory block must not hide every core-containing block.
     if ($("isolate-block").checked && !coreBlockIds.has(state.selected))
@@ -261,6 +267,13 @@ function refreshCoreGenes() {
   if (state.alignment) { render(); renderList(); }
 }
 function updateCoreGeneStatus() {
+  const essentialEnabled = $("essential-genes-only").checked || $("highlight-essential").checked;
+  const evidence = window.mauveGeneAnalysis?.result;
+  $("essential-genes-status").hidden = !essentialEnabled;
+  $("essential-genes-status").textContent = !essentialEnabled ? "" : !evidence
+    ? "Essential reference matches pending — compute gene comparisons."
+    : !evidence.essentiality_source ? (evidence.essentiality_error || "Essentiality evidence unavailable; recompute gene comparisons.")
+    : `${$("essential-genes-only").checked ? 'Essential reference filter' : 'Essential reference highlights'} · ${fmt(essentialGeneKeys.size)} matching gene copies${$("core-genes-only").checked ? ' in core families' : ''}. ${$("essential-genes-only").checked ? `${fmt(essentialBlockIds.size)} of ${fmt(state.blocks.length)} blocks overlap these copies.` : 'Purple outlines mark matching CDS; replication fills remain visible.'} Each copy requires its own sequence match. Essentiality is not established in these strains.`;
   const enabled = $("core-genes-only").checked, result = window.mauveGeneAnalysis?.result;
   $("core-genes-status").hidden = !enabled;
   $("core-genes-status").textContent = !enabled ? "" : result
@@ -272,6 +285,11 @@ $("core-genes-only").onchange = () => {
   refreshCoreGenes();
   if ($("core-genes-only").checked && !window.mauveGeneAnalysis?.result)
     $("run-gene-analysis").click();
+};
+for (const id of ['essential-genes-only', 'highlight-essential']) $(id).onchange = () => {
+  if ($(id).checked) $("show-annotations").checked = true;
+  refreshCoreGenes();
+  if ($(id).checked && !window.mauveGeneAnalysis?.result) $("run-gene-analysis").click();
 };
 window.addEventListener("mauve-gene-analysis", refreshCoreGenes);
 window.addEventListener("mauve-gene-analysis-status", () => {
@@ -591,6 +609,50 @@ function nativeWindow(gid, copy = 0) {
   return [Math.min(a,b), Math.max(a,b)];
 }
 function displayedStrand(strand, gid) { return (strand === "+" ? 1 : -1) * trackDirection(gid); }
+function replicationModel(gid) {
+  const records = state.sources.find(s => s.genome_id === gid)?.metadata.records;
+  if (records?.length !== 1) return null;
+  return window.mauveReplication.model(records[0], state.alignment.genomes.find(g => g.id === gid)?.ori_normalization);
+}
+function replicationClass(feature) {
+  return window.mauveReplication.classify(replicationModel(feature.genome_id), feature.parts);
+}
+function drawReplication(svg, project, ys) {
+  const enabled = $("show-replication").checked, skew = $("show-gc-skew").checked;
+  $("replication-status").hidden = !enabled && !skew;
+  if (!enabled && !skew) return;
+  for (const [gid, y] of ys) {
+    const model = replicationModel(gid);
+    const layer = svgNode('g', {class: 'replication-track', 'data-genome': gid, 'clip-path': genomeClip(gid)});
+    svg.append(layer);
+    if (enabled && model) {
+      for (const segment of model.segments) for (const copy of trackCopies(segment.start, segment.end, gid)) {
+        const a = project(segment.start,gid,copy), b = project(segment.end+1,gid,copy);
+        const rect = svgNode('rect', {x:Math.min(a,b), y:y+113, width:Math.abs(b-a), height:10, fill:segment.direction === 1 ? '#168b85' : '#b66b24', opacity:0.65});
+        rect.append(svgNode('title', {}, `Fork moves toward ${segment.direction === 1 ? 'increasing' : 'decreasing'} coordinates; ${segment.direction === 1 ? '+' : '−'} genes co-oriented. Assumes bidirectional replication; terminus estimated opposite oriC.`));
+        layer.append(rect);
+        const labelX = Math.min(a,b) + Math.abs(b-a)/2;
+        layer.append(svgNode('text', {x:labelX,y:y+122,'text-anchor':'middle',fill:'white','font-size':11}, segment.direction * trackDirection(gid) === 1 ? '→' : '←'));
+      }
+      for (const [position,label] of [[model.origin,'oriC'],[model.terminus,'ter ≈']]) for (const copy of trackCopies(position,position,gid)) {
+        const x = project(position,gid,copy);
+        layer.append(svgNode('line',{x1:x,x2:x,y1:y+107,y2:y+127,stroke:'var(--text)','stroke-dasharray':label === 'oriC' ? 'none' : '3 2'}),svgNode('text',{x:x+3,y:y+110,class:'tick'},label));
+      }
+    } else if (enabled) svg.append(svgNode('text',{x:10,y:y+119,class:'tick'},'Replication: unknown'));
+    if (skew) {
+      const records = state.sources.find(s => s.genome_id === gid)?.metadata.records || [];
+      for (const record of records) for (const bin of record.gc_skew || []) {
+        if (bin.value === null) continue;
+        for (const copy of trackCopies(bin.start,bin.end,gid)) {
+          const a=project(bin.start,gid,copy), b=project(bin.end+1,gid,copy), zero=y+145;
+          layer.append(svgNode('line',{x1:Math.min(a,b),x2:Math.max(a,b),y1:zero,y2:zero,stroke:'var(--plot-label)','stroke-width':0.5}));
+          const rect=svgNode('rect',{x:Math.min(a,b),y:Math.min(zero,zero-bin.value*12),width:Math.max(0.5,Math.abs(b-a)),height:Math.abs(bin.value)*12,fill:bin.value>=0?'#168b85':'#b66b24'});
+          rect.append(svgNode('title',{},`GC skew ${bin.value.toFixed(3)} · ${fmt(bin.start)}–${fmt(bin.end)} (native + strand)`)); layer.append(rect);
+        }
+      }
+    }
+  }
+}
 // Only a single annotated circular chromosome has a trustworthy wrap length.
 // Alignment extent alone may omit terminal unaligned sequence.
 function circularLength(gid) {
@@ -710,11 +772,12 @@ function blockIntersectsViewport(block, padding = 0) {
 function render() {
   if (!state.alignment) return;
   window.mauveRankCorrelations?.refresh();
+  window.mauveOriginAnalysis?.refresh();
   const width = Math.max(660, $("tracks").clientWidth - 24),
     left = 180,
     right = width - 26,
     top = 55,
-    gap = $("show-annotations").checked && state.sources.length ? 152 : 112;
+    gap = $("show-replication").checked || $("show-gc-skew").checked ? 180 : $("show-annotations").checked && state.sources.length ? 152 : 112;
   const genomes = visibleGenomes(), blocks = visibleBlocks(), showLinks = $("links").checked;
   const viewportBlocks = blocks.filter(b => blockIntersectsViewport(b, showLinks ? 1 : 0));
   const filters = Number($("min-columns").value) > 0 || $("isolate-block").checked || $("shared-only").checked;
@@ -963,6 +1026,7 @@ function render() {
     svg.append(layer);
   }
   drawAnnotations(svg, x, ys);
+  drawReplication(svg, x, ys);
   drawOverviewFeature(svg, x, ys);
   // Highlight corresponding members without changing selection or re-rendering
   // the SVG under the pointer. Profiles preserve their block's hover target.
@@ -1174,8 +1238,11 @@ function focusSequencePage(preferredId = state.reference) {
   const center = nearestTrackPosition((start+end)/2,member.genome_id);
   setRange(center-(end-start)/2-20,center+(end-start)/2+20,false);
 }
-function clearBlockFilters(preserveCore = false) {
+function clearBlockFilters(preserveCore = false, preserveEssential = false) {
   if (!preserveCore) $("core-genes-only").checked = false;
+  if (!preserveEssential) $("essential-genes-only").checked = false;
+  const index = window.mauveTrackGeometry.coreIndex(window.mauveGeneAnalysis?.result, state.blocks, {core: $("core-genes-only").checked, essential: true});
+  essentialGeneKeys = index.geneKeys; essentialBlockIds = index.blockIds;
   updateCoreGeneStatus();
   $("min-columns").value = 0;
   $("shared-only").checked = $("isolate-block").checked = false;
@@ -1184,7 +1251,7 @@ function clearBlockFilters(preserveCore = false) {
 function revealSelected() {
   const block = state.blocks.find(b => b.id === state.selected);
   if (!block) return;
-  clearBlockFilters(coreBlockIds.has(block.id));
+  clearBlockFilters(coreBlockIds.has(block.id), essentialBlockIds.has(block.id));
   for (const member of block.members) state.hidden.delete(member.genome_id);
   refreshTracks(); renderList();
   const intervals = block.members.map(m => {
@@ -1204,13 +1271,13 @@ function updateMapFeedback() {
     : !hasMembers ? "All genomes containing these blocks are hidden." : "No blocks are visible in this coordinate range.";
   $("clear-map-filters").textContent = !blocks.length ? "Clear filters" : !hasMembers ? "Show all genomes" : "Fit all";
   $("clear-map-filters").dataset.action = !blocks.length ? "filters" : !hasMembers ? "tracks" : "range";
-  const corePending = $("core-genes-only").checked && !window.mauveGeneAnalysis?.result;
+  const corePending = ($("core-genes-only").checked || $("essential-genes-only").checked) && !window.mauveGeneAnalysis?.result;
   $("clear-map-filters").disabled = false;
   $("tracks").setAttribute("aria-busy", String(corePending && $("run-gene-analysis").disabled));
   if (corePending) {
     $("map-feedback").hidden = false;
-    $("map-feedback-text").textContent = `Core-family filter pending — showing all blocks. ${window.mauveGeneAnalysis?.status || "Compute gene comparisons to apply the filter."}`;
-    $("clear-map-filters").textContent = $("run-gene-analysis").disabled ? "Computing core families…" : "Compute gene comparisons";
+    $("map-feedback-text").textContent = `Gene filter pending — showing all blocks. ${window.mauveGeneAnalysis?.status || "Compute gene comparisons to apply the filter."}`;
+    $("clear-map-filters").textContent = $("run-gene-analysis").disabled ? "Computing gene families…" : "Compute gene comparisons";
     $("clear-map-filters").dataset.action = "analysis";
     $("clear-map-filters").disabled = $("run-gene-analysis").disabled;
   }
@@ -1222,6 +1289,13 @@ function updateMapFeedback() {
       $("clear-map-filters").textContent = "Show core blocks";
       $("clear-map-filters").dataset.action = "core-blocks";
     }
+  }
+  if (!corePending && $("essential-genes-only").checked && !blocks.length) {
+    $("map-feedback-text").textContent = essentialBlockIds.size
+      ? `${fmt(essentialBlockIds.size)} blocks overlap essential reference gene copies, but other filters hide them.`
+      : "No blocks overlap matching essential reference gene copies in this scope. Unknown evidence does not imply nonessentiality.";
+    $("clear-map-filters").textContent = "Clear filters";
+    $("clear-map-filters").dataset.action = "filters";
   }
   const selected = state.blocks.find(b => b.id === state.selected);
   const filtered = selected && !blocks.some(b => b.id === selected.id);
@@ -1286,13 +1360,14 @@ document.querySelectorAll("[data-section]").forEach(button => {
 $("jump-sequence").onclick = safely(async () => { await inspectVisibleRegion(); goToSection("sequence-panel"); });
 $("block-search").oninput = renderList;
 $("reset-display").onclick = () => {
-  $("core-genes-only").checked = false; updateCoreGeneStatus();
+  $("core-genes-only").checked = false; $("essential-genes-only").checked = false; $("highlight-essential").checked = false; updateCoreGeneStatus();
   $("align-tracks").checked = false;
   $("orient-tracks").checked = false;
   $("track-sort").value = "manual"; applyTrackOrder();
   state.trackDirections.clear();
   state.trackOffsets.clear();
   for (const id of ["links", "show-annotations", "show-identity", "show-conservation"]) $(id).checked = true;
+  for (const id of ['show-replication', 'show-gc-skew']) $(id).checked = false;
   $("isolate-block").checked = $("shared-only").checked = false;
   $("min-columns").value = 0;
   $("block-search").value = "";
@@ -1304,7 +1379,7 @@ let navigationFrame = null;
 function updateSectionNavigation() {
   navigationFrame = null;
   if (!state.alignment) return;
-  const sections = ["overview-panel", "gene-analysis-panel", "sequence-panel", "annotations-panel"];
+  const sections = ["overview-panel", "gene-analysis-panel", "origin-analysis-panel", "sequence-panel", "annotations-panel"];
   const activeId = sections.filter(id => $(id).getBoundingClientRect().top <= 150).at(-1) || sections[0];
   document.querySelectorAll("[data-section]").forEach(button => {
     const active = button.dataset.section === activeId;
@@ -1358,7 +1433,7 @@ function fitAllTracks() {
 $("zoom-selected").onclick = () => {
   const block = state.blocks.find(b => b.id === state.selected);
   if (!block) return;
-  clearBlockFilters(coreBlockIds.has(block.id));
+  clearBlockFilters(coreBlockIds.has(block.id), essentialBlockIds.has(block.id));
   const aligned = $("align-tracks").checked;
   const reference = block.members.find(m => m.genome_id === state.reference) || block.members[0];
   const members = aligned ? block.members : [reference];
@@ -1485,6 +1560,7 @@ function drawAnnotations(svg, project, ys) {
   const lanes = new Map();
   for (const f of state.features) {
     if ($("core-genes-only").checked && !coreGeneKeys.has(`${f.genome_id}:${f.id}`)) continue;
+    if ($("essential-genes-only").checked && !essentialGeneKeys.has(`${f.genome_id}:${f.id}`)) continue;
     const member = members.get(f.genome_id);
     if (!ys.has(f.genome_id) || !member) continue;
     const parts = f.parts.filter(p => p.start <= member.end && p.end >= member.start);
@@ -1532,8 +1608,11 @@ function drawAnnotations(svg, project, ys) {
         fill:
           f.id === state.selectedFeature
             ? "var(--feature-selected)"
-            : "var(--feature)",
-        stroke: part.fuzzy ? "var(--feature-line)" : "none",
+            : $("show-replication").checked && ['CDS', 'gene', 'tRNA', 'rRNA', 'ncRNA'].includes(f.type)
+              ? ({'co-oriented':'#168b85','head-on':'#b66b24'}[replicationClass(f)] || '#858b94') : "var(--feature)",
+        stroke: $("highlight-essential").checked && essentialGeneKeys.has(`${f.genome_id}:${f.id}`) ? '#8b4fba' : part.fuzzy ? "var(--feature-line)" : "none",
+        "stroke-width": $("highlight-essential").checked && essentialGeneKeys.has(`${f.genome_id}:${f.id}`) ? 2 : 1,
+        "data-essential-reference": String(essentialGeneKeys.has(`${f.genome_id}:${f.id}`)),
         "stroke-dasharray": part.fuzzy ? "2 2" : "none",
         class: "feature",
         "clip-path": genomeClip(f.genome_id),
@@ -1544,13 +1623,13 @@ function drawAnnotations(svg, project, ys) {
         "data-visible-end": partEnd,
         role: "button",
         tabindex: 0,
-        "aria-label": `${f.name}, ${f.type}, ${f.start} to ${f.end}`,
+        "aria-label": `${f.name}, ${f.type}, ${f.start} to ${f.end}${$("show-replication").checked ? ', replication: ' + replicationClass(f) + ' (estimated terminus)' : ''}`,
       });
       node.append(
         svgNode(
           "title",
           {},
-          `${f.name} · ${f.type} · ${fmt(part.start)}–${fmt(part.end)} (${part.strand})${part.fuzzy ? " · approximate boundary" : ""}${part.start < member.start || part.end > member.end ? ` · clipped to block ${block.id}` : ''}${partStart > Math.max(part.start, member.start) || partEnd < Math.min(part.end, member.end) ? ` · visible bases ${fmt(partStart)}–${fmt(partEnd)} (continues beyond this edge)` : ''}`,
+          `${f.name} · ${f.type}${essentialityDescription(f) ? ` · ${essentialityDescription(f)}` : ''} · ${fmt(part.start)}–${fmt(part.end)} (${part.strand})${$("show-replication").checked ? ' · replication: ' + replicationClass(f) + ' (estimated terminus)' : ''}${part.fuzzy ? " · approximate boundary" : ""}${part.start < member.start || part.end > member.end ? ` · clipped to block ${block.id}` : ''}${partStart > Math.max(part.start, member.start) || partEnd < Math.min(part.end, member.end) ? ` · visible bases ${fmt(partStart)}–${fmt(partEnd)} (continues beyond this edge)` : ''}`,
         ),
       );
       node.onclick = () => showFeature(f);
@@ -1670,7 +1749,7 @@ async function focusOverviewGene(feature) {
   $("show-annotations").checked = true;
   $("min-columns").value = 0;
   $("shared-only").checked = false;
-  $("core-genes-only").checked = false;
+  $("core-genes-only").checked = false; $("essential-genes-only").checked = false; $("highlight-essential").checked = false;
   updateCoreGeneStatus();
   renderTrackControls();
   const candidates = state.blocks.map(block => {
@@ -1741,6 +1820,15 @@ $("overview-gene-results").onkeydown = e => {
   buttons[(index + (e.key === "ArrowDown" ? 1 : buttons.length - 1)) % buttons.length]?.focus();
 };
 
+function essentialityDescription(f) {
+  const evidence = window.mauveGeneAnalysis?.evidenceFor?.(f);
+  if (!evidence) return '';
+  const source = window.mauveGeneAnalysis.result?.essentiality_source;
+  if (!source) return 'Reference essentiality unavailable.';
+  const genes = evidence.evidence.map(e => `${e.gene} (${e.locus_tag})`).join(', ');
+  return `Reference essentiality: ${evidence.status}${genes ? ` · ${genes} · ${source.strain}. Identical CDS sequence; essentiality not established in this strain.` : ' · No matching reference evidence.'}`;
+}
+
 function showFeature(f, focus = false) {
   state.selectedFeature = f.id;
   const detail = $("feature-detail");
@@ -1755,6 +1843,7 @@ function showFeature(f, focus = false) {
     f.locus_tag ? `Locus tag: ${f.locus_tag}` : "",
     f.product,
     f.note,
+    essentialityDescription(f),
     f.parts.length > 1
       ? `Compound feature: ${f.parts.map((p) => `${fmt(p.start)}–${fmt(p.end)} (${p.strand})`).join(", ")}`
       : "",
@@ -1840,6 +1929,23 @@ $("feature-search").onsubmit = safely((e) => {
   return searchFeatures();
 });
 $("show-annotations").onchange = render;
+$("show-replication").onchange = render;
+$("show-gc-skew").onchange = render;
+$("start-at-oric").onclick = () => {
+  if (!state.alignment) return;
+  const origins = state.alignment.genomes.map(g => [g.id, replicationModel(g.id)]).filter(([,model]) => model);
+  if (!origins.length) { notice('No known oriC positions. Import circular GenBank annotations with an origin, or normalize inputs to oriC before alignment.', true); return; }
+  ++state.detailEpoch;
+  $("align-tracks").checked = true;
+  $("orient-tracks").checked = false;
+  $("show-replication").checked = true;
+  state.trackDirections.clear();
+  state.trackOffsets.clear();
+  for (const [gid,model] of origins) state.trackOffsets.set(gid,model.origin - 1);
+  setRange(1, Math.max(...state.alignment.genomes.map(g => chromosomeExtent(g.id))), false);
+  renderBases();
+  notice(`Started ${origins.length} chromosome view(s) at oriC. Native coordinates retained; chromosomes with unknown oriC stay unshifted.`);
+};
 $("align-tracks").onchange = safely(async () => {
   ++state.detailEpoch;
   state.trackOffsets.clear();
@@ -1955,7 +2061,7 @@ $("export-svg").onclick = safely(async () => {
     svgNode(
       "desc",
       {},
-      `Genomic coordinates are 1-based inclusive. Colors denote alignment blocks. Forward blocks are above the baseline and reverse blocks below it. Green arrows are GenBank features; selected features are purple. Track percentages show whole-block nucleotide identity for selected block ${state.selected ?? 'none'} versus ${state.alignment.genomes.find(g => g.id === state.reference)?.name}. In-block profiles show Mauve conservation (one minus mean column entropy), with a mean line and shaded similarity range. Gaps reduce conservation; gray profile segments lie outside supplied backbone. Pairwise identity excludes gaps and ambiguous bases. Purple marks below tracks indicate the current sequence page. Coordinate labels remain native to each genome. ${$("align-tracks").checked ? "Tracks are shifted to align corresponding positions in the selected block; annotated circular chromosomes wrap at their origin." : "Tracks share a coordinate origin."} ${$("orient-tracks").checked ? "Tracks marked Reversed view are displayed in reverse orientation relative to their native coordinates." : ""} ${$("core-genes-only").checked ? "Gene arrows are restricted to core families present in every loaded genome; only blocks overlapping those genes are shown." : ""} This export captures the current visible overview.`,
+      `Genomic coordinates are 1-based inclusive. Colors denote alignment blocks. Forward blocks are above the baseline and reverse blocks below it. Green arrows are GenBank features; selected features are purple. Track percentages show whole-block nucleotide identity for selected block ${state.selected ?? 'none'} versus ${state.alignment.genomes.find(g => g.id === state.reference)?.name}. In-block profiles show Mauve conservation (one minus mean column entropy), with a mean line and shaded similarity range. Gaps reduce conservation; gray profile segments lie outside supplied backbone. Pairwise identity excludes gaps and ambiguous bases. Purple marks below tracks indicate the current sequence page. Coordinate labels remain native to each genome. ${$("align-tracks").checked ? "Tracks are shifted to align corresponding positions in the selected block; annotated circular chromosomes wrap at their origin." : "Tracks share a coordinate origin."} ${$("orient-tracks").checked ? "Tracks marked Reversed view are displayed in reverse orientation relative to their native coordinates." : ""} ${$("core-genes-only").checked ? "Gene arrows are restricted to core families present in every loaded genome; only blocks overlapping those genes are shown." : ""} ${$("essential-genes-only").checked ? "Gene arrows and blocks are restricted to gene copies with essential reference sequence matches." : ""} ${$("highlight-essential").checked ? "Purple gene outlines indicate essential reference sequence matches; essentiality is not established in these strains." : ""} This export captures the current visible overview.`,
     ),
     clone.firstChild,
   );

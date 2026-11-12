@@ -19,8 +19,9 @@
     const reference = members.find(m=>m.genome_id===referenceId) || members[0];
     return new Map(members.map(m=>[m.genome_id,orient && m.strand!==reference.strand ? -1 : 1]));
   }
-  function coreIndex(result, blocks) {
-    const genes = (result?.families || []).filter(f=>f.genomes===result.genomes.length).flatMap(f=>f.members);
+  function coreIndex(result, blocks, {core = true, essential = false} = {}) {
+    const genes = (result?.families || []).filter(f=>!core || f.genomes===result.genomes.length).flatMap(f=>f.members)
+      .filter(g=>!essential || g.essentiality?.status.split(' / ').includes('essential'));
     const geneKeys = new Set(genes.map(g=>`${g.genome_id}:${g.id}`)), intervals = new Map();
     for (const gene of genes) {
       if (!intervals.has(gene.genome_id)) intervals.set(gene.genome_id,[]);

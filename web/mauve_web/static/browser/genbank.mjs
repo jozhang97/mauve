@@ -93,6 +93,30 @@ export function annotationData(records, concatenate, rotation = 0) {
   if (!features.length) throw Error('No non-source annotations were found in this GenBank file.');
   const sequence = new Uint8Array(offset); let at = 0;
   for (const r of records) { sequence.set(r.sequence, at); at += r.sequence.length; }
+  for (const record of contigs) {
+    const origins = features.filter(f => f.record === record.name && f.type === 'rep_origin');
+    if (origins.length === 1 && !origins[0].parts.some(p => p.fuzzy)) {
+      const original = records.find(r => r.name === record.name).features.find(f => f.type === 'rep_origin');
+      const parts = locationParts(original.location, record.end - record.start + 1);
+      const start = (parts[0].strand === '-' ? parts.at(-1) : parts[0]).start;
+      record.replication_origin = (start - 1 - rotation + record.end - record.start + 1) % (record.end - record.start + 1) + record.start;
+      record.replication_direction = (original.qualifiers.direction || []).join('').replaceAll('"', '');
+    }
+  }
+  let skewSequence = sequence;
+  if (rotation) {
+    skewSequence = new Uint8Array(sequence.length);
+    skewSequence.set(sequence.subarray(rotation)); skewSequence.set(sequence.subarray(0, rotation), sequence.length - rotation);
+  }
+  for (const record of contigs) {
+    const window = Math.max(1, Math.ceil((record.end - record.start + 1) / 200));
+    record.gc_skew = [];
+    for (let start = record.start; start <= record.end; start += window) {
+      const end = Math.min(record.end, start + window - 1); let g = 0, c = 0;
+      for (let p = start - 1; p < end; p++) { if (skewSequence[p] === 71) g++; else if (skewSequence[p] === 67) c++; }
+      record.gc_skew.push({start, end, value: g+c ? (g-c)/(g+c) : null});
+    }
+  }
   if (rotation) {
     const rotated = new Uint8Array(sequence.length);
     rotated.set(sequence.subarray(rotation));

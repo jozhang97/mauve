@@ -2,6 +2,8 @@
 (() => {
   const workerURL = new URL('./browser/gene-worker.mjs', document.currentScript.src);
   let worker, result, page = 0;
+  let evidenceByGene = new Map();
+  const essential = item => item.essentiality?.status.split(' / ').includes('essential') || false;
   const el = id => document.getElementById(id);
   const text = (tag, value) => { const node = document.createElement(tag); node.textContent = value; return node; };
   const percent = value => value === null ? 'N/A' : `${(100 * value).toFixed(1)}%`;
@@ -10,18 +12,18 @@
   const busy = active => { el('run-gene-analysis').disabled = active; el('cancel-gene-analysis').hidden = !active; };
   function stop() { worker?.terminate(); worker = null; busy(false); }
   function reset() {
-    stop(); result = null; page = 0;
+    stop(); result = null; page = 0; evidenceByGene.clear();
     el('gene-analysis-results').hidden = true;
     window.dispatchEvent(new Event("mauve-gene-analysis"));
     const genomes = state.alignment?.genomes || [];
     const missing = genomes.filter(g => !state.sources.some(s => s.genome_id === g.id));
     status(missing.length ? `Import GenBank annotations for ${missing.map(g => g.name).join(', ')} to compute all pairs.` : 'Ready to compare all genomes. Recompute after changing matching rules.');
   }
-  window.mauveGeneAnalysis = {reset, get result() { return result; }, get status() { return el('gene-analysis-status').textContent; }};
+  window.mauveGeneAnalysis = {reset, evidenceFor: f => evidenceByGene.get(`${f.genome_id}:${f.id}`), get result() { return result; }, get status() { return el('gene-analysis-status').textContent; }};
   for (const id of ['gene-coverage', 'gene-identity', 'gene-rna']) el(id).onchange = reset;
   el('cancel-gene-analysis').onclick = () => { stop(); status('Analysis canceled.'); };
   el('run-gene-analysis').onclick = () => {
-    stop(); result = null; el('gene-analysis-results').hidden = true;
+    stop(); result = null; evidenceByGene.clear(); el('gene-analysis-results').hidden = true;
     window.dispatchEvent(new Event('mauve-gene-analysis'));
     if (!state.alignment) return;
     for (const id of ['gene-coverage', 'gene-identity']) if (!el(id).reportValidity()) return;
@@ -34,8 +36,8 @@
       if (data.error) { stop(); status(data.error); }
       if (data.result) {
         result = data.result; stop(); page = 0;
+        evidenceByGene = new Map(result.families.flatMap(f => f.members.map(m => [`${m.genome_id}:${m.id}`, m.essentiality])));
         window.dispatchEvent(new Event("mauve-gene-analysis"));
-        el('gene-family-search').value = '';
         render();
         const assumed = result.genomes.reduce((n, g) => n + g.assumed_circular, 0);
         status(`Computed ${number(result.pairs.length)} pairs across ${result.genomes.length} genomes. ${number(result.matched_pairs)} direct gene matches.${assumed ? ` ${assumed} record(s) lacked topology and were assumed circular.` : ''}`);
@@ -89,11 +91,31 @@
   function renderFamilies() {
     if (!result) return;
     const query = el('gene-family-search').value.trim().toLowerCase();
-    const families = result.families.filter(f => !query || [f.id, ...f.members.flatMap(m => [m.name, m.locus_tag])].join(' ').toLowerCase().includes(query));
+    const filter = el('gene-essentiality-filter').value;
+    const families = result.families.filter(f => (!query || [f.id, ...f.members.flatMap(m => [m.name, m.locus_tag])].join(' ').toLowerCase().includes(query))
+      && (!el('gene-family-core').checked || f.genomes === result.genomes.length)
+      && (!filter || (f.essentiality?.status || 'unknown').split(' / ').includes(filter)));
     const pages = Math.max(1, Math.ceil(families.length / 50)); page = Math.min(page, pages - 1);
-    const rows = families.slice(page * 50, (page + 1) * 50).map(f => [f.id, f.members[0]?.name || '', `${f.genomes}/${result.genomes.length}`, ...result.genomes.map(g => f.members.filter(m => m.genome_id === g.id).length)]);
-    el('gene-family-table').replaceChildren(table(['Family', 'Example gene', 'Occupancy', ...result.genomes.map(g => g.name)], rows));
-    el('gene-family-page').textContent = `${families.length} families · Page ${page + 1} of ${pages}`;
+    const rows = families.slice(page * 50, (page + 1) * 50).map(f => [f.id, f.members[0]?.name || '', `${f.genomes}/${result.genomes.length}`, f.essentiality?.status || 'unknown', ...result.genomes.map(g => f.members.filter(m => m.genome_id === g.id).length)]);
+    el('gene-family-table').replaceChildren(table(['Family', 'Example gene', 'Occupancy', 'Reference essentiality (sequence match)', ...result.genomes.map(g => g.name)], rows));
+    const source = result.essentiality_source;
+    el('gene-essentiality-status').replaceChildren();
+    if (source) {
+      const count = families.filter(f => f.essentiality?.evidence.length).length;
+      const essential = families.filter(f => f.essentiality?.status.split(' / ').includes('essential')).length;
+      el('gene-essentiality-status').append(document.createTextNode(`Current filters: ${families.length} families; ${essential} with essential reference evidence; ${count} with any reference evidence from ${source.strain}. These are reference assay calls, not measurements in your strains. Unknown means no evidence; unclear is the assay's ambiguous call. ${source.conditions} Reimport older annotations to enable sequence matching. Source: `));
+      const link = text('a', source.title); link.href = source.publication; link.target = '_blank'; link.rel = 'noopener';
+      el('gene-essentiality-status').append(link);
+    } else el('gene-essentiality-status').textContent = result.essentiality_error || 'Essentiality evidence unavailable.';
+    [...el('gene-family-table').querySelectorAll('tbody tr')].forEach((row, i) => {
+      const evidence = families[page * 50 + i].essentiality?.evidence || [];
+      row.cells[3].title = evidence.length
+        ? evidence.map(e => `${e.gene} (${e.locus_tag}): ${e.status}`).join('; ') + ` — ${source?.strain}; ${source?.method}. Identical CDS sequence; strain essentiality not established.`
+        : 'No matching evidence. Absence from the snapshot does not imply nonessentiality.';
+    });
+    const label = filter ? `${filter} reference evidence` : 'all essentiality statuses';
+    const scope = el('gene-family-core').checked ? 'core families' : 'families';
+    el('gene-family-page').textContent = `${families.length} ${scope} (${label}) · Showing ${families.length ? page * 50 + 1 : 0}–${Math.min((page + 1) * 50, families.length)} · Page ${page + 1} of ${pages}`;
     el('gene-family-prev').disabled = page === 0; el('gene-family-next').disabled = page + 1 === pages;
   }
   function render() {
@@ -105,19 +127,33 @@
     for (const [label, key] of [['Pan families', 'pan'], ['Core families', 'core'], ['Single-copy core', 'single_copy_core'], ['Accessory families', 'accessory'], ['Genome-specific families', 'genome_specific'], ['Families with duplicates', 'duplicated_families']]) {
       const card = document.createElement('div'); card.append(text('strong', number(result[key])), text('span', label)); el('gene-pan-summary').append(card);
     }
-    el('gene-genome-counts').replaceChildren(table(['Genome', 'Included gene loci', 'Other / excluded annotation features'], result.genomes.map(g => [g.name, number(g.genes), number(g.excluded_features)])));
+    const essentialFamilies = result.families.filter(essential);
+    for (const [label, families] of [['Families with essential reference evidence', essentialFamilies], ['Core families with essential reference evidence', essentialFamilies.filter(f => f.genomes === result.genomes.length)], ['Accessory families with essential reference evidence', essentialFamilies.filter(f => f.genomes < result.genomes.length)]]) {
+      const card = document.createElement('div'); card.dataset.essentiality = 'essential';
+      card.append(text('strong', result.essentiality_source ? number(families.length) : 'N/A'), text('span', label)); el('gene-pan-summary').append(card);
+    }
+    el('gene-genome-counts').replaceChildren(table(['Genome', 'Included gene loci', 'Other / excluded annotation features', 'Gene copies with essential reference evidence', 'Loci without reference evidence'], result.genomes.map(g => {
+      const members = result.families.flatMap(f => f.members.filter(m => m.genome_id === g.id));
+      return [g.name, number(g.genes), number(g.excluded_features), result.essentiality_source ? number(members.filter(essential).length) : 'N/A', result.essentiality_source ? number(members.filter(m => !m.essentiality?.evidence.length).length) : 'N/A'];
+    })));
     el('gene-occupancy').replaceChildren(); const max = Math.max(1, ...result.occupancy);
     result.occupancy.forEach((n, i) => {
       const row = document.createElement('div'); row.className = 'gene-occupancy-row';
       const bar = document.createElement('span'); bar.className = 'gene-occupancy-bar'; bar.style.width = `${100 * n / max}%`; bar.setAttribute('aria-hidden', 'true');
-      const track = document.createElement('div'); track.append(bar);
-      row.append(text('span', `${i + 1} genome${i ? 's' : ''}`), track, text('span', `${number(n)} families`)); el('gene-occupancy').append(row);
+      bar.style.background = '#168b85';
+      const matches = essentialFamilies.filter(f => f.genomes === i + 1).length;
+      const subset = document.createElement('span'); subset.className = 'gene-occupancy-essential';
+      subset.style.cssText = `display:block;height:8px;background:#8b4fba;width:${100 * matches / max}%;margin-top:3px`;
+      subset.title = `${matches} families with essential reference evidence (subset of ${n})`;
+      const track = document.createElement('div'); track.append(bar, subset);
+      row.append(text('span', `${i + 1} genome${i ? 's' : ''}`), track, text('span', `${number(n)} families; ${result.essentiality_source ? number(matches) : 'N/A'} essential reference matches`)); el('gene-occupancy').append(row);
     });
     renderHeatmap(); renderFamilies();
   }
   el('gene-metric').onchange = () => { window.mauveRankCorrelations?.refresh(); renderHeatmap(); };
   window.addEventListener('mauve-rank-correlations', renderHeatmap);
   el('gene-family-search').oninput = () => { page = 0; renderFamilies(); };
+  for (const id of ['gene-essentiality-filter', 'gene-family-core']) el(id).onchange = () => { page = 0; renderFamilies(); };
   el('gene-family-prev').onclick = () => { page--; renderFamilies(); };
   el('gene-family-next').onclick = () => { page++; renderFamilies(); };
   function download(content, filename, type) {
@@ -134,7 +170,10 @@
   el('export-gene-families').onclick = () => {
     if (!result) return;
     const fields = ['genome_id', 'name', 'locus_tag', 'type', 'record', 'start', 'end', 'strand'];
-    download(tsv([['family', 'genome_occupancy', ...fields], ...result.families.flatMap(f => f.members.map(m => [f.id, f.genomes, ...fields.map(k => m[k])]))]), 'gene-families.tsv', 'text/tab-separated-values');
+    download(tsv([['family', 'genome_occupancy', ...fields, 'reference_essentiality', 'evidence_basis', 'reference_genes', 'tested_strain', 'conditions', 'publication'],
+      ...result.families.flatMap(f => f.members.map(m => [f.id, f.genomes, ...fields.map(k => m[k]), m.essentiality?.status || 'unknown',
+        m.essentiality?.basis || '', (m.essentiality?.evidence || []).map(e => `${e.gene}:${e.locus_tag}:${e.status}`).join('; '),
+        result.essentiality_source?.strain || '', result.essentiality_source?.conditions || '', result.essentiality_source?.publication || '']))]), 'gene-families.tsv', 'text/tab-separated-values');
   };
   el('export-gene-json').onclick = () => { if (result) download(JSON.stringify(result, null, 2), 'gene-analysis.json', 'application/json'); };
 })();
