@@ -26,6 +26,7 @@ jobs:
       - run: python web/build_pages.py
         env:
           MAUVE_GOATCOUNTER_CODE: jozhang97
+      - run: python web/update_doric.py --output web/dist/static/doric
       - uses: actions/upload-pages-artifact@v3
         with:
           path: web/dist

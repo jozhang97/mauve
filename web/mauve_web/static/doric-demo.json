@@ -1,0 +1,70 @@
+{
+  "release": "DoriC 14.0",
+  "retrieved": "2026-11-11",
+  "source": "https://tubic.org/doric/",
+  "records": {
+    "NZ_CP161802.1": [
+      {
+        "id": "ORI97287594",
+        "start": 4631270,
+        "end": 4631648,
+        "length": 4673552,
+        "sha256": "a3e139f4e36b1171f5f235dfc08db7102162061a56ab38e683a3c6b9ba175978"
+      }
+    ],
+    "NZ_CP029164.1": [
+      {
+        "id": "ORI97028425",
+        "start": 769597,
+        "end": 769974,
+        "length": 4971313,
+        "sha256": "55e0b2c5164f93c5992e1215f4171a3188c1bface6c131a04a988ee5040e3231"
+      }
+    ],
+    "NZ_AP022351.1": [
+      {
+        "id": "ORI97024245",
+        "start": 4796204,
+        "end": 4796581,
+        "length": 4812157,
+        "sha256": "edd85c104037c519aeab358df48f04095a40eb9b3025794568756d52d0a1c518"
+      }
+    ],
+    "NZ_CP068394.1": [
+      {
+        "id": "ORI97025942",
+        "start": 4228431,
+        "end": 4228808,
+        "length": 5028010,
+        "sha256": "013a951e557b97c09b8de13a7a04f4d4403dc755b30effbbc3c106d126da34b6"
+      }
+    ],
+    "NZ_CP028758.1": [
+      {
+        "id": "ORI97029869",
+        "start": 1,
+        "end": 378,
+        "length": 4902546,
+        "sha256": "49900d3fa1761e67cc8081cc4c24850339a82ed37e1be4a07df2bb5a4d7b2ff2"
+      }
+    ],
+    "NZ_CP029239.1": [
+      {
+        "id": "ORI97022691",
+        "start": 3976773,
+        "end": 3977150,
+        "length": 4697181,
+        "sha256": "2753d5ec5d9dd7bd87da6abacb287b69a998613a0ba12bc787b120f4443a57e5"
+      }
+    ],
+    "NZ_CP028762.1": [
+      {
+        "id": "ORI97032876",
+        "start": 1,
+        "end": 378,
+        "length": 4909725,
+        "sha256": "ead0aebb53a6ce3be7249741d6ff2859ffba18ebcee05d921fcef07b9b2388c9"
+      }
+    ]
+  }
+}

@@ -33,6 +33,26 @@ WebGPU is optional: the app checks availability and validates its integer
 kernel against CPU results, then falls back to CPU if unavailable or lost.
 Safari/Firefox behavior has not yet been validated end to end.
 
+### oriC normalization
+
+The new-alignment dialog can rotate a single-record circular GenBank genome so
+oriC becomes coordinate 1 before progressiveMauve runs. The opt-in toggle uses
+one unambiguous `rep_origin` annotation first, then the bundled DoriC 14.0
+snapshot for the E. coli demo accessions and accession shards generated from the
+official DoriC CSV for other genomes. The Pages deployment and local preview
+refresh these shards automatically. Server mode caches them on first lookup.
+Bundled records require a matching whole-sequence checksum; other DoriC records
+require an exact accession, genome length and origin sequence match.
+Staged inputs report the source and
+rotation offset; FASTA, linear, multi-record, missing, and ambiguous inputs stay
+unchanged. Original uploads are never modified. The job manifest retains the
+normalization provenance stored with each input.
+
+Use **Re-align demo from oriC…** to stage the eight demo GenBank files and review
+their origin status before starting a new alignment. **Open E. coli demo** opens
+the original precomputed result. New normalized jobs retain the original GenBank
+input and import annotations with the same rotation as the sequence.
+
 The browser alignment engine uses up to eight CPU workers when cross-origin
 isolation and shared memory are available. Independent MUSCLE refinement windows,
 genome-pair searches, breakpoint distances, seed occurrence lists, and backbone

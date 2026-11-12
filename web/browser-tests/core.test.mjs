@@ -90,6 +90,40 @@ test('FASTA normalization preserves records across line batches', async () => {
   assert.equal((await result.normalized.text()).split('\n').slice(1).join(''), (a + b).toUpperCase());
 });
 
+test('oriC normalization prefers annotations and supports the bundled DoriC shape', async () => {
+  const sequence = 'AAAACCCCGGGGTTTT'.repeat(4);
+  const genbank = (version, feature = '') => `LOCUS       demo 64 bp DNA circular\nVERSION     ${version}\nFEATURES             Location/Qualifiers\n${feature}ORIGIN\n        1 ${sequence}\n//\n`;
+  const annotated = await normalizeInput(new Blob([genbank('ANNOTATED.1', '     rep_origin      17..24\n')]), true, {records:{}});
+  assert.equal((await annotated.normalized.text()).split('\n').slice(1).join(''), sequence.slice(16) + sequence.slice(0, 16));
+  assert.deepEqual(annotated.ori_normalization, {requested:true, status:'rotated', offset:16, start:17, source:'annotated rep_origin'});
+  const doric = await normalizeInput(new Blob([genbank('DORIC.1')]), true,
+    {release:'DoriC test', records:{'DORIC.1':[{id:'ORI_TEST', start:33, end:40, length:64,
+      sha256: [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(sequence)))].map(b => b.toString(16).padStart(2,'0')).join('')}]}});
+  assert.equal(doric.ori_normalization.doric_id, 'ORI_TEST');
+  assert.equal(doric.ori_normalization.offset, 32);
+  assert.match(await doric.normalized.text(), /^>genome\nAAAACCCCGGGGTTTTAAAACCCCGGGGTTTT/);
+  const unresolved = await normalizeInput(new Blob([genbank('MISSING.1')]), true, {records:{}});
+  assert.equal(unresolved.ori_normalization.reason, 'no origin found');
+});
+
+test('wrapping origin selects the start of the circular interval and remaps annotations', async () => {
+  const text = `LOCUS       chr 64 bp DNA circular\nVERSION     WRAP.1\nFEATURES             Location/Qualifiers\n     rep_origin      join(57..64,1..8)\n     CDS             complement(53..60)\nORIGIN\n1 ${'ACGT'.repeat(16)}\n//\n`;
+  const result = await normalizeInput(new Blob([text]), true);
+  assert.equal(result.ori_normalization.offset, 56);
+  const data = annotationData(await parseRecords(new Blob([text])), false, 56);
+  assert.deepEqual(data.features[1].parts.map(p => [p.start,p.end,p.strand]), [[1,4,'-'],[61,64,'-']]);
+  assert.equal(new TextDecoder().decode(data.sequence), (await result.normalized.text()).split('\n').slice(1).join(''));
+});
+
+test('DoriC rejects changed sequence and accepts a sequence-verified export record', async () => {
+  const text = `LOCUS       chr 64 bp DNA circular\nVERSION     CHECK.1\nFEATURES             Location/Qualifiers\nORIGIN\n1 ${'ACGT'.repeat(16)}\n//\n`;
+  const entry = {id:'ORI_CHECK',start:5,end:8,length:64,sequence:'AAAA'};
+  const db = {release:'test',records:{'CHECK.1':[entry]}};
+  assert.equal((await normalizeInput(new Blob([text]),true,db)).ori_normalization.status,'unresolved');
+  entry.sequence='ACGT';
+  assert.equal((await normalizeInput(new Blob([text]),true,db)).ori_normalization.offset,4);
+});
+
 test('identity counts classify every byte pair and partial bins', () => {
   const a = new Uint8Array(65536), b = new Uint8Array(65536);
   for (let i = 0; i < a.length; i++) { a[i] = i >>> 8; b[i] = i & 255; }

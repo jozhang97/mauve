@@ -61,14 +61,25 @@ export function locationParts(text, length, offset = 0, strand = '+') {
   if (start < 1 || start > end || end > length) throw Error('A feature location lies outside its record or has zero length.');
   return [{start: start + offset, end: end + offset, strand, fuzzy: Boolean(m[1] || m[3])}];
 }
-export function annotationData(records, concatenate) {
+export function annotationData(records, concatenate, rotation = 0) {
   if (records.length > 1 && !concatenate) throw Error('This file contains multiple records. Enable concatenation only if the alignment uses these records in file order.');
   const features = [], contigs = []; let offset = 0;
   for (const r of records) {
     contigs.push({name: r.name, start: offset + 1, end: offset + r.sequence.length, topology: r.topology});
     for (const f of r.features) {
       if (f.type === 'source') continue;
-      const parts = locationParts(f.location, r.sequence.length, offset);
+      let parts = locationParts(f.location, r.sequence.length, offset);
+      if (rotation) {
+        if (records.length !== 1) throw Error('Rotation requires a single chromosome.');
+        parts = parts.flatMap(p => {
+          const n = r.sequence.length;
+          const start = (p.start - 1 - rotation + n) % n + 1;
+          const end = (p.end - 1 - rotation + n) % n + 1;
+          if (start <= end) return [{...p, start, end}];
+          const split = [{...p, start, end:n}, {...p, start:1, end}];
+          return p.strand === '-' ? split.reverse() : split;
+        });
+      }
       const value = k => (f.qualifiers[k] || []).map(s => s.replace(/^"|"$/g, '').replaceAll('""', '"')).join('; ');
       features.push({name: value('gene') || value('locus_tag') || value('label') || f.type, type: f.type,
         locus_tag: value('locus_tag'), product: value('product'), note: value('note'), record: r.name,
@@ -82,6 +93,12 @@ export function annotationData(records, concatenate) {
   if (!features.length) throw Error('No non-source annotations were found in this GenBank file.');
   const sequence = new Uint8Array(offset); let at = 0;
   for (const r of records) { sequence.set(r.sequence, at); at += r.sequence.length; }
+  if (rotation) {
+    const rotated = new Uint8Array(sequence.length);
+    rotated.set(sequence.subarray(rotation));
+    rotated.set(sequence.subarray(0, rotation), sequence.length - rotation);
+    return {features, records: contigs, length: offset, sequence: rotated};
+  }
   return {features, records: contigs, length: offset, sequence};
 }
 export function verifyMember(m, sequence) {
@@ -100,7 +117,7 @@ export function verifyMember(m, sequence) {
   }
   return count;
 }
-export async function normalizeInput(blob) {
+export async function normalizeInput(blob, normalizeOri = false, doric = null) {
   const head = (await blob.slice(0, 100).text()).trimStart(); let records;
   if (head.startsWith('LOCUS')) records = await parseRecords(blob);
   else if (head.startsWith('>')) {
@@ -112,6 +129,40 @@ export async function normalizeInput(blob) {
     }
     for (const r of records) { r.sequence = encoder.encode(r.parts.join('').toUpperCase()); delete r.parts; }
   } else throw Error('Expected a FASTA or GenBank file with DNA sequences.');
+  let ori = {requested: normalizeOri, status: normalizeOri ? 'unresolved' : 'disabled', source: null, offset: 0};
+  if (normalizeOri && head.startsWith('LOCUS')) {
+    if (records.length !== 1) ori.reason = 'multiple records';
+    else if (records[0].topology !== 'circular') ori.reason = 'record is not circular';
+    else {
+      const annotated = records[0].features.filter(f => f.type === 'rep_origin');
+      let candidate = null;
+      if (annotated.length === 1) {
+        const parts = locationParts(annotated[0].location, records[0].sequence.length);
+        if (parts.some(p => p.fuzzy)) ori.reason = 'origin has uncertain boundaries';
+        else candidate = {start: (parts[0].strand === '-' ? parts.at(-1) : parts[0]).start, source: 'annotated rep_origin'};
+      } else if (annotated.length > 1) ori.reason = 'multiple rep_origin features';
+      else {
+        const digest = [...new Uint8Array(await crypto.subtle.digest('SHA-256', records[0].sequence))].map(b => b.toString(16).padStart(2, '0')).join('');
+        const matches = (doric?.records?.[records[0].name] || [])
+          .filter(match => match.length === records[0].sequence.length &&
+            (match.sha256 === digest || (match.sequence && Number.isInteger(match.start) && Number.isInteger(match.end) && match.start >= 1 && match.end <= records[0].sequence.length && match.start <= match.end &&
+              new TextDecoder().decode(records[0].sequence.slice(match.start - 1, match.end)) === match.sequence.toUpperCase())));
+        if (matches.length === 1) candidate = {start: matches[0].start, source: 'DoriC', doric_id: matches[0].id,
+          release: doric.release, end: matches[0].end};
+        else ori.reason = matches.length ? 'multiple DoriC candidates' : 'no origin found';
+      }
+      if (candidate) {
+        const offset = candidate.start - 1, sequence = records[0].sequence;
+        if (offset < 0 || offset >= sequence.length) throw Error('Origin coordinate lies outside its GenBank record.');
+        if (offset) {
+          const rotated = new Uint8Array(sequence.length);
+          rotated.set(sequence.subarray(offset)); rotated.set(sequence.subarray(0, offset), sequence.length - offset);
+          records[0].sequence = rotated;
+        }
+        ori = {requested: true, status: offset ? 'rotated' : 'already at oriC', offset, ...candidate};
+      }
+    }
+  } else if (normalizeOri) ori.reason = 'FASTA has no origin annotation or accession';
   let bases = 0; const info = [], chunks = [encoder.encode('>genome\n')];
   for (const r of records) {
     if (!r.sequence.length || !/^[ACGTRYSWKMBDHVN]+$/.test(new TextDecoder().decode(r.sequence))) throw Error('Inputs must contain non-empty, ungapped DNA sequences (IUPAC bases).');
@@ -119,5 +170,5 @@ export async function normalizeInput(blob) {
     for (let i = 0; i < r.sequence.length; i += 65536) chunks.push(r.sequence.subarray(i, i + 65536), '\n');
   }
   if (bases < 50) throw Error('Each genome must contain at least 50 bases.');
-  return {normalized: new Blob(chunks), records: info, bases, format: head.startsWith('>') ? 'fasta' : 'genbank'};
+  return {normalized: new Blob(chunks), records: info, bases, format: head.startsWith('>') ? 'fasta' : 'genbank', ori_normalization: ori};
 }

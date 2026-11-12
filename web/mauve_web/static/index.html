@@ -28,6 +28,7 @@
       <div class="section-label">YOUR ALIGNMENTS</div>
       <nav id="library" aria-label="Saved alignments"></nav>
       <button id="demo" class="demo">↗ Open E. coli demo</button>
+      <button id="demo-ori" class="demo">Re-align demo from oriC…</button>
       <div class="section-label">ALIGNMENT JOBS</div>
       <nav id="job-library" aria-label="Alignment jobs"></nav>
       <div class="sidebar-footer">
@@ -166,6 +167,14 @@
             can be up to 50 MiB, with at most 100 million bases in total.
           </p>
           <ul id="staged-inputs"></ul>
+          <label class="check"
+            ><input type="checkbox" id="job-normalize-ori" /> Normalize circular
+            GenBank genomes to oriC</label
+          >
+          <p class="small" id="ori-help">
+            Uses an annotated <code>rep_origin</code> first, then the bundled
+            DoriC records supplied by this site. Source files are not modified.
+          </p>
           <label class="check"
             ><input type="checkbox" id="job-concatenate" /> Concatenate multiple
             records within each file in file order</label

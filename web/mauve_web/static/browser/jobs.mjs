@@ -1,5 +1,5 @@
 import {alignerConfig} from './aligner-config.mjs';
-import {normalizeInput} from './genbank.mjs';
+import {normalizeInput, parseRecords} from './genbank.mjs';
 import {basename} from './core.mjs';
 export const MAX_GENOMES = 64, MAX_BASES = 100000000, MAX_INPUT = 50 * 1024 * 1024;
 const now = () => new Date().toISOString();
@@ -15,12 +15,27 @@ export class Jobs {
     return {available: hasExceptions, threads: config.threads, version: `progressiveMauve · WebAssembly SIMD (${config.threads} thread${config.threads === 1 ? '' : 's'}, local)`,
       reason: hasWasm ? 'Update your browser to run the aligner with WebAssembly exception support.' : 'This browser needs WebAssembly support.', max_genomes: MAX_GENOMES, source};
   }
-  async addInput(blob, name, provenance = null) {
+  async doric(blob) {
+    this.doricData ||= fetch(new URL('../doric-demo.json', import.meta.url)).then(response => {
+      if (!response.ok) throw Error('The bundled DoriC snapshot is unavailable.'); return response.json();
+    });
+    const bundled = await this.doricData;
+    if (!(await blob.slice(0, 100).text()).trimStart().startsWith('LOCUS')) return bundled;
+    const records = await parseRecords(blob);
+    if (records.length !== 1 || records[0].features.some(f => f.type === 'rep_origin')) return bundled;
+    const accession = records[0].name;
+    if (bundled.records[accession]) return bundled;
+    const key = [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(accession)))][0].toString(16).padStart(2, '0');
+    const response = await fetch(new URL(`../doric/${key}.json`, import.meta.url));
+    if (!response.ok) throw Error('DoriC data is unavailable. Retry when online or disable oriC normalization.');
+    return response.json();
+  }
+  async addInput(blob, name, provenance = null, normalizeOri = false) {
     if (blob.size > MAX_INPUT) throw Error('Each input must be at most 50 MiB.');
-    const {normalized, ...meta} = await normalizeInput(blob);
+    const {normalized, ...meta} = await normalizeInput(blob, normalizeOri, normalizeOri ? await this.doric(blob) : null);
     const id = crypto.randomUUID(), input = {id, name: basename(name), ...meta, provenance,
       original_sha256: await hash(blob), normalized_sha256: await hash(normalized)};
-    await this.store.put('inputs', id, {...input, normalized}); return input;
+    await this.store.put('inputs', id, {...input, normalized, original: blob}); return input;
   }
   async list() {
     const jobs = (await this.store.all('jobs')).sort((a, b) => b.created.localeCompare(a.created));
@@ -49,7 +64,7 @@ export class Jobs {
     if (options.min_weight != null) command.push(`--weight=${options.min_weight}`);
     command.push(...inputs.map((_, i) => `/input-${i + 1}.fa`));
     const job = {id: crypto.randomUUID(), name: (options.name || 'New alignment').slice(0, 200), created: now(), status: 'queued', log: '', log_truncated: false, error: '', artifacts: ['manifest'],
-      spec: {options, command, engine: {version: engine.version, threads: engine.threads, ...engine.source}, inputs: inputs.map(({normalized, ...i}) => i)}};
+      spec: {options, command, engine: {version: engine.version, threads: engine.threads, ...engine.source}, inputs: inputs.map(({normalized, original, ...i}) => i)}};
     // Claim ownership before publishing so other tabs cannot mark a queued job interrupted.
     await new Promise((resolve, reject) => {
       navigator.locks.request('mauve-job-' + job.id, async () => {

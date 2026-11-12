@@ -4,10 +4,10 @@ import warnings
 
 from Bio import BiopythonParserWarning, SeqIO
 from Bio.Seq import Seq
-from Bio.SeqFeature import ExactPosition
+from Bio.SeqFeature import ExactPosition, SimpleLocation, CompoundLocation
 
 
-def parse_genbank(text, members, concatenate=False):
+def parse_genbank(text, members, concatenate=False, rotation=0):
     # Fail on parser warnings instead of silently dropping malformed locations.
     with warnings.catch_warnings():
         warnings.simplefilter('error', BiopythonParserWarning)
@@ -17,6 +17,25 @@ def parse_genbank(text, members, concatenate=False):
             raise ValueError(f'Invalid GenBank file: {exc}') from exc
     if not records:
         raise ValueError('No GenBank records found.')
+    if rotation:
+        if len(records) != 1:
+            raise ValueError('Rotation requires a single chromosome.')
+        record = records[0]
+        n = len(record)
+        for feature in record.features:
+            parts = []
+            for part in feature.location.parts:
+                if part.ref or part.ref_db:
+                    raise ValueError('Remote feature locations are not supported.')
+                if part.start < rotation < part.end:
+                    split = [SimpleLocation(part.start + n - rotation, n, strand=part.strand),
+                             SimpleLocation(0, part.end - rotation, strand=part.strand)]
+                    parts.extend(split[::-1] if part.strand == -1 else split)
+                else:
+                    shift = -rotation if part.start >= rotation else n - rotation
+                    parts.append(part + shift)
+            feature.location = parts[0] if len(parts) == 1 else CompoundLocation(parts)
+        record.seq = record.seq[rotation:] + record.seq[:rotation]
     if len(records) > 1 and not concatenate:
         raise ValueError('This file contains multiple records. Enable concatenation only if the alignment uses these records in file order.')
     try:

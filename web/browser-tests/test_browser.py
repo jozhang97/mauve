@@ -20,6 +20,11 @@ def site(tmp_path_factory):
     spec = importlib.util.spec_from_file_location('build_pages', ROOT / 'build_pages.py')
     module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
     module.build(root / 'mauve')
+    # An empty release shard represents an accession absent from DoriC.
+    doric = root / 'mauve/static/doric'
+    doric.mkdir()
+    for i in range(256):
+        (doric / f'{i:02x}.json').write_text('{"release":"test","records":{}}')
     class Server(http.server.ThreadingHTTPServer):
         def server_bind(self):
             socketserver.TCPServer.server_bind(self)
@@ -39,6 +44,21 @@ def browser():
         browser = p.chromium.launch(headless=os.environ.get('MAUVE_HEADFUL') != '1', **({'executable_path': path} if path else {}))
         yield browser
         browser.close()
+
+
+def test_demo_ori_preparation(site, browser):
+    page = browser.new_page()
+    page.goto(site)
+    page.wait_for_function('window.mauveReady === true')
+    page.locator('#demo-ori').click()
+    page.wait_for_function('document.querySelectorAll("#staged-inputs li").length === 8', timeout=60000)
+    assert page.locator('#job-normalize-ori').is_checked()
+    text = page.locator('#staged-inputs').inner_text()
+    assert text.count('rotated ') == 5
+    assert text.count('already normalized') == 2
+    assert text.count('no origin found') == 1
+    assert page.locator('#submit-job').is_enabled()
+    page.close()
 
 def test_static_viewer_import_persistence_exports_and_job(site, browser, tmp_path):
     page = browser.new_page(viewport={'width': 1440, 'height': 1000})

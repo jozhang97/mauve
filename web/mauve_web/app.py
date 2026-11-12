@@ -116,11 +116,12 @@ def create_app(data_dir=None, aligner_path=None):
         return raw
 
     def save_annotations(aid, gid, raw, name, concatenate):
-        get_genome(aid, gid)
+        genome = get_genome(aid, gid)
         members = [m for b in query('SELECT members FROM blocks WHERE alignment_id=?', (aid,))
                    for m in json.loads(b['members']) if m['genome_id'] == gid]
         try:
-            parsed = parse_genbank(raw.decode('utf-8-sig'), members, concatenate)
+            parsed = parse_genbank(raw.decode('utf-8-sig'), members, concatenate,
+                                   genome.get('ori_normalization', {}).get('offset', 0))
         except (ValueError, UnicodeError) as exc:
             raise HTTPException(422, str(exc)) from exc
         metadata = {k: v for k, v in parsed.items() if k != 'features'}
@@ -160,6 +161,7 @@ def create_app(data_dir=None, aligner_path=None):
                         if not 1 <= genome['id'] <= len(inputs):
                             raise ValueError('Aligner output contains an unexpected sequence ID.')
                         genome['name'] = inputs[genome['id'] - 1]['name']
+                        genome['ori_normalization'] = inputs[genome['id'] - 1].get('ori_normalization', {})
                 db.execute('INSERT INTO alignments(id,name,genomes,block_count) VALUES (?,?,?,?)',
                            (aid, basename(name)[:200] or 'Untitled alignment', json.dumps(genome_list), count))
         except (ValueError, UnicodeError) as exc:
@@ -168,6 +170,12 @@ def create_app(data_dir=None, aligner_path=None):
             companion = Path(str(raw) + '.bbcols')
             if companion.is_file():
                 save_backbone(aid, companion.read_bytes())
+        if inputs:
+            for genome in genome_list:
+                source = inputs[genome['id'] - 1]
+                if source.get('ori_normalization', {}).get('requested') and source.get('format') == 'genbank':
+                    original = jobs.root / 'inputs' / source['id'] / 'original'
+                    save_annotations(aid, genome['id'], original.read_bytes(), source['name'], len(source['records']) > 1)
         return get_alignment(aid)
 
     jobs = JobManager(storage, save, executable=aligner_path)
@@ -183,16 +191,18 @@ def create_app(data_dir=None, aligner_path=None):
         return app.state.ncbi.search(taxon_id, source, exact, versions, q, page_token, page_size)
 
     @app.post('/api/ncbi/assemblies/{accession}/input', status_code=201)
-    def ncbi_input(accession: str):
-        return app.state.ncbi.download(accession, jobs.add_input)
+    def ncbi_input(accession: str, normalize_ori: bool = Query(False)):
+        return app.state.ncbi.download(accession, lambda raw, name, provenance=None:
+                                       jobs.add_input(raw, name, provenance, normalize_ori))
 
     @app.get('/api/engine')
     def engine():
         return jobs.engine()
 
     @app.post('/api/inputs', status_code=201)
-    async def upload_input(request: Request, name: str = Query('genome.fasta', max_length=500)):
-        return await run_in_threadpool(jobs.add_input, await read_upload(request), name)
+    async def upload_input(request: Request, name: str = Query('genome.fasta', max_length=500),
+                           normalize_ori: bool = Query(False)):
+        return await run_in_threadpool(jobs.add_input, await read_upload(request), name, None, normalize_ori)
 
     @app.post('/api/jobs', status_code=201)
     def create_job(request: JobRequest):
@@ -238,9 +248,15 @@ def create_app(data_dir=None, aligner_path=None):
             return await run_in_threadpool(save, Path(stream.name), name)
 
     @app.post('/api/demo')
-    def demo():
+    def demo(prepare: bool = Query(False)):
         folder = ROOT / 'demo/ecoli'
         manifest = json.loads((folder / 'manifest.json').read_text())
+        if prepare:
+            inputs = []
+            for genome in manifest['genomes']:
+                with gzip.open(folder / genome['annotations'], 'rb') as source:
+                    inputs.append(jobs.add_input(source.read(), genome['name'], genome, True))
+            return {'inputs': inputs}
         with demo_lock:
             existing = query('SELECT id FROM alignments WHERE name=? LIMIT 1', (manifest['name'],))
             alignment = get_alignment(existing[0]['id']) if existing else None

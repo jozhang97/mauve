@@ -6,5 +6,6 @@ trap 'rm -rf "$browser_build"' EXIT
 trap 'exit 130' INT
 trap 'exit 143' TERM
 python3 "$web_root/build_pages.py" --output "$browser_build/site"
+python3 "$web_root/update_doric.py" --output "$browser_build/site/static/doric"
 printf 'Open http://127.0.0.1:%s — all processing runs in your browser.\n' "${MAUVE_BROWSER_PORT:-8766}"
 python3 -u -m http.server "${MAUVE_BROWSER_PORT:-8766}" --bind 127.0.0.1 --directory "$browser_build/site"

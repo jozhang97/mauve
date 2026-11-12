@@ -20,7 +20,11 @@ function renderInputs() {
     const li = document.createElement("li"),
       text = document.createElement("span"),
       remove = document.createElement("button");
-    text.textContent = `${input.name}${input.provenance?.organism ? " · " + input.provenance.organism : ""} · ${fmt(input.bases)} bp · ${input.records.length} record(s)`;
+    const ori = input.ori_normalization;
+    const oriText = ori?.requested
+      ? ` · oriC: ${ori.status === "rotated" ? `rotated ${fmt(ori.offset)} bp (${ori.source})` : ori.status === "already at oriC" ? `already normalized (${ori.source})` : `unchanged — ${ori.reason}`}`
+      : "";
+    text.textContent = `${input.name}${input.provenance?.organism ? " · " + input.provenance.organism : ""} · ${fmt(input.bases)} bp · ${input.records.length} record(s)${oriText}`;
     remove.type = "button";
     remove.textContent = "Remove";
     remove.disabled = jobState.busy;
@@ -32,6 +36,7 @@ function renderInputs() {
     $("staged-inputs").append(li);
   }
   $("sequence-files").disabled = jobState.busy;
+  $("job-normalize-ori").disabled = jobState.busy || jobState.inputs.length > 0;
   $("submit-job").disabled =
     jobState.busy || !jobState.engine?.available || jobState.inputs.length < 2;
   $("submit-job").textContent = jobState.busy
@@ -53,6 +58,18 @@ async function showAlignmentForm() {
   }
 }
 $("new-alignment").onclick = safely(showAlignmentForm);
+$("demo-ori").onclick = safely(async () => {
+  if (jobState.busy) return;
+  await showAlignmentForm();
+  jobState.busy = true; renderInputs();
+  try {
+    const result = await api('/api/demo?prepare=true', {method:'POST'});
+    jobState.inputs = result.inputs;
+    $("job-normalize-ori").checked = true;
+    $("job-name").value = 'E. coli demo — oriC normalized';
+  } catch (error) { jobFormError(error.message); }
+  finally { jobState.busy = false; renderInputs(); }
+});
 $("close-alignment-dialog").onclick = () => $("alignment-dialog").close();
 $("sequence-files").onchange = async () => {
   const files = [...$("sequence-files").files];
@@ -67,7 +84,7 @@ $("sequence-files").onchange = async () => {
       if (file.size > 50 * 1024 * 1024)
         throw Error(`${file.name} exceeds the 50 MiB limit.`);
       const input = await api(
-        `/api/inputs?name=${encodeURIComponent(file.name)}`,
+        `/api/inputs?name=${encodeURIComponent(file.name)}&normalize_ori=${$("job-normalize-ori").checked}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/octet-stream" },
@@ -107,6 +124,7 @@ $("alignment-form").onsubmit = async (e) => {
     });
     $("alignment-dialog").close();
     jobState.inputs = [];
+    $("job-normalize-ori").checked = false;
     await selectJob(job.id);
     await refreshJobs();
   } catch (e) {

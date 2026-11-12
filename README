@@ -1,6 +1,27 @@
 THIS FILE IS OUT OF DATE
 The current user guide resides online at darlinglab.org/mauve/user-guide/
 
+Origin normalization
+====================
+Complete circular bacterial records can be rotated so an annotated origin of
+replication begins at coordinate 1 before alignment with Mauve:
+
+    python3 -m pip install -r tools/requirements-ori.txt
+    python3 tools/normalize_ori.py input.gbk normalized.gbk
+
+The command rotates the sequence and every feature, adds provenance to the
+record comment, and writes `normalized.gbk.ori.json`. Linear, ambiguous, and
+unannotated records remain unchanged by default. Use `--on-missing error` for
+strict processing.
+
+For records without `rep_origin`, download a DoriC 14 release or filtered CSV
+from https://tubic.org/doric/download/ and supply it explicitly:
+
+    python3 tools/normalize_ori.py --doric-csv DoriC14_filtered.csv input.gbk normalized.gbk
+
+The accession, sequence length, coordinates, and ori sequence must agree with
+the input. Ambiguous DoriC candidates are not selected automatically.
+
 Mauve Overview
 ==============
 Mauve is a program for performing comaparative analyses of genomes.  To generate a new genome alignment with Mauve, select 'Align' from the File menu.  To open an existing genome alignment, select 'Open' from the file menu.

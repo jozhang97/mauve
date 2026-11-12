@@ -17,6 +17,7 @@ import signal
 import sqlite3
 import subprocess
 import threading
+import time
 import uuid
 import warnings
 
@@ -32,6 +33,7 @@ MAX_TOTAL_BASES = 100_000_000
 MAX_OUTPUT = MAX_ALIGNMENT
 ARTIFACTS = {'xmfa': 'alignment.xmfa', 'tree': 'guide.tree', 'backbone': 'alignment.backbone', 'bbcols': 'alignment.xmfa.bbcols',
              'log': 'run.log', 'manifest': 'manifest.json'}
+DORIC_SNAPSHOT = Path(__file__).resolve().parent / 'static' / 'doric-demo.json'
 
 
 def now():
@@ -48,7 +50,7 @@ class JobRequest(BaseModel):
     concatenate_records: bool = False
 
 
-def normalize_input(raw):
+def normalize_input(raw, normalize_ori=False, doric=None):
     try:
         text = raw.decode('utf-8-sig').strip()
         format_name = 'fasta' if text.startswith('>') else 'genbank' if text.startswith('LOCUS') else None
@@ -59,6 +61,44 @@ def normalize_input(raw):
             records = list(SeqIO.parse(StringIO(text), format_name))
         if not records:
             raise ValueError('No sequence records found.')
+        ori = {'requested': normalize_ori, 'status': 'unresolved' if normalize_ori else 'disabled',
+               'source': None, 'offset': 0}
+        if normalize_ori:
+            if format_name != 'genbank':
+                ori['reason'] = 'FASTA has no origin annotation or accession'
+            elif len(records) != 1:
+                ori['reason'] = 'multiple records'
+            elif str(records[0].annotations.get('topology', '')).lower() != 'circular':
+                ori['reason'] = 'record is not circular'
+            else:
+                origins = [feature for feature in records[0].features if feature.type == 'rep_origin']
+                candidate = None
+                if len(origins) == 1:
+                    parts = origins[0].location.parts
+                    candidate = {'start': int((parts[-1] if parts[0].strand == -1 else parts[0]).start) + 1,
+                                 'source': 'annotated rep_origin'}
+                elif len(origins) > 1:
+                    ori['reason'] = 'multiple rep_origin features'
+                else:
+                    matches = [match for match in (doric or {}).get('records', {}).get(records[0].id, [])
+                               if match.get('length') == len(records[0]) and
+                               (sha256(str(records[0].seq).upper().encode()).hexdigest() == match.get('sha256') or
+                                (match.get('sequence') and 1 <= match['start'] <= match['end'] <= len(records[0]) and
+                                 str(records[0].seq[match['start']-1:match['end']]).upper() == match['sequence'].upper()))]
+                    if len(matches) == 1:
+                        candidate = {'start': int(matches[0]['start']), 'end': int(matches[0]['end']),
+                                     'source': 'DoriC', 'doric_id': matches[0]['id'],
+                                     'release': doric.get('release')}
+                    else:
+                        ori['reason'] = 'multiple DoriC candidates' if matches else 'no origin found'
+                if candidate:
+                    rotation = candidate['start'] - 1
+                    if rotation < 0 or rotation >= len(records[0]):
+                        raise ValueError('Origin coordinate lies outside its GenBank record.')
+                    if rotation:
+                        records[0].seq = records[0].seq[rotation:] + records[0].seq[:rotation]
+                    ori = {'requested': True, 'status': 'rotated' if rotation else 'already at oriC',
+                           'offset': rotation, **candidate}
         pieces, record_info, offset = [], [], 0
         for record in records:
             sequence = str(record.seq).upper()
@@ -75,7 +115,8 @@ def normalize_input(raw):
         # after the job request explicitly confirms that coordinate convention.
         sequence = ''.join(pieces)
         normalized = ('>genome\n' + '\n'.join(sequence[i:i+80] for i in range(0, len(sequence), 80)) + '\n').encode()
-        return normalized, {'format': format_name, 'records': record_info, 'bases': offset}
+        return normalized, {'format': format_name, 'records': record_info, 'bases': offset,
+                            'ori_normalization': ori}
     except (ValueError, UnicodeError, BiopythonParserWarning) as exc:
         raise HTTPException(422, str(exc)) from exc
 
@@ -95,6 +136,7 @@ class JobManager:
         self.lock_file = None
         self.process = None
         self.engine_cache = None
+        self.doric = json.loads(DORIC_SNAPSHOT.read_text())
         with closing(sqlite3.connect(self.db)) as db:
             db.executescript('''
                 CREATE TABLE IF NOT EXISTS inputs (id TEXT PRIMARY KEY, data TEXT NOT NULL);
@@ -167,10 +209,22 @@ class JobManager:
             self.engine_cache = info
             return info
 
-    def add_input(self, raw, name, provenance=None):
+    def add_input(self, raw, name, provenance=None, normalize_ori=False):
         if len(raw) > MAX_INPUT:
             raise HTTPException(413, 'Sequence files must be at most 50 MiB.')
-        normalized, metadata = normalize_input(raw)
+        doric = self.doric
+        if normalize_ori and raw.lstrip().startswith(b'LOCUS'):
+            records = list(SeqIO.parse(StringIO(raw.decode('utf-8-sig')), 'genbank'))
+            if len(records) == 1 and not any(f.type == 'rep_origin' for f in records[0].features) and records[0].id not in doric['records']:
+                directory = self.root / 'doric'
+                key = sha256(records[0].id.encode()).hexdigest()[:2]
+                with self.lock:
+                    shard = directory / f'{key}.json'
+                    if not shard.exists() or time.time() - shard.stat().st_mtime > 7 * 86400:
+                        from update_doric import update
+                        update(directory)
+                doric = json.loads((directory / f'{key}.json').read_text())
+        normalized, metadata = normalize_input(raw, normalize_ori, doric)
         if provenance is not None:
             metadata['provenance'] = provenance
         iid = uuid.uuid4().hex

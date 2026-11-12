@@ -211,7 +211,7 @@ $("ncbi-use").onclick = async () => {
     for (const row of chosen) {
       $("ncbi-status").textContent =
         `Downloading ${row.accession} (${++i}/${chosen.length})…`;
-      const input = await api(`/api/ncbi/assemblies/${row.accession}/input`, {
+      const input = await api(`/api/ncbi/assemblies/${row.accession}/input?normalize_ori=${$("job-normalize-ori").checked}`, {
         method: "POST",
       });
       jobState.inputs.push(input);

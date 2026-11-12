@@ -5,13 +5,18 @@ import random
 import sqlite3
 import sys
 import time
+from io import StringIO
 
 import pytest
 from fastapi.testclient import TestClient
 
 from mauve_web.app import create_app
+from mauve_web.jobs import normalize_input
 from mauve_web.xmfa import parse_xmfa
 from Bio.Seq import Seq
+from Bio.SeqFeature import FeatureLocation, SeqFeature
+from Bio.SeqRecord import SeqRecord
+from Bio import SeqIO
 
 
 @pytest.fixture
@@ -46,6 +51,41 @@ def upload_pair(client):
         assert response.status_code == 201
         ids.append(response.json()['id'])
     return ids
+
+
+def test_ori_normalization_uses_annotated_origin_and_reports_unresolved_fasta():
+    sequence = 'AAAACCCCGGGGTTTT' * 4
+    record = SeqRecord(Seq(sequence), id='ANNOTATED.1', name='demo')
+    record.annotations.update(molecule_type='DNA', topology='circular')
+    record.features = [SeqFeature(FeatureLocation(16, 24), type='rep_origin')]
+    handle = StringIO()
+    SeqIO.write(record, handle, 'genbank')
+    genbank = handle.getvalue().encode()
+    normalized, metadata = normalize_input(genbank, True, {'records': {}})
+    assert normalized.decode().splitlines()[1] == sequence[16:] + sequence[:16]
+    assert metadata['ori_normalization'] == {
+        'requested': True, 'status': 'rotated', 'offset': 16,
+        'start': 17, 'source': 'annotated rep_origin'}
+    _, fasta = normalize_input(('>x\n' + 'A' * 50).encode(), True, {'records': {}})
+    assert fasta['ori_normalization']['reason'] == 'FASTA has no origin annotation or accession'
+
+
+def test_rotated_job_imports_annotations(tmp_path, fake_aligner):
+    record = SeqRecord(Seq('A' * 64), id='ORIGIN.1', name='demo')
+    record.annotations.update(molecule_type='DNA', topology='circular')
+    record.features = [SeqFeature(FeatureLocation(16, 24), type='rep_origin'),
+                       SeqFeature(FeatureLocation(12, 20, strand=-1), type='CDS')]
+    stream = StringIO()
+    SeqIO.write(record, stream, 'genbank')
+    with TestClient(create_app(tmp_path / 'data', fake_aligner())) as client:
+        ids = [client.post('/api/inputs?normalize_ori=true', content=stream.getvalue()).json()['id']
+               for _ in range(2)]
+        job = finished(client, client.post('/api/jobs', json={'input_ids': ids}).json()['id'])
+        assert job['status'] == 'succeeded', job['error']
+        sources = client.get(f"/api/alignments/{job['alignment_id']}/annotations").json()
+        assert len(sources) == 2
+        features = client.get(f"/api/alignments/{job['alignment_id']}/features?genome_id=1").json()
+        assert sources[0]['metadata']['feature_count'] == 2
 
 
 def wait_job(client, jid, predicate, seconds=5):

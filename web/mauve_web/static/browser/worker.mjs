@@ -18,10 +18,17 @@ async function importAlignment(blob, name, inputs, backbone) {
       await store.batch([['blocks', [id, block.id], {...block, members: block.members.map(metadata)}], ...block.members.map(m => ['members', [id, block.id, m.genome_id], m])]);
       progress(`Importing block ${block.id}…`);
     });
-    if (inputs) for (const g of meta.genomes) { if (!inputs[g.id - 1]) throw Error('Aligner output contains an unexpected genome ID.'); g.name = inputs[g.id - 1].name; }
+    if (inputs) for (const g of meta.genomes) { if (!inputs[g.id - 1]) throw Error('Aligner output contains an unexpected genome ID.'); g.name = inputs[g.id - 1].name; g.ori_normalization = inputs[g.id - 1].ori_normalization; }
     const alignment = {id, name: basename(name).slice(0, 200) || 'Untitled alignment', created: new Date().toISOString(), ...meta};
     await store.put('alignments', id, alignment);
     if (backbone) await saveBackbone(alignment, backbone);
+    if (inputs) for (const genome of meta.genomes) {
+      const input = inputs[genome.id - 1];
+      if (input.ori_normalization?.requested && input.format === 'genbank') {
+        const saved = await store.get('inputs', input.id);
+        if (saved?.original) await importAnnotations(id, genome.id, saved.original, input.name, input.records.length > 1);
+      }
+    }
     progress(''); return alignment;
   } catch (e) { await store.deleteAlignment(id); progress(''); throw e; }
 }
@@ -55,7 +62,8 @@ async function conservation(alignment, ranges) {
 async function importAnnotations(aid, gid, blob, name, concatenate) {
   const a = await getAlignment(aid); if (!a.genomes.some(g => g.id === gid)) throw Error('Genome not found.');
   if (blob.size > 50 * 1024 * 1024) throw Error('GenBank files must be at most 50 MiB.');
-  const parsed = annotationData(await parseRecords(blob), concatenate); let verified = 0;
+  const rotation = a.genomes.find(g => g.id === gid)?.ori_normalization?.offset || 0;
+  const parsed = annotationData(await parseRecords(blob), concatenate, rotation); let verified = 0;
   for (const b of await store.all('blocks', store.range(aid))) if (b.members.some(m => m.genome_id === gid)) verified += verifyMember(await cache.get(aid, b.id, gid), parsed.sequence);
   if (!verified) throw Error('No unambiguous aligned bases are available to verify this GenBank sequence.');
   const metadata = {records: parsed.records, length: parsed.length, verified_bases: verified, feature_count: parsed.features.length, analysis_version: 1};
@@ -70,8 +78,8 @@ async function route(path, options = {}) {
   const u = new URL(path, 'https://local.invalid'), p = u.searchParams, parts = u.pathname.split('/').filter(Boolean), method = options.method || 'GET';
   if (parts[1] === 'capabilities') { await accelerator.ready; return {mode: accelerator.mode, adapter: accelerator.adapter, storage: await navigator.storage.estimate()}; }
   if (parts[1] === 'engine') return jobs.engine();
-  if (parts[1] === 'inputs' && method === 'POST') return jobs.addInput(options.body, p.get('name') || 'genome.fasta');
-  if (parts[1] === 'ncbi') return parts[3] ? downloadNCBI(parts[3], (...args) => jobs.addInput(...args)) : searchNCBI(p);
+  if (parts[1] === 'inputs' && method === 'POST') return jobs.addInput(options.body, p.get('name') || 'genome.fasta', null, p.get('normalize_ori') === 'true');
+  if (parts[1] === 'ncbi') return parts[3] ? downloadNCBI(parts[3], (blob, name, provenance) => jobs.addInput(blob, name, provenance, p.get('normalize_ori') === 'true')) : searchNCBI(p);
   if (parts[1] === 'jobs') {
     const id = parts[2];
     if (!id) return method === 'POST' ? jobs.create(JSON.parse(options.body)) : jobs.list();
@@ -90,6 +98,11 @@ async function route(path, options = {}) {
       if (!response.ok) throw Error(`Could not load demo asset: ${name}`);
       return new Response(response.body.pipeThrough(new DecompressionStream('gzip'))).blob();
     };
+    if (p.get('prepare') === 'true') {
+      const inputs = [];
+      for (const genome of manifest.genomes) inputs.push(await jobs.addInput(await compressed(genome.annotations), genome.name, genome, true));
+      return {inputs};
+    }
     let a = (await store.all('alignments')).find(a => a.demo_id === manifest.id);
     const created = !a;
     try {
